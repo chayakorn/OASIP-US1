@@ -1,5 +1,6 @@
 services:
   oasipdb:
+    container_name: oasipdb
     image: mysql
     restart: always
     ports:
@@ -8,7 +9,8 @@ services:
       - "MYSQL_ROOT_PASSWORD=us1t2pproject"
     volumes:
       - ./data/oasip-create-insert.sql:/docker-entrypoint-initdb.d/setup.sql
-  backend:
+  oasipbackend:
+    container_name: oasipbackend
     build: ./backend
     restart: always
     image: backend
