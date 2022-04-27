@@ -88,6 +88,4 @@ UNLOCK TABLES;
 
 create user 'us1'@'%' identified by 'us-1-t2p';
 grant all on *.* to 'us1'@'%';
-
-
 -- Dump completed on 2022-04-27 17:56:20
