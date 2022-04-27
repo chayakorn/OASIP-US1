@@ -53,7 +53,7 @@ const eventLists = ref([
     bookingName: 'สมเกียรติ ขยันเรียน กลุ่ม TT-4',
     bookingEmail: 'somkiat.kay@kmutt.ac.th',
     eventStartTime: '2022-05-23T09:30:00Z',
-    eventCategoryId: 5,
+    eventCategoryId: 3,
     eventDuration: 15,
     eventNotes: '',
     name: '',

@@ -6,18 +6,18 @@ defineProps({
     require: true
   }
 })
-const categoryBg = (catId) => {
-  switch (catId) {
+const categoryBg = (cateId) => {
+  switch (cateId) {
     case 1:
-      return 'bg-[#6196FF]'
-    case 2:
-      return 'bg-[#A9B5FF]'
-    case 3:
-      return 'bg-[#FAA7B7]'
-    case 4:
-      return 'bg-[#FB7A8E]'
-    case 5:
       return 'bg-[#031B89]'
+    case 2:
+      return 'bg-[#6196FF]'
+    case 3:
+      return 'bg-[#A9B5FF]'
+    case 4:
+      return 'bg-[#FAA7B7]'
+    case 5:
+      return 'bg-[#FB7A8E]'
   }
 }
 </script>

@@ -8,7 +8,7 @@
       </div>
       <div class="h-full grid place-content-center space-y-10">
         <!-- Home -->
-        <router-link :to="{ name: 'Home' }"
+        <router-link v-show="false" :to="{ name: 'Home' }"
           ><svg width="3em" height="3em" viewBox="0 0 48 48">
             <path
               fill="currentColor"
@@ -47,7 +47,7 @@
       <router-view
         :class="[
           'font-poppin h-screen',
-          this.$route.name == 'Home' ? 'bg-home' : 'bg-[#F7F9FA]'
+          this.$route.name == 'Home' ? '' : 'bg-[#F7F9FA]'
         ]"
       ></router-view>
     </div>
@@ -64,10 +64,14 @@ a {
 </style>
 <style>
 @import url('https://fonts.googleapis.com/css2?family=Poppins:ital,wght@0,100;0,200;0,300;0,400;0,500;0,600;0,700;0,800;0,900;1,100;1,200;1,300;1,400;1,500;1,600;1,700;1,800;1,900&display=swap');
-@import url('https://fonts.googleapis.com/css2?family=Kanit:ital,wght@0,100;0,200;0,300;0,400;0,500;0,600;0,700;0,800;0,900;1,100;1,200;1,300;1,400;1,500;1,600;1,700;1,800;1,900&display=swap');
 @import url('https://fonts.googleapis.com/css2?family=Prompt:ital,wght@0,200;0,300;0,400;0,500;0,600;0,700;0,800;0,900;1,100;1,200;1,300;1,400;1,500;1,600;1,700;1,800;1,900&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=Pragati+Narrow:wght@400;700&display=swap');
+
 .font-poppin {
   font-family: 'Poppins', 'Prompt', sans-serif;
+}
+.font-pragati {
+  font-family: 'Pragati Narrow', sans-serif;
 }
 
 .bg-home {
