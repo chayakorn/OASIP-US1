@@ -8,7 +8,7 @@
       </div>
       <div class="h-full grid place-content-center space-y-10">
         <!-- Home -->
-        <router-link v-show="false" :to="{ name: 'Home' }"
+        <router-link  :to="{ name: 'Home' }"
           ><svg width="3em" height="3em" viewBox="0 0 48 48">
             <path
               fill="currentColor"
