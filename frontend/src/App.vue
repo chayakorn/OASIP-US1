@@ -4,11 +4,13 @@
   <div class="flex">
     <div class="w-1/12">
       <div class="absolute w-1/12 mt-5 grid place-content-center">
-        <img src="./assets/images/pin.png" width="60" />
+        <router-link :to="{ name: 'Home' }"
+          ><img src="./assets/images/pin.png" width="60"
+        /></router-link>
       </div>
       <div class="h-full grid place-content-center space-y-10">
         <!-- Home -->
-        <router-link :to="{ name: 'Home' }"
+        <router-link :to="{ name: 'Home' }" class="hover:animate-bounce"
           ><svg width="3em" height="3em" viewBox="0 0 48 48">
             <path
               fill="currentColor"
@@ -16,7 +18,7 @@
             ></path></svg
         ></router-link>
         <!-- Event Lists -->
-        <router-link :to="{ name: 'EventLists' }"
+        <router-link :to="{ name: 'EventLists' }" class="hover:animate-bounce"
           ><svg width="3em" height="3em" viewBox="0 0 24 24">
             <path
               fillRule="evenodd"
@@ -26,7 +28,10 @@
             ></path></svg
         ></router-link>
         <!-- Calendar -->
-        <router-link v-show="false" :to="{ name: 'Calendar' }"
+        <router-link
+          v-show="false"
+          :to="{ name: 'Calendar' }"
+          class="hover:animate-bounce"
           ><svg width="3em" height="3em" viewBox="0 0 512 512">
             <path
               fill="currentColor"
@@ -34,7 +39,10 @@
             ></path></svg
         ></router-link>
         <!-- Setting -->
-        <router-link v-show="false" :to="{ name: 'Setting' }"
+        <router-link
+          v-show="false"
+          :to="{ name: 'Setting' }"
+          class="hover:animate-bounce"
           ><svg width="3em" height="3em" viewBox="0 0 24 24">
             <path
               fill="currentColor"
