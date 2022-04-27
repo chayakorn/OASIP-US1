@@ -5,60 +5,126 @@ import { useRoute, useRouter } from 'vue-router'
 const myRouter = useRouter()
 const { params } = useRoute()
 const eventI = JSON.parse(params.eventItem)
-
+const catBg = params.cateBg
 const date = moment.utc(eventI.eventStartTime).format('DD MMM YYYY')
-const time = moment.utc(eventI.eventStartTime).format('h:mm a')
-const closem = () => myRouter.push({ name: 'EventLists' })
+const time = moment.utc(eventI.eventStartTime).format('h:mm')
+
+const closeModal = () => myRouter.push({ name: 'EventLists' })
+
+const timeCalculate = () => {
+  time += eventI.eventDuration
+}
+
+console.log(time)
 </script>
 
 <template>
   <div class="modal-mask">
     <div class="modal-wrapper">
+
       <div class="modal-container">
+
         <div class="modal-header">
+          <div class="grid grid-cols-3 ">
+            <div></div>
+            <div class="font-bold text-xl text-center">Scheduled details</div>
+            <div>
+              <div class=" float-right ">
+                <button class="hover:bg-[#F1F3F4] transition duration-700  rounded-lg grid " @click="closeModal">
+                  <svg width="2.5em" height="2.5em" viewBox="0 0 24 24" class="">
+                    <path fill="currentColor"
+                      d="M18.3 5.71a.996.996 0 0 0-1.41 0L12 10.59L7.11 5.7A.996.996 0 1 0 5.7 7.11L10.59 12L5.7 16.89a.996.996 0 1 0 1.41 1.41L12 13.41l4.89 4.89a.996.996 0 1 0 1.41-1.41L13.41 12l4.89-4.89c.38-.38.38-1.02 0-1.4z">
+                    </path>
+                  </svg>
 
-          <div class="float-right mb-5">
-            <button class="hover:bg-neutral-100  rounded-lg pl-3 pt-2" @click="closem">
-              <svg width="3em" height="3em" viewBox="0 0 32 32">
-                <path fill="currentColor"
-                  d="M18.3 5.71a.996.996 0 0 0-1.41 0L12 10.59L7.11 5.7A.996.996 0 1 0 5.7 7.11L10.59 12L5.7 16.89a.996.996 0 1 0 1.41 1.41L12 13.41l4.89 4.89a.996.996 0 1 0 1.41-1.41L13.41 12l4.89-4.89c.38-.38.38-1.02 0-1.4z">
-                </path>
-              </svg>
-            </button>
+                </button>
+              </div>
+            </div>
           </div>
-          <div class="font-bold text-xl text-center ">Schedule details</div>
-
         </div>
+
         <!-- Body -->
+
         <div class="modal-body">
-          <div
-            class="flex-none bg-gray-200 appearance-none border-2 border-gray-200 rounded-xl w-full py-2 px-4 text-black-700 leading-tight focus:outline-none focus:bg-white focus:border-purple-500">
+          <div :class="[catBg, 'text-white text-2xl p-3 pl-6 font-semibold rounded-lg']">
             {{ eventI.bookingName }}
           </div>
           <br>
-          <div>
-            Clinic
-            <div
-              class="flex-none bg-gray-200 appearance-none border-2 border-gray-200 rounded-xl w-full py-2 px-4 text-black-700 leading-tight focus:outline-none focus:bg-white focus:border-purple-500">
-              {{ eventI.categoryName }} <br>
+
+
+          <div class="grid grid-cols-2 divide-x-2 ">
+            <!-- col1 -->
+            <div>
+              <!-- CLINIC -->
+              <div class="flex py-1 pt-0.5"> <span class="p-2 text-[#5E6366]">Clinic</span>
+                <div
+                  class=" flex-none bg-gray-200 appearance-none border-2 border-gray-200 rounded-lg w-4/5 py-1 px-4 text-black-700 ">
+                  {{ eventI.categoryName }} <br>
+                </div>
+              </div>
+
+              <!-- DATE -->
+              <div class="flex py-1"> <span class="py-2 px-2 pr-3.5 text-[#5E6366]">Date</span>
+                <div
+                  class=" flex-none bg-gray-200 appearance-none border-2 border-gray-200 rounded-lg w-4/5 py-1.5 px-4 text-black-700 ">
+                  {{ date }} <br>
+                </div>
+              </div>
+
+              <!-- TIME -->
+              <div class="flex py-1"> <span class="py-2 px-2 pr-3.5 text-[#5E6366]">Time</span>
+                <div
+                  class=" flex-none bg-gray-200 appearance-none box-border h-10 border-gray-200 rounded-lg w-60 py-2 px-4 text-black-700 ">
+                  {{ time }} -  <br>
+                </div>
+                <!-- DURATION -->
+                <div class="flex pl-4">
+                  <span class="pt-2 px-2">
+                    <svg class="" width="1.5em" height="1.5em" viewBox="0 0 24 24">
+                      <path fill="#5E6366"
+                        d="M12 20c4.4 0 8-3.6 8-8s-3.6-8-8-8s-8 3.6-8 8s3.6 8 8 8m0-18c5.5 0 10 4.5 10 10s-4.5 10-10 10S2 17.5 2 12S6.5 2 12 2m5 11.9l-.7 1.3l-5.3-2.9V7h1.5v4.4l4.5 2.5Z">
+                      </path>
+                    </svg>
+                  </span>
+                  <div
+                    class=" flex-none bg-gray-200 appearance-none border-2 border-gray-200 rounded-lg w-40 py-1.5 px-4 text-black-700 ">
+                    {{ eventI.eventDuration }} mins
+                  </div>
+                </div>
+              </div>
+            </div>
+            <!-- col2 -->
+            <div>
+              <!-- NAME -->
+              <div class="flex py-1 pl-9"> <span class="text-[#5E6366] p-2">Name</span>
+                <div
+                  class="flex-none bg-gray-200 appearance-none border-2 border-gray-200 rounded-lg w-10/12 py-1.5 px-4 text-black-700 ">
+                  {{ eventI.name }}</div>
+              </div>
+              <!-- EMAIL -->
+              <div class="flex py-1 pl-9"><span class="text-[#5E6366] p-2 pr-3 ">Email</span>
+                <div
+                  class="flex-none bg-gray-200 appearance-none border-2 border-gray-200 rounded-lg w-10/12 py-1.5 px-4 text-black-700  ">
+                  {{ eventI.bookingEmail }}</div>
+              </div>
             </div>
           </div>
-
-          Date {{ date }}
-          Time {{ time }}
-
-          <svg width="1em" height="1em" viewBox="0 0 24 24">
-            <path fill="currentColor"
-              d="M12 20c4.4 0 8-3.6 8-8s-3.6-8-8-8s-8 3.6-8 8s3.6 8 8 8m0-18c5.5 0 10 4.5 10 10s-4.5 10-10 10S2 17.5 2 12S6.5 2 12 2m5 11.9l-.7 1.3l-5.3-2.9V7h1.5v4.4l4.5 2.5Z">
-            </path>
-
-          </svg> {{ eventI.eventDuration }} mins <br>
+          <div class="pt-5 border-b-2 text-[#5E6366]"></div>
 
 
-          Name {{ eventI.name }} <br>
-          Email {{ eventI.bookingEmail }} <br>
-          Description {{ eventI.eventNotes }}
-          <!-- <div class="md:flex md:items-center mb-6">
+          <!-- DESCRIPTION -->
+          <div class="p-2 pt-4 ">
+            <span class="text-[#5E6366]"> Description </span>
+          </div>
+          <div
+            class="flex-none bg-gray-200 appearance-none border-2 border-gray-200 rounded-lg w-900  pt-1 pb-28 px-4 text-black-700">
+            {{ eventI.eventNotes }}
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+  <!-- <div class="md:flex md:items-center mb-6">
             <div class="md:w-1/9">
               <label
                 disabled
@@ -118,10 +184,6 @@ const closem = () => myRouter.push({ name: 'EventLists' })
             </div>
          
           </div> -->
-        </div>
-      </div>
-    </div>
-  </div>
 </template>
 
 <style>
@@ -148,18 +210,12 @@ const closem = () => myRouter.push({ name: 'EventLists' })
   margin: 0px auto;
   padding: 20px 30px;
   background-color: #fff;
-  border-radius: 25px;
+  border-radius: 18px;
   box-shadow: 0 2px 8px rgba(0, 0, 0, 0.33);
 }
 
-.modal-header h3 {
-  margin-top: 0;
-  color: black;
-  font-weight: bold;
-}
-
 .modal-body {
-  margin: 30px 0;
+  margin: 5px 0;
 }
 
 .button {

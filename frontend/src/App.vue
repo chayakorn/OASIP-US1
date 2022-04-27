@@ -10,7 +10,7 @@
       </div>
       <div class="h-full grid place-content-center space-y-10">
         <!-- Home -->
-        <router-link :to="{ name: 'Home' }" class="hover:animate-bounce"
+        <router-link :to="{ name: 'Home' }" class="hover:scale-110 duration-700"
           ><svg width="3em" height="3em" viewBox="0 0 48 48">
             <path
               fill="currentColor"
@@ -18,7 +18,7 @@
             ></path></svg
         ></router-link>
         <!-- Event Lists -->
-        <router-link :to="{ name: 'EventLists' }" class="hover:animate-bounce"
+        <router-link :to="{ name: 'EventLists' }" class="hover:scale-110 duration-700"
           ><svg width="3em" height="3em" viewBox="0 0 24 24">
             <path
               fillRule="evenodd"
@@ -31,7 +31,7 @@
         <router-link
           v-show="false"
           :to="{ name: 'Calendar' }"
-          class="hover:animate-bounce"
+          class="hover:scale-110 duration-700"
           ><svg width="3em" height="3em" viewBox="0 0 512 512">
             <path
               fill="currentColor"
@@ -42,7 +42,7 @@
         <router-link
           v-show="false"
           :to="{ name: 'Setting' }"
-          class="hover:animate-bounce"
+          class="hover:scale-110 duration-700"
           ><svg width="3em" height="3em" viewBox="0 0 24 24">
             <path
               fill="currentColor"
