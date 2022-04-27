@@ -27,7 +27,11 @@ const categoryBg = (cateId) => {
     <router-link
       :to="{
         name: 'EventDetails',
-        params: { eventId: item.id, eventItem: JSON.stringify(item) }
+        params: {
+          eventId: item.id,
+          eventItem: JSON.stringify(item),
+          cateBg: categoryBg(item.eventCategoryId)
+        }
       }"
       ><div
         :class="[
