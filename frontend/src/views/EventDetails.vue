@@ -7,7 +7,7 @@ const { params } = useRoute()
 const eventI = JSON.parse(params.eventItem)
 const catBg = params.cateBg
 const date = moment.utc(eventI.eventStartTime).format('DD MMM YYYY')
-const time = moment.utc(eventI.eventStartTime).format('h:mm')
+let time = moment.utc(eventI.eventStartTime).format('h:mm')
 
 const closeModal = () => myRouter.push({ name: 'EventLists' })
 
@@ -75,7 +75,7 @@ console.log(time)
               <div class="flex py-1"> <span class="py-2 px-2 pr-3.5 text-[#5E6366]">Time</span>
                 <div
                   class=" flex-none bg-gray-200 appearance-none box-border h-10 border-gray-200 rounded-lg w-60 py-2 px-4 text-black-700 ">
-                  {{ time }} -  <br>
+                  {{ time }} - <br>
                 </div>
                 <!-- DURATION -->
                 <div class="flex pl-4">
