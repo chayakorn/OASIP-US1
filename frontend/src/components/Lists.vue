@@ -6,11 +6,11 @@ import moment from 'moment'
 const props = defineProps({
   lists: {
     // No Group
-    // type: Array,
-    // default: []
+    type: Array,
+    default: []
     // GroupBy Day
-    type: Object,
-    default: {}
+    // type: Object,
+    // default: {}
   }
 })
 const currentLists = computed(() => props.lists)
@@ -19,11 +19,12 @@ const currentLists = computed(() => props.lists)
 <template>
   <div>
     <!-- No Group -->
-    <!-- <div class="flex flex-wrap gap-x-10 gap-y-5">
+    <div class="flex flex-wrap gap-x-10 gap-y-5">
       <EventItem v-for="list in currentLists" :item="list" />
-    </div> -->
+    </div>
+
     <!-- GroupBy Day -->
-    <div
+    <!-- <div
       v-for="list in currentLists"
       class="flex flex-wrap gap-x-10 gap-y-5 mt-10"
     >
@@ -35,7 +36,7 @@ const currentLists = computed(() => props.lists)
         }}</span>
       </h2>
       <EventItem v-for="l in list" :item="l" />
-    </div>
+    </div> -->
   </div>
 </template>
 
