@@ -5,8 +5,8 @@ import moment from 'moment'
 
 const eventLists = ref([])
 const getAllEvents = async () => {
-  console.log(`http://localhost:8080/api/event`)
-  const res = await fetch(`http://localhost:8080/api/event`)
+  console.log(`${import.meta.env.VITE_BASE_URL}/event`)
+  const res = await fetch(`${import.meta.env.VITE_BASE_URL}/event`)
   if (res.status === 200) {
     eventLists.value = await res.json()
     console.log(eventLists.value)
@@ -99,10 +99,13 @@ const result = Object.values(
   <div class="p-10">
     <div class="text-4xl font-bold">Scheduled Events</div>
     <div class="my-5">
-      <span class="text-2xl font-bold">All Events</span><span class="ml-2 text-gray-400">{{ eventLists.length }}
-        events</span>
+      <span class="text-2xl font-bold">All Events</span
+      ><span class="ml-2 text-gray-400">{{ eventLists.length }} events</span>
     </div>
-    <div v-if="!eventLists.length > 0" class="h-3/4 grid place-content-center text-[#C6CACC] font-bold text-4xl">
+    <div
+      v-if="!eventLists.length > 0"
+      class="h-3/4 grid place-content-center text-[#C6CACC] font-bold text-4xl"
+    >
       No Scheduled Events.
     </div>
     <div v-if="eventLists.length > 0">
@@ -115,22 +118,23 @@ const result = Object.values(
       "
     /> -->
       <!-- GroupBy Day -->
-      <Lists :lists="
-        result
-          .sort(
-            (a, b) =>
-              new Date(b[0].eventStartTime) - new Date(a[0].eventStartTime)
-          )
-          .map((a) =>
-            a.sort(
+      <Lists
+        :lists="
+          result
+            .sort(
               (a, b) =>
-                new Date(b.eventStartTime) - new Date(a.eventStartTime)
+                new Date(b[0].eventStartTime) - new Date(a[0].eventStartTime)
             )
-          )
-      " />
+            .map((a) =>
+              a.sort(
+                (a, b) =>
+                  new Date(b.eventStartTime) - new Date(a.eventStartTime)
+              )
+            )
+        "
+      />
     </div>
   </div>
 </template>
 
-<style>
-</style>
+<style></style>
