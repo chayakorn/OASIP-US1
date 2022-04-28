@@ -73,7 +73,7 @@ CREATE TABLE `eventcategory` (
 
 LOCK TABLES `eventcategory` WRITE;
 /*!40000 ALTER TABLE `eventcategory` DISABLE KEYS */;
-INSERT INTO `eventcategory` VALUES (1,'Project Management Clinic','ตารางนัดหมายนี้ใช้สำหรับนัดหมาย project management clinic ในวิชา INT221 integrated project I ให้นักศึกษาเตรียมเอกสารที่เกี่ยวข้องเพื่อแสดงระหว่างขอคำปรึกษา',30,'./public/images/project.png'),(2,'DevOps/Infra Clinic','Use this event category for DevOps/Infra clinic.',20,'./public/images/devops.png'),(3,'Database Clinic','ตารางนัดหมายนี้ใช้สำหรับนัดหมาย database clinic ในวิชา INT221 integrated project I',15,'./public/images/database.png'),(4,'Client-side Clinic','ตารางนัดหมายนี้ใช้สำหรับนัดหมาย client-side clinic ในวิชา INT221 integrated project I',30,'./public/images/frontend.png'),(5,'Server-side Clinic','',30,'./public/images/backend.png');
+INSERT INTO `eventcategory` VALUES (1,'Project Management Clinic','ตารางนัดหมายนี้ใช้สำหรับนัดหมาย project management clinic ในวิชา INT221 integrated project I ให้นักศึกษาเตรียมเอกสารที่เกี่ยวข้องเพื่อแสดงระหว่างขอคำปรึกษา',30,'./images/project.png'),(2,'DevOps/Infra Clinic','Use this event category for DevOps/Infra clinic.',20,'./images/devops.png'),(3,'Database Clinic','ตารางนัดหมายนี้ใช้สำหรับนัดหมาย database clinic ในวิชา INT221 integrated project I',15,'./images/database.png'),(4,'Client-side Clinic','ตารางนัดหมายนี้ใช้สำหรับนัดหมาย client-side clinic ในวิชา INT221 integrated project I',30,'./images/frontend.png'),(5,'Server-side Clinic','',30,'./images/backend.png');
 /*!40000 ALTER TABLE `eventcategory` ENABLE KEYS */;
 UNLOCK TABLES;
 /*!40103 SET TIME_ZONE=@OLD_TIME_ZONE */;
