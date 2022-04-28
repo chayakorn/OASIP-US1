@@ -8,6 +8,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.*;
 
+import javax.servlet.http.HttpServletResponse;
 import java.util.List;
 
 @RestController
@@ -18,25 +19,29 @@ public class EventbookingController {
     private EventbookingService service;
 
     @GetMapping("")
-    public List<EventbookingDto> getAllEvent(){
+    public List<EventbookingDto> getAllEvent(HttpServletResponse response){
+        response.addHeader("Access-Control-Allow-Origin","*");
         return service.getAll();
     }
 
     @GetMapping("/{id}")
-    private EventbookingDto getEventById(@PathVariable int id){
+    private EventbookingDto getEventById(HttpServletResponse response,@PathVariable int id){
+        response.addHeader("Access-Control-Allow-Origin","*");
         return service.getEventById(id);
     }
 
     @PostMapping("")
-    private Eventbooking addEvent(@RequestBody EventbookingInsertDto newEventBooking){
+    private Eventbooking addEvent(HttpServletResponse response,@RequestBody EventbookingInsertDto newEventBooking){
+        response.addHeader("Access-Control-Allow-Origin","*");
         return service.save(newEventBooking);
     }
     @PutMapping("/{id}")
-    private Eventbooking update(@RequestBody EventbookingDto editEventBooking,@PathVariable int id){
+    private Eventbooking update(HttpServletResponse response,@RequestBody EventbookingDto editEventBooking,@PathVariable int id){
+        response.addHeader("Access-Control-Allow-Origin","*");
         return service.update(editEventBooking,id);
     }
     @DeleteMapping("/{id}")
-    private void delete(@PathVariable int id){
+    private void delete(HttpServletResponse response,@PathVariable int id){
         service.delete(id);
     }
 }
