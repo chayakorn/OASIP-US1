@@ -7,15 +7,16 @@ const { params } = useRoute()
 const eventI = JSON.parse(params.eventItem)
 const catBg = params.cateBg
 const date = moment.utc(eventI.eventStartTime).format('DD MMM YYYY')
-let time = moment.utc(eventI.eventStartTime).format('h:mm')
-
+let startTime = moment.utc(eventI.eventStartTime).format('h:mm A')
+const durationTime = moment.utc(eventI.eventDuration)
 const closeModal = () => myRouter.push({ name: 'EventLists' })
 
-const timeCalculate = () => {
-  time += eventI.eventDuration
-}
+const endTime = moment(startTime, 'h:mm').add(durationTime, 'minutes').format('h:mm A')
+// const timeCalculate = () => {
+//   time += eventI.eventDuration
+// }
 
-console.log(time)
+console.log(startTime)
 </script>
 
 <template>
@@ -27,10 +28,10 @@ console.log(time)
         <div class="modal-header">
           <div class="grid grid-cols-3 ">
             <div></div>
-            <div class="font-bold text-xl text-center">Scheduled details</div>
+            <div class="font-bold text-2xl text-center">Scheduled details</div>
             <div>
               <div class=" float-right ">
-                <button class="hover:bg-[#F1F3F4] transition duration-150  rounded-lg grid " @click="closeModal">
+                <button class="hover:bg-[#F1F3F4] transition duration-100  rounded-lg grid " @click="closeModal">
                   <svg width="2.5em" height="2.5em" viewBox="0 0 24 24" class="">
                     <path fill="currentColor"
                       d="M18.3 5.71a.996.996 0 0 0-1.41 0L12 10.59L7.11 5.7A.996.996 0 1 0 5.7 7.11L10.59 12L5.7 16.89a.996.996 0 1 0 1.41 1.41L12 13.41l4.89 4.89a.996.996 0 1 0 1.41-1.41L13.41 12l4.89-4.89c.38-.38.38-1.02 0-1.4z">
@@ -46,7 +47,7 @@ console.log(time)
         <!-- Body -->
 
         <div class="modal-body">
-          <div :class="[catBg, 'text-white text-2xl p-3 pl-6 font-semibold rounded-lg']">
+          <div :class="[catBg, 'text-white text-2xl p-3 pl-6 font-semibold rounded-2xl']">
             {{ eventI.bookingName }}
           </div>
           <br>
@@ -56,26 +57,26 @@ console.log(time)
             <!-- col1 -->
             <div>
               <!-- CLINIC -->
-              <div class="flex py-1 pt-0.5"> <span class="p-2 text-[#5E6366]">Clinic</span>
+              <div class="flex py-1 pl-4 pt-0.5"> <span class="p-2 font-semibold text-[#5E6366]">Clinic</span>
                 <div
-                  class=" flex-none bg-gray-200 appearance-none border-2 border-gray-200 rounded-lg w-4/5 py-1 px-4 text-black-700 ">
+                  class=" flex-none bg-[#F1F3F4]  rounded-2xl w-4/5 py-2 px-4 text-black-700 ">
                   {{ eventI.categoryName }} <br>
                 </div>
               </div>
 
               <!-- DATE -->
-              <div class="flex py-1"> <span class="py-2 px-2 pr-3.5 text-[#5E6366]">Date</span>
+              <div class="flex pl-4 py-1"> <span class="py-2 font-semibold px-2 pr-3.5 text-[#5E6366]">Date</span>
                 <div
-                  class=" flex-none bg-gray-200 appearance-none border-2 border-gray-200 rounded-lg w-4/5 py-1.5 px-4 text-black-700 ">
+                  class=" flex-none bg-[#F1F3F4] rounded-2xl w-4/5 py-2 px-4 text-black-700 ">
                   {{ date }} <br>
                 </div>
               </div>
 
               <!-- TIME -->
-              <div class="flex py-1"> <span class="py-2 px-2 pr-3.5 text-[#5E6366]">Time</span>
+              <div class="flex pl-4 py-1"> <span class="font-semibold py-2 px-2 pr-3.5 text-[#5E6366]">Time</span>
                 <div
-                  class=" flex-none bg-gray-200 appearance-none box-border h-10 border-gray-200 rounded-lg w-60 py-2 px-4 text-black-700 ">
-                  {{ time }} - <br>
+                  class=" flex-none bg-[#F1F3F4]  rounded-2xl w-60 py-2 px-4 text-black-700 ">
+                  {{ startTime }} - {{ endTime }}<br>
                 </div>
                 <!-- DURATION -->
                 <div class="flex pl-4">
@@ -87,7 +88,7 @@ console.log(time)
                     </svg>
                   </span>
                   <div
-                    class=" flex-none bg-gray-200 appearance-none border-2 border-gray-200 rounded-lg w-40 py-1.5 px-4 text-black-700 ">
+                    class=" flex-none bg-[#F1F3F4] rounded-2xl w-36 py-2 px-4 text-black-700 ">
                     {{ eventI.eventDuration }} mins
                   </div>
                 </div>
@@ -96,29 +97,31 @@ console.log(time)
             <!-- col2 -->
             <div>
               <!-- NAME -->
-              <div class="flex py-1 pl-9"> <span class="text-[#5E6366] p-2">Name</span>
+              <div class="flex py-1 pl-9"> <span class="text-[#5E6366] p-2 font-semibold">Name</span>
                 <div
-                  class="flex-none bg-gray-200 appearance-none border-2 border-gray-200 rounded-lg w-10/12 py-1.5 px-4 text-black-700 ">
+                  class="flex-none bg-[#F1F3F4]  rounded-2xl w-10/12 py-1.5 px-4 text-black-700 ">
                   {{ eventI.name }}</div>
               </div>
               <!-- EMAIL -->
-              <div class="flex py-1 pl-9"><span class="text-[#5E6366] p-2 pr-3 ">Email</span>
+              <div class="flex py-1 pl-9"><span class="text-[#5E6366] p-2 pr-3 font-semibold ">Email</span>
                 <div
-                  class="flex-none bg-gray-200 appearance-none border-2 border-gray-200 rounded-lg w-10/12 py-1.5 px-4 text-black-700  ">
+                  class="flex-none bg-[#F1F3F4] appearance-none  rounded-2xl w-10/12 py-2 px-4 text-black-700  ">
                   {{ eventI.bookingEmail }}</div>
               </div>
             </div>
           </div>
-          <div class="pt-5 border-b-2 text-[#5E6366]"></div>
+          <div class="pt-5 border-b-2 mx-5 text-[#5E6366]"></div>
 
 
           <!-- DESCRIPTION -->
-          <div class="p-2 pt-4 ">
-            <span class="text-[#5E6366]"> Description </span>
+          <div class=" px-5 pt-1 ">
+          <div class="p-2">
+            <span class="text-[#5E6366] font-semibold"> Description </span>
           </div>
           <div
-            class="flex-none bg-gray-200 appearance-none border-2 border-gray-200 rounded-lg w-900  pt-1 pb-28 px-4 text-black-700">
+            class="flex-none bg-[#F1F3F4] appearance-none rounded-2xl w-900  pt-2 pb-32 px-4 pl-5 text-black-700">
             {{ eventI.eventNotes }}
+          </div>
           </div>
         </div>
       </div>
@@ -210,12 +213,12 @@ console.log(time)
   margin: 0px auto;
   padding: 20px 30px;
   background-color: #fff;
-  border-radius: 18px;
+  border-radius: 25px;
   box-shadow: 0 2px 8px rgba(0, 0, 0, 0.33);
 }
 
 .modal-body {
-  margin: 5px 0;
+  margin: 8px 0;
 }
 
 .button {
