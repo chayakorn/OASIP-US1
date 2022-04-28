@@ -1,10 +1,15 @@
 package oasip.us1.backend.entity;
 
+import lombok.Getter;
+import lombok.Setter;
+
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.Id;
 import javax.persistence.Table;
 
+@Getter
+@Setter
 @Entity
 @Table(name = "eventcategory")
 public class Eventcategory {
@@ -20,6 +25,9 @@ public class Eventcategory {
 
     @Column(name = "eventDuration", nullable = false)
     private Integer eventDuration;
+
+    @Column(name = "image")
+    private String image;
 
     public Integer getEventDuration() {
         return eventDuration;
@@ -52,4 +60,5 @@ public class Eventcategory {
     public void setId(Integer id) {
         this.id = id;
     }
+
 }
