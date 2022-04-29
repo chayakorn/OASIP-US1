@@ -1,7 +1,6 @@
 import { createRouter, createWebHistory } from 'vue-router'
 import Home from '../views/Home.vue'
 import EventLists from '../views/EventLists.vue'
-import EventDetails from '../views/EventDetails.vue'
 import Calendar from '../views/Calendar.vue'
 import Setting from '../views/Setting.vue'
 import NotFound from '../views/NotFound.vue'
@@ -21,11 +20,6 @@ const routes = [
     path: '/event-lists',
     name: 'EventLists',
     component: EventLists
-  },
-  {
-    path: '/event-lists/:eventId',
-    name: 'EventDetails',
-    component: EventDetails
   },
   {
     path: '/calendar',

@@ -57,7 +57,7 @@ const categoryBg = (cateId) => {
       <div class="to-hide text-white text-xl font-normal mt-2">Clinic</div>
     </div>
     <button
-      class="flex justify-center absolute z-10 inset-x-0 bottom-0 my-4 hover:scale-110 duration-700"
+      class="flex justify-center absolute z-10 inset-x-0 bottom-0 my-4 hover:scale-110 duration-700 cursor-not-allowed"
     >
       <svg width="2em" height="2em" viewBox="0 0 24 24">
         <path
