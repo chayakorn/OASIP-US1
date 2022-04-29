@@ -11,8 +11,8 @@ RUN npm run build
 FROM nginx AS production-stage
 
 COPY --from=build-stage /oasipfrontend/dist /usr/share/nginx/html
-COPY ./nginx.conf /etc/nginx/conf.d/default.conf
+COPY ./nginxfrontend.conf /etc/nginx/conf.d/default.conf
 
-EXPOSE 80
+EXPOSE 3000
 
 CMD ["nginx", "-g", "daemon off;"]
