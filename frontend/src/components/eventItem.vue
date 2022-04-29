@@ -1,5 +1,7 @@
 <script setup>
 import moment from 'moment'
+import { ref } from 'vue'
+import EventDetails from './EventDetails.vue'
 defineProps({
   item: {
     type: Object,
@@ -20,38 +22,33 @@ const categoryBg = (cateId) => {
       return 'bg-[#FB7A8E]'
   }
 }
+const showMore = ref(false)
 </script>
 
 <template>
-  <div class="bg-white w-[22.5%] p-2 rounded-lg">
-    <router-link
-      :to="{
-        name: 'EventDetails',
-        params: {
-          eventId: item.id,
-          eventItem: JSON.stringify(item),
-          cateBg: categoryBg(item.eventCategoryId)
-        }
-      }"
-      ><div
-        :class="[
-          categoryBg(item.eventCategoryId),
-          'text-white text-lg p-2 font-medium rounded-lg'
-        ]"
-      >
-        {{ item.bookingName }}
-      </div>
-      <div class="font-bold text-sm m-2">{{ item.categoryName }}</div>
-      <div class="text-sm m-2">
-        {{ moment.utc(item.eventStartTime).format('DD MMM YYYY | h:mm A') }}
-        <span class="float-right">{{ item.eventDuration }} mins</span>
-      </div>
-      <div
-        class="border-solid border-t border-[#E3E5E5] text-center text-[#367BF5] text-sm p-1 pt-2"
-      >
-        show more details
-      </div>
-    </router-link>
+  <div
+    @click="showMore = !showMore"
+    class="bg-white w-[22.5%] p-2 rounded-lg cursor-pointer"
+  >
+    <div
+      :class="[
+        categoryBg(item.eventCategoryId),
+        'text-white text-lg p-2 font-medium rounded-lg'
+      ]"
+    >
+      {{ item.bookingName }}
+    </div>
+    <div class="font-bold text-sm m-2">{{ item.categoryName }}</div>
+    <div class="text-sm m-2">
+      {{ moment.utc(item.eventStartTime).format('DD MMM YYYY | h:mm A') }}
+      <span class="float-right">{{ item.eventDuration }} mins</span>
+    </div>
+    <div
+      class="border-solid border-t border-[#E3E5E5] text-center text-[#367BF5] text-sm p-1 pt-2"
+    >
+      show more details
+    </div>
+    <EventDetails v-show="showMore" :item="item" :color="categoryBg(item.eventCategoryId)" />
   </div>
 </template>
 
