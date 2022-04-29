@@ -1,6 +1,6 @@
 <script setup>
 import { computed } from 'vue'
-import EventItem from './eventItem.vue'
+import EventItem from './EventItem.vue'
 import moment from 'moment'
 
 const props = defineProps({
