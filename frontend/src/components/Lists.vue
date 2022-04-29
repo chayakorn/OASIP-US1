@@ -14,6 +14,7 @@ const props = defineProps({
   }
 })
 const currentLists = computed(() => props.lists)
+
 </script>
 
 <template>
@@ -40,4 +41,5 @@ const currentLists = computed(() => props.lists)
   </div>
 </template>
 
-<style></style>
+<style>
+</style>
