@@ -12,7 +12,7 @@ const log = (event) => {
   }
 }
 const borderStyle =
-  'rounded-xl w-full py-2 px-3 mt-2 bg-[#F1F3F4] border border-[#5E6366] focus:outline-none focus:shadow-outline'
+  'rounded-xl w-full py-2 px-3 mt-2 mb-5 bg-[#F1F3F4] border border-[#5E6366] focus:outline-none focus:shadow-outline'
 </script>
 
 <template>
@@ -33,30 +33,31 @@ const borderStyle =
           ></path>
         </svg>
       </div>
-      <div class="h-full">
+      <div class="h-full mx-14">
         <div class="font-bold text-2xl text-center pt-5">
           Create new appointmenet
         </div>
-        <div class="grid grid-cols-5 mx-14 pt-5">
+        <div class="grid grid-cols-5 pt-5">
           <div class="col-span-2">
-            <div class="mb-5">
-              <div class="text-lg">Booking Name | Subject</div>
+            <div class="">
+              <div class="font-medium">Booking Name | Subject</div>
               <input
                 :class="[borderStyle]"
                 type="text"
+                maxlength="100"
                 placeholder="Enter your booking name . . ."
               />
             </div>
             <div>
-              <div class="text-lg">Category</div>
+              <div class="font-medium">Category</div>
               <div
-                class="rounded-xl w-full py-2 px-3 mt-2 bg-[#F1F3F4] focus:outline-none focus:shadow-outline"
+                class="rounded-xl w-full py-2 px-3 mt-2 mb-5 bg-[#F1F3F4] focus:outline-none focus:shadow-outline"
               >
                 {{ cateName }}
               </div>
             </div>
             <div>
-              <div class="text-lg">Name</div>
+              <div class="font-medium">Name</div>
               <input
                 :class="[borderStyle]"
                 type="text"
@@ -64,7 +65,7 @@ const borderStyle =
               />
             </div>
             <div>
-              <div class="text-lg">Email</div>
+              <div class="font-medium">Email</div>
               <input
                 :class="[borderStyle]"
                 type="text"
@@ -72,10 +73,30 @@ const borderStyle =
               />
             </div>
           </div>
-          <div class="col-span-3 bg-red-500 ml-10 rounded-2xl grid grid-cols-2">
+          <div
+            class="col-span-3 bg-[#F7F9FA] ml-10 rounded-2xl grid grid-cols-2"
+          >
             <div></div>
-            <div>2</div>
+            <div></div>
           </div>
+        </div>
+        <div class="flex">
+          <div class="w-9/12">
+            <div class="font-medium">Description | Note</div>
+            <!-- <input
+              class="break-words rounded-xl w-full h-40 py-2 px-3 mt-2 mb-5 bg-[#F1F3F4] border border-[#5E6366] focus:outline-none focus:shadow-outline"
+              type=""
+              placeholder="Enter your description . . ."
+            /> -->
+            <textarea
+              maxlength="500"
+              class="break-words resize-none rounded-xl w-full h-5/6 py-2 px-3 mt-2 mb-5 bg-[#F1F3F4] border border-[#5E6366] focus:outline-none focus:shadow-outline"
+              placeholder="Enter your description . . ."
+              v-model="note"
+            ></textarea>
+          </div>
+          <div>CANCEL</div>
+          <div>CREATE</div>
         </div>
       </div>
     </div>
