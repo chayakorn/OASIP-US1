@@ -1,18 +1,18 @@
 <script setup>
 const emit = defineEmits(['closeCreate'])
-// defineProps({
-//   cateName: {
-//     type: String,
-//     require: true
-//   }
-// })
+defineProps({
+  cateName: {
+    type: String,
+    require: true
+  }
+})
 const log = (event) => {
   if (event.target.id == 'backdrop') {
     emit('closeCreate', false)
   }
 }
 const borderStyle =
-  'border-2 rounded-xl w-full py-2 px-3 mt-2 bg-[#F1F3F4] border border-[#5E6366] focus:outline-none focus:shadow-outline'
+  'rounded-xl w-full py-2 px-3 mt-2 bg-[#F1F3F4] border border-[#5E6366] focus:outline-none focus:shadow-outline'
 </script>
 
 <template>
@@ -49,7 +49,11 @@ const borderStyle =
             </div>
             <div>
               <div class="text-lg">Category</div>
-              <div :class="[borderStyle]"></div>
+              <div
+                class="rounded-xl w-full py-2 px-3 mt-2 bg-[#F1F3F4] focus:outline-none focus:shadow-outline"
+              >
+                {{ cateName }}
+              </div>
             </div>
             <div>
               <div class="text-lg">Name</div>
@@ -68,7 +72,10 @@ const borderStyle =
               />
             </div>
           </div>
-          <div class="col-span-3 bg-yellow-500"></div>
+          <div class="col-span-3 bg-red-500 ml-10 rounded-2xl grid grid-cols-2">
+            <div></div>
+            <div>2</div>
+          </div>
         </div>
       </div>
     </div>

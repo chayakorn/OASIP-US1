@@ -15,7 +15,11 @@ onBeforeMount(async () => {
   await getCategories()
 })
 const createModalStatus = ref(false)
-const createToggle = () => (createModalStatus.value = !createModalStatus.value)
+const cateToCreate = ref('')
+const createToggle = (name) => {
+  createModalStatus.value = !createModalStatus.value
+  cateToCreate.value = name
+}
 </script>
 
 <template>
@@ -30,7 +34,11 @@ const createToggle = () => (createModalStatus.value = !createModalStatus.value)
         :cateItem="cate"
         @create="createToggle($event)"
       />
-      <CreateEvent v-show="createModalStatus" @closeCreate="createToggle"/>
+      <CreateEvent
+        v-show="createModalStatus"
+        @closeCreate="createToggle"
+        :cateName="cateToCreate"
+      />
     </div>
   </div>
 </template>

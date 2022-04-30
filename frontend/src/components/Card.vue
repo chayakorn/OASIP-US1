@@ -61,7 +61,7 @@ const closeForm = () => (createForm = false)
     <button
       id="createbtn"
       class="flex justify-center absolute z-10 inset-x-0 bottom-0 my-4 hover:scale-110 duration-700"
-      @click="$emit('create')"
+      @click="$emit('create', cateItem.eventCategoryName)"
     >
       <svg width="2em" height="2em" viewBox="0 0 24 24">
         <path
