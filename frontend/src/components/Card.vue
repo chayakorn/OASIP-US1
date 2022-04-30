@@ -1,7 +1,5 @@
 <script setup>
-import { ref } from 'vue'
-import CreateEvent from './CreateEvent.vue'
-
+defineEmits(['create'])
 defineProps({
   cateItem: {
     type: Object,
@@ -37,7 +35,6 @@ const categoryBg = (cateId) => {
       }
   }
 }
-const createForm = ref(false)
 const closeForm = () => (createForm = false)
 </script>
 
@@ -62,8 +59,9 @@ const closeForm = () => (createForm = false)
       <div class="to-hide text-white text-xl font-normal mt-2">Clinic</div>
     </div>
     <button
+      id="createbtn"
       class="flex justify-center absolute z-10 inset-x-0 bottom-0 my-4 hover:scale-110 duration-700"
-      @click="createForm = true"
+      @click="$emit('create')"
     >
       <svg width="2em" height="2em" viewBox="0 0 24 24">
         <path
@@ -88,7 +86,6 @@ const closeForm = () => (createForm = false)
         </div>
       </div>
     </div>
-    <CreateEvent v-show="createForm" @close="closeForm" />
   </div>
 </template>
 

@@ -18,7 +18,9 @@
             ></path></svg
         ></router-link>
         <!-- Event Lists -->
-        <router-link :to="{ name: 'EventLists' }" class="hover:scale-110 duration-700"
+        <router-link
+          :to="{ name: 'EventLists' }"
+          class="hover:scale-110 duration-700"
           ><svg width="3em" height="3em" viewBox="0 0 24 24">
             <path
               fillRule="evenodd"
@@ -54,7 +56,7 @@
     <div class="w-full">
       <router-view
         :class="[
-          'font-poppin h-screen',
+          'font-poppin h-screen overflow-auto',
           this.$route.name == 'Home' ? '' : 'bg-[#F7F9FA]'
         ]"
       ></router-view>

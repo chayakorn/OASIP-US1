@@ -1,6 +1,7 @@
 <script setup>
 import { onBeforeMount, ref } from 'vue'
 import Card from '../components/Card.vue'
+import CreateEvent from '../components/CreateEvent.vue'
 
 const eventCategories = ref([])
 const getCategories = async () => {
@@ -13,6 +14,8 @@ const getCategories = async () => {
 onBeforeMount(async () => {
   await getCategories()
 })
+const createModalStatus = ref(false)
+const createToggle = () => (createModalStatus.value = !createModalStatus.value)
 </script>
 
 <template>
@@ -22,7 +25,12 @@ onBeforeMount(async () => {
       (OASIP)
     </div>
     <div class="grid grid-cols-5 gap-x-10">
-      <Card v-for="cate in eventCategories" :cateItem="cate" />
+      <Card
+        v-for="cate in eventCategories"
+        :cateItem="cate"
+        @create="createToggle($event)"
+      />
+      <CreateEvent v-show="createModalStatus" @closeCreate="createToggle"/>
     </div>
   </div>
 </template>

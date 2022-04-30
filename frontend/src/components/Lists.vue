@@ -14,13 +14,12 @@ const props = defineProps({
   }
 })
 const currentLists = computed(() => props.lists)
-
 </script>
 
 <template>
   <div>
     <!-- No Group -->
-    <div class="flex flex-wrap gap-x-10 gap-y-5">
+    <div class="contentSize flex flex-wrap gap-x-10 gap-y-5">
       <EventItem v-for="list in currentLists" :item="list" />
     </div>
 
@@ -41,5 +40,8 @@ const currentLists = computed(() => props.lists)
   </div>
 </template>
 
-<style>
+<style scoped>
+/* .contentSize {
+  height: 600px;
+} */
 </style>
