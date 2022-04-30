@@ -21,6 +21,7 @@ services:
 
   oasipfrontend:
     container_name: oasipfrontend
+    restart: always
     build: 
       context: ./frontend
       dockerfile: Dockerfile
@@ -29,6 +30,7 @@ services:
       - "3000:3000"
   ngix:
     container_name: nginx
+    restart: always
     image: nginx
     volumes:
       - ./nginx.conf:/etc/nginx/conf.d/default.conf
