@@ -12,6 +12,16 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.sql.Timestamp;
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
+import java.time.Instant;
+import java.time.LocalDateTime;
+import java.time.ZoneId;
+import java.time.ZoneOffset;
+import java.time.format.DateTimeFormatter;
+import java.time.temporal.ChronoUnit;
+import java.time.temporal.TemporalUnit;
+import java.util.Date;
 import java.util.List;
 
 @Service
@@ -25,7 +35,16 @@ public class EventbookingService {
     @Autowired
     private ListMapper listMapper;
 
-    public List<EventbookingDto> getAll(){
+    public List<EventbookingDto> getAll()  {
+        System.out.println( DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm").withZone(ZoneId.from(ZoneOffset.ofHours(7))).format(repository.getById(1).getEventStartTime()));
+
+        try {
+            Date a = new SimpleDateFormat("yyyy-MM-dd HH:mm").parse("2022-05-23 13:30");
+            System.out.println(a.toInstant());
+        }catch (ParseException e){
+            System.out.println(e.getMessage());
+        }
+
         return listMapper.mapList(repository.findAll(),EventbookingDto.class,modelMapper) ;
     }
     public EventbookingDto getEventById(int id){
@@ -35,6 +54,11 @@ public class EventbookingService {
 //        Eventbooking event = modelMapper.map(newEventbooking, Eventbooking.class);
 //        Eventbooking event = mapForInsert(newEventbooking);
 //        repository.insertEvent(event.getEventCategoryId().getId(),event.getBookingName(),event.getBookingEmail(),Timestamp.from(event.getEventStartTime()).toString(),event.getEventDuration(),event.getEventNotes(),event.getName());
+        System.out.println(DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm").withZone(ZoneId.from(ZoneOffset.UTC)).format(event.getEventStartTime()));
+        System.out.println(DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm").withZone(ZoneId.from(ZoneOffset.UTC)).format(event.getEventStartTime().plus(event.getEventDuration(), ChronoUnit.MINUTES)));
+        if(repository.findByEventStartTimeBetween(DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm").withZone(ZoneId.from(ZoneOffset.UTC)).format(event.getEventStartTime()),DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm").withZone(ZoneId.from(ZoneOffset.UTC)).format(event.getEventStartTime().plus(event.getEventDuration(), ChronoUnit.MINUTES)),event.getEventCategoryId().getId()).isEmpty()){
+            repository.saveAndFlush(event);
+        };
         return repository.saveAndFlush(event);
     }
     public Eventbooking update(EventbookingDto updateEventbooking , int bookingid){
@@ -66,6 +90,5 @@ public class EventbookingService {
         event.setEventNotes(newEventbooking.getEventNotes());
         event.setName(newEventbooking.getName());
         return event;
-
     }
 }

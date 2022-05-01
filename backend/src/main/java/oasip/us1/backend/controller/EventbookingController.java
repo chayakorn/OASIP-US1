@@ -32,6 +32,7 @@ public class EventbookingController {
 
     @PostMapping("")
     private Eventbooking addEvent(HttpServletResponse response,@RequestBody Eventbooking newEventBooking){
+        response.addHeader("Access-Control-Allow-Origin","*");
         return service.save(newEventBooking);
     }
     @PutMapping("/{id}")

@@ -7,6 +7,8 @@ import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
 
 import javax.transaction.Transactional;
+import java.time.Instant;
+import java.util.List;
 
 public interface EventbookingRepository extends JpaRepository<Eventbooking, Integer> {
     @Modifying
@@ -21,4 +23,11 @@ public interface EventbookingRepository extends JpaRepository<Eventbooking, Inte
                      @Param("eventDuration") int eventDuration ,
                      @Param("eventNotes") String eventNotes ,
                      @Param("name") String name);
+    @Modifying
+    @Transactional
+    @Query(
+            value = "select * from eventbooking where eventStartTime between :start and :end and eventCategory = :catid",
+            nativeQuery = true
+    )
+    List<Eventbooking> findByEventStartTimeBetween(String start,String end,int catid);
 }
