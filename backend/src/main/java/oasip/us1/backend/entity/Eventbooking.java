@@ -11,7 +11,8 @@ import java.time.Instant;
 @Table(name = "eventbooking")
 public class Eventbooking {
     @Id
-    @Column(name = "bookingId", nullable = false)
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    @Column(name = "bookingId",nullable = false)
     private Integer id;
 
     @ManyToOne(optional = false)

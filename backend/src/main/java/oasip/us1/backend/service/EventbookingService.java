@@ -31,11 +31,11 @@ public class EventbookingService {
     public EventbookingDto getEventById(int id){
         return modelMapper.map(repository.getById(id),EventbookingDto.class) ;
     }
-    public Eventbooking save(EventbookingInsertDto newEventbooking){
-        Eventbooking event = modelMapper.map(newEventbooking, Eventbooking.class);
-        event.setEventCategoryId(eventcategoryRepository.findById(newEventbooking.getEventCategoryId()).get());
-        repository.insertEvent(event.getEventCategoryId().getId(),event.getBookingName(),event.getBookingEmail(),Timestamp.from(event.getEventStartTime()).toString(),event.getEventDuration(),event.getEventNotes(),event.getName());
-        return event;
+    public Eventbooking save(Eventbooking event){
+//        Eventbooking event = modelMapper.map(newEventbooking, Eventbooking.class);
+//        Eventbooking event = mapForInsert(newEventbooking);
+//        repository.insertEvent(event.getEventCategoryId().getId(),event.getBookingName(),event.getBookingEmail(),Timestamp.from(event.getEventStartTime()).toString(),event.getEventDuration(),event.getEventNotes(),event.getName());
+        return repository.saveAndFlush(event);
     }
     public Eventbooking update(EventbookingDto updateEventbooking , int bookingid){
         Eventbooking eventbooking = repository.findById(bookingid).map(eventbooking1 -> mapEvent(eventbooking1,updateEventbooking,bookingid)).orElseGet(()-> modelMapper.map(updateEventbooking , Eventbooking.class));
@@ -55,5 +55,17 @@ public class EventbookingService {
         existingEventbooking.setName(updateEventbooking.getName());
         existingEventbooking.setBookingName(updateEventbooking.getBookingName());
         return existingEventbooking;
+    }
+    private Eventbooking mapForInsert(EventbookingInsertDto newEventbooking){
+        Eventbooking event = new Eventbooking();
+        event.setBookingName(newEventbooking.getBookingName());
+        event.setBookingEmail(newEventbooking.getBookingEmail());
+        event.setEventStartTime(newEventbooking.getEventStartTime());
+        event.setEventCategoryId(eventcategoryRepository.findById(newEventbooking.getEventCategoryId()).get());
+        event.setEventDuration(newEventbooking.getEventDuration());
+        event.setEventNotes(newEventbooking.getEventNotes());
+        event.setName(newEventbooking.getName());
+        return event;
+
     }
 }
