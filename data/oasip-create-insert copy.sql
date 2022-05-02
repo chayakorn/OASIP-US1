@@ -34,7 +34,6 @@ CREATE TABLE `eventbooking`
   `bookingEmail` varchar
 (100) NOT NULL,
   `eventStartTime` datetime NOT NULL,
-  `eventEndTime` datetime ,
   `eventDuration` int NOT NULL,
   `eventNotes` varchar
 (500) DEFAULT NULL,
@@ -49,6 +48,15 @@ CREATE TABLE `eventbooking`
 (`eventCategoryId`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb3;
 /*!40101 SET character_set_client = @saved_cs_client */;
+
+--
+-- Dumping data for table `eventbooking`
+--
+
+LOCK TABLES `eventbooking` WRITE;
+/*!40000 ALTER TABLE `eventbooking` DISABLE KEYS */;
+/*!40000 ALTER TABLE `eventbooking` ENABLE KEYS */;
+UNLOCK TABLES;
 
 --
 -- Table structure for table `eventcategory`
