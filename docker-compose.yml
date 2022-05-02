@@ -9,6 +9,7 @@ services:
       - "MYSQL_ROOT_PASSWORD=us1t2pproject"
     volumes:
       - ./data/oasip-new-data.sql:/docker-entrypoint-initdb.d/setup.sql
+    command: ['mysqld', '--character-set-server=utf8mb4', '--collation-server=utf8mb4_unicode_ci']
   oasipbackend:
     container_name: oasipbackend
     build: ./backend
