@@ -9,7 +9,6 @@ services:
       - "MYSQL_ROOT_PASSWORD=us1t2pproject"
     volumes:
       - ./data/oasip-new-data.sql:/docker-entrypoint-initdb.d/setup.sql
-      - ./data/my.cnf:/etc/mysql/my.cnf
   oasipbackend:
     container_name: oasipbackend
     build: ./backend
