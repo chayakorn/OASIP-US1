@@ -22,12 +22,12 @@ public class EventbookingDto implements Serializable {
     private String bookingName;
     private String bookingEmail;
     private Instant eventStartTime;
+    private Instant eventEndTime;
     private Integer eventCategoryId;
     private Integer eventDuration;
     private String eventNotes;
     private String name;
     private String categoryName;
-    private String clock;
     @JsonIgnore
     private Eventcategory eventcategory;
 
@@ -35,7 +35,4 @@ public class EventbookingDto implements Serializable {
         return eventcategory.getEventCategoryName();
     }
 
-    public String getClock() {
-        return DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm").withZone(ZoneId.from(ZoneOffset.ofHours(7))).format(eventStartTime);
-    }
 }

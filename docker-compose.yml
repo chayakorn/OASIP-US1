@@ -22,8 +22,6 @@ services:
   oasipfrontend:
     container_name: oasipfrontend
     restart: always
-    environment:
-      - "VITE_BASE_URL=http://192.168.1.41:8080"
     build: 
       context: ./frontend
       dockerfile: Dockerfile
