@@ -58,7 +58,7 @@ const closeForm = () => (createForm = false)
       </div>
       <div class="to-hide text-white text-xl font-normal mt-2">Clinic</div>
     </div>
-    <button
+    <!-- <button
       id="createbtn"
       class="flex justify-center absolute z-10 inset-x-0 bottom-0 my-4 hover:scale-110 duration-700"
       @click="$emit('create', cateItem.eventCategoryName)"
@@ -69,12 +69,12 @@ const closeForm = () => (createForm = false)
           d="M18 12.998h-5v5a1 1 0 0 1-2 0v-5H6a1 1 0 0 1 0-2h5v-5a1 1 0 0 1 2 0v5h5a1 1 0 0 1 0 2z"
         ></path>
       </svg>
-    </button>
+    </button> -->
     <div class="hid-box">
       <div
         class="bg-white text-black text-lg font-normal rounded-xl h-full p-5 py-5 text-center"
       >
-        <div class="h-4/6 border-b-2 border-[#E3E5E5]">
+        <!-- <div class="h-4/6 border-b-2 border-[#E3E5E5]"> -->
           <span v-show="cateItem.eventCategoryDescription.length">{{
             cateItem.eventCategoryDescription
           }}</span>
@@ -83,7 +83,7 @@ const closeForm = () => (createForm = false)
             class="text-gray-400"
             >No description</span
           >
-        </div>
+        <!-- </div> -->
       </div>
     </div>
   </div>

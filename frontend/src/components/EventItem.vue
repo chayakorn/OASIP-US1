@@ -30,11 +30,16 @@ const closeModal = (status) => {
 </script>
 
 <template>
-  <div @click="showMore = !showMore" class="bg-white w-[22.5%] p-2 rounded-lg cursor-pointer">
-    <div :class="[
-      categoryBg(item.eventCategoryId),
-      'text-white text-lg p-2 font-medium rounded-lg'
-    ]">
+  <div
+    @click="showMore = !showMore"
+    class="bg-white w-[22.5%] p-2 rounded-lg cursor-pointer"
+  >
+    <div
+      :class="[
+        categoryBg(item.eventCategoryId),
+        'text-white text-lg p-2 font-medium rounded-lg'
+      ]"
+    >
       {{ item.bookingName }}
     </div>
     <div class="font-bold text-sm m-2">{{ item.categoryName }}</div>
@@ -42,13 +47,18 @@ const closeModal = (status) => {
       {{ moment.utc(item.eventStartTime).format('DD MMM YYYY | h:mm A') }}
       <span class="float-right">{{ item.eventDuration }} mins</span>
     </div>
-    <div class="border-solid border-t border-[#E3E5E5] text-center text-[#367BF5] text-sm p-1 pt-2">
+    <div
+      class="border-solid border-t border-[#E3E5E5] text-center text-[#367BF5] text-sm p-1 pt-2"
+    >
       show more details
     </div>
-
   </div>
-  <EventDetails v-show="showMore" :item="item" :color="categoryBg(item.eventCategoryId)" @closeModal="closeModal" />
+  <EventDetails
+    v-show="showMore"
+    :item="item"
+    :color="categoryBg(item.eventCategoryId)"
+    @closeModal="closeModal"
+  />
 </template>
 
-<style>
-</style>
+<style></style>

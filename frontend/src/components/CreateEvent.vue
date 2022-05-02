@@ -1,18 +1,59 @@
 <script setup>
+import moment from 'moment'
+import { computed, ref } from 'vue'
+
 const emit = defineEmits(['closeCreate'])
 defineProps({
-  cateName: {
-    type: String,
+  category: {
+    type: Object,
     require: true
   }
 })
+
 const log = (event) => {
   if (event.target.id == 'backdrop') {
-    emit('closeCreate', false)
+    emit('closeCreate', category)
   }
 }
+
 const borderStyle =
-  'rounded-xl w-full py-2 px-3 mt-2 mb-5 bg-[#F1F3F4] border border-[#5E6366] focus:outline-none focus:shadow-outline'
+  'rounded-xl w-full py-2 px-3 mt-2 mb-5 bg-[#F1F3F4] border border-[#5E6366] focus:outline-none focus:shadow-outline required:border-red-500'
+const bookingName = ref('')
+const name = ref('')
+const email = ref('')
+const note = ref('')
+const date = ref('')
+// const time = ref('')
+const eventStartTime = computed(() => new Date(date).toISOString())
+const showBookingName = computed(() => bookingName.value.length)
+const showNote = computed(() => note.value.length)
+const reset = () => {
+  bookingName.value = ''
+  name.value = ''
+  email.value = ''
+  note.value = ''
+  date.value = ''
+}
+
+// const test = (x) => console.log(new Date(x).toISOString())
+// moment.utc(x, y)._d.toISOString()
+// const test = (x, y) =>
+//   console.log(moment('2022-05-23T06:30:00Z').format('DD MMM YYYY h:mm A'))
+
+// CREATE
+const createEvent = async (newEvent) => {
+  console.log(newEvent)
+  // const res = await fetch(`http://10.4.56.127:8080/api/event`, {
+  //   method: 'POST',
+  //   headers: { 'content-type': 'application/json' },
+  //   body: JSON.stringify(newEvent)
+  // })
+  // if (res.status === 201) {
+  //   // const addedNote = await res.json()
+  //   // notes.value.push(addedNote)
+  //   console.log('created successfully')
+  // } else console.log('error, cannot create')
+}
 </script>
 
 <template>
@@ -39,21 +80,25 @@ const borderStyle =
         </div>
         <div class="grid grid-cols-5 pt-5">
           <div class="col-span-2">
-            <div class="">
+            <div class="relative">
               <div class="font-medium">Booking Name | Subject</div>
               <input
                 :class="[borderStyle]"
                 type="text"
                 maxlength="100"
                 placeholder="Enter your booking name . . ."
+                v-model="bookingName"
               />
+              <div class="absolute right-0 top-4 text-xs text-gray-500">
+                {{ showBookingName }}/100
+              </div>
             </div>
             <div>
               <div class="font-medium">Category</div>
               <div
                 class="rounded-xl w-full py-2 px-3 mt-2 mb-5 bg-[#F1F3F4] focus:outline-none focus:shadow-outline"
               >
-                {{ cateName }}
+                {{ category.eventCategoryName }}
               </div>
             </div>
             <div>
@@ -62,41 +107,133 @@ const borderStyle =
                 :class="[borderStyle]"
                 type="text"
                 placeholder="Firstname Lastname"
+                v-model="name"
               />
             </div>
             <div>
               <div class="font-medium">Email</div>
               <input
                 :class="[borderStyle]"
-                type="text"
+                type="email"
                 placeholder="username@example.com"
+                v-model="email"
               />
             </div>
           </div>
           <div
             class="col-span-3 bg-[#F7F9FA] ml-10 rounded-2xl grid grid-cols-2"
           >
-            <div></div>
-            <div></div>
+            <div class="grid place-content-center">
+              <v-date-picker
+                color="blue"
+                mode="datetime"
+                v-model="date"
+                timezone=""
+                :min-date="new Date()"
+              />
+            </div>
+            <div class="grid grid-rows-3 my-10 ml-5">
+              <div>
+                <div class="font-medium">Date :</div>
+                <div
+                  class="bg-white h-1/2 w-5/6 rounded-xl mt-2 grid content-center pl-4"
+                >
+                  {{ date ? moment(date).format('DD MMMM YYYY') : '' }}
+                </div>
+              </div>
+              <div>
+                <div class="font-medium">Time :</div>
+                <div
+                  class="bg-white h-1/2 w-5/6 rounded-xl mt-2 grid content-center pl-4"
+                >
+                  {{ date ? moment(date).format('h : mm A') : '' }}
+                </div>
+              </div>
+              <div>
+                <div class="font-medium">
+                  Duratione:
+                  <span class="text-red-500">{{ category.eventDuration }}</span>
+                  minutes
+                </div>
+                <span class="text-sm text-gray-400"
+                  >* Duration depends on category.</span
+                >
+              </div>
+            </div>
           </div>
         </div>
-        <div class="flex">
-          <div class="w-9/12">
+        <div class="grid grid-cols-3">
+          <div class="relative col-span-2">
             <div class="font-medium">Description | Note</div>
-            <!-- <input
-              class="break-words rounded-xl w-full h-40 py-2 px-3 mt-2 mb-5 bg-[#F1F3F4] border border-[#5E6366] focus:outline-none focus:shadow-outline"
-              type=""
-              placeholder="Enter your description . . ."
-            /> -->
             <textarea
               maxlength="500"
-              class="break-words resize-none rounded-xl w-full h-5/6 py-2 px-3 mt-2 mb-5 bg-[#F1F3F4] border border-[#5E6366] focus:outline-none focus:shadow-outline"
+              class="break-words resize-none rounded-xl w-full h-28 py-2 px-3 mt-2 bg-[#F1F3F4] border border-[#5E6366] focus:outline-none focus:shadow-outline"
               placeholder="Enter your description . . ."
               v-model="note"
-            ></textarea>
+            />
+            <div class="absolute right-0 top-4 text-xs text-gray-500">
+              {{ showNote }}/500
+            </div>
           </div>
-          <div>CANCEL</div>
-          <div>CREATE</div>
+          <div class="ml-10 mb-1 relative">
+            <div class="grid grid-cols-2 gap-x-10 absolute inset-x-0 bottom-0">
+              <div
+                class="bg-[#EA3D2F] cursor-pointer h-10 drop-shadow-lg rounded-md"
+                @click="reset(), emit('closeCreate')"
+              >
+                <div class="flex">
+                  <div
+                    class="bg-white m-1 h-8 w-1/3 rounded grid place-items-center text-[#EA3D2F]"
+                  >
+                    <svg width="1.5em" height="1.5em" viewBox="0 0 24 24">
+                      <path
+                        fill="currentColor"
+                        d="M12 1.75a3.25 3.25 0 0 1 3.245 3.066L15.25 5h5.25a.75.75 0 0 1 .102 1.493L20.5 6.5h-.796l-1.28 13.02a2.75 2.75 0 0 1-2.561 2.474l-.176.006H8.313a2.75 2.75 0 0 1-2.714-2.307l-.023-.174L4.295 6.5H3.5a.75.75 0 0 1-.743-.648L2.75 5.75a.75.75 0 0 1 .648-.743L3.5 5h5.25A3.25 3.25 0 0 1 12 1.75Zm6.197 4.75H5.802l1.267 12.872a1.25 1.25 0 0 0 1.117 1.122l.127.006h7.374c.6 0 1.109-.425 1.225-1.002l.02-.126L18.196 6.5ZM13.75 9.25a.75.75 0 0 1 .743.648L14.5 10v7a.75.75 0 0 1-1.493.102L13 17v-7a.75.75 0 0 1 .75-.75Zm-3.5 0a.75.75 0 0 1 .743.648L11 10v7a.75.75 0 0 1-1.493.102L9.5 17v-7a.75.75 0 0 1 .75-.75Zm1.75-6a1.75 1.75 0 0 0-1.744 1.606L10.25 5h3.5A1.75 1.75 0 0 0 12 3.25Z"
+                      ></path>
+                    </svg>
+                  </div>
+                  <div class="grid place-items-center w-full text-white">
+                    CANCEL
+                  </div>
+                </div>
+              </div>
+              <div
+                class="bg-[#2FA84F] cursor-pointer h-10 drop-shadow-lg rounded-md"
+                @click="reset()"
+              >
+                <div class="flex">
+                  <div
+                    class="bg-white m-1 h-8 w-1/3 rounded grid place-items-center text-[#2FA84F]"
+                  >
+                    <svg width="1.5em" height="1.5em" viewBox="0 0 24 24">
+                      <path
+                        fill="currentColor"
+                        d="M12 1.75a3.25 3.25 0 0 1 3.245 3.066L15.25 5h5.25a.75.75 0 0 1 .102 1.493L20.5 6.5h-.796l-1.28 13.02a2.75 2.75 0 0 1-2.561 2.474l-.176.006H8.313a2.75 2.75 0 0 1-2.714-2.307l-.023-.174L4.295 6.5H3.5a.75.75 0 0 1-.743-.648L2.75 5.75a.75.75 0 0 1 .648-.743L3.5 5h5.25A3.25 3.25 0 0 1 12 1.75Zm6.197 4.75H5.802l1.267 12.872a1.25 1.25 0 0 0 1.117 1.122l.127.006h7.374c.6 0 1.109-.425 1.225-1.002l.02-.126L18.196 6.5ZM13.75 9.25a.75.75 0 0 1 .743.648L14.5 10v7a.75.75 0 0 1-1.493.102L13 17v-7a.75.75 0 0 1 .75-.75Zm-3.5 0a.75.75 0 0 1 .743.648L11 10v7a.75.75 0 0 1-1.493.102L9.5 17v-7a.75.75 0 0 1 .75-.75Zm1.75-6a1.75 1.75 0 0 0-1.744 1.606L10.25 5h3.5A1.75 1.75 0 0 0 12 3.25Z"
+                      ></path>
+                    </svg>
+                  </div>
+                  <div
+                    class="grid place-items-center w-full text-white"
+                    @click="
+                      createEvent({
+                        bookingName: bookingName,
+                        bookingEmail: email,
+                        eventStartTime: new Date(date).toISOString(),
+                        eventCategoryId: { id: category.id },
+                        eventDuration: category.eventDuration,
+                        eventNotes: note,
+                        name: name
+                      }),
+                        reset(),
+                        emit('closeCreate')
+                    "
+                  >
+                    CREATE
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
         </div>
       </div>
     </div>

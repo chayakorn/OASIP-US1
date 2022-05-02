@@ -9,6 +9,7 @@ const getAllEvents = async () => {
     eventLists.value = await res.json()
   } else console.log('error, cannot get events')
 }
+
 // getAllEvents()
 onBeforeMount(async () => {
   await getAllEvents()
@@ -57,7 +58,8 @@ onBeforeMount(async () => {
         "
       /> -->
     </div>
-    <div v-else
+    <div
+      v-else
       class="h-3/4 grid place-content-center text-[#C6CACC] font-bold text-4xl"
     >
       No Scheduled Events.
