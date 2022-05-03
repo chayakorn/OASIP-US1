@@ -32,7 +32,13 @@ const log = (event) => {
   if (event.target.id == 'modal') {
     emit('closeModal', false)
   }
+ 
 }
+
+const existChange = () => {
+  edit.value = true
+}
+
 </script>
 
 <template>
@@ -44,12 +50,14 @@ const log = (event) => {
       <div class="modal-header">
         <div class="grid grid-cols-3">
           <div></div>
-          <div class="font-bold text-2xl text-center">Scheduled details</div>
+          <div class="font-bold text-2xl text-center" v-show="edit">Scheduled details</div>
+          <div class="font-bold text-2xl text-center" v-show="!edit">Editing details</div>
+          <!-- <div v-if="edit == true"></div> -->
           <div>
             <div class="float-right">
               <button class="hover:bg-[#F1F3F4] transition duration-100 rounded-lg grid"
                 @click="emit('closeModal', false)">
-                <svg width="2.5em" height="2.5em" viewBox="0 0 24 24" class="">
+                <svg width="2.5em" height="2.5em" viewBox="0 0 24 24">
                   <path fill="currentColor"
                     d="M18.3 5.71a.996.996 0 0 0-1.41 0L12 10.59L7.11 5.7A.996.996 0 1 0 5.7 7.11L10.59 12L5.7 16.89a.996.996 0 1 0 1.41 1.41L12 13.41l4.89 4.89a.996.996 0 1 0 1.41-1.41L13.41 12l4.89-4.89c.38-.38.38-1.02 0-1.4z">
                   </path>
@@ -179,105 +187,12 @@ const log = (event) => {
           </div>
          
         </div>
-         <EditEvent v-show="!edit" :item="item"/>
+         <EditEvent v-show="!edit" :item="item" @existChange="existChange"/>
       </div>
-      <!-- <div class="md:flex md:items-center mb-6">
-            <div class="md:w-1/9">
-              <label
-                disabled
-                class="flex-none text-gray-500 font-normal md:text-right mb-1 md:mb-0 pr-4"
-              >
-                Clinic
-              </label>
-            </div>
-
-            <div class="w-2/5">
-              <input
-                disabled
-                class="flex-none bg-gray-200 appearance-none border-2 border-gray-200 rounded-xl w-full py-2 px-4 text-black-700 leading-tight focus:outline-none focus:bg-white focus:border-purple-500"
-                id="inline-full-name"
-                value=""
-              />
-            </div>
-          </div>
-
-          <div class="md:flex md:items-center mb-6">
-            <div class="md:w-1/9">
-              <label
-                disabled
-                class="flex-none text-gray-500 font-normal md:text-right mb-1 md:mb-0 pr-5"
-              >
-                Date
-              </label>
-            </div>
-
-            <div class="w-2/5">
-              <input
-                disabled
-                class="flex-none bg-gray-200 appearance-none border-2 border-gray-200 rounded-xl w-full py-2 px-4 text-black-700 leading-tight focus:outline-none focus:bg-white focus:border-purple-500"
-                id="inline-full-name"
-                type="text"
-                value="31 December 2022"
-              />
-            </div>
-          </div>
-
-          <div class="md:flex md:items-center mb-6">
-            <div class="md:w-1/9">
-              <label
-                class="flex-none text-gray-500 font-normal md:text-right mb-1 md:mb-0 pr-5"
-              >
-                Time
-              </label>
-            </div>
-
-            <div class="w-1/5">
-              <input
-                disabled
-                class="flex-none bg-gray-200 appearance-none border-2 border-gray-200 rounded-xl w-full py-2 px-4 text-black-700 leading-tight focus:outline-none focus:bg-white focus:border-purple-500 read-only"
-                type="text"
-                value=""
-              />
-            </div>
-         
-          </div> -->
     </div>
   </div>
 </template>
 
 <style scoped>
-/* .modal-mask {
-  position: fixed;
-  z-index: 9998;
-  top: 0;
-  left: 0;
-  width: 100%;
-  height: 100%;
-  background-color: rgba(0, 0, 0, 0.5);
-  display: table;
-  transition: opacity 0.3s ease;
-}
 
-.modal-wrapper {
-  display: table-cell;
-  vertical-align: middle;
-}
-
-.modal-container {
-  width: 1200px;
-  height: 600px;
-  margin: 0px auto;
-  padding: 20px 30px;
-  background-color: #fff;
-  border-radius: 25px;
-  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.33);
-}
-
-.modal-body {
-  margin: 8px 0;
-}
-
-.button {
-  padding: 0px 0 0 1100px;
-} */
 </style>

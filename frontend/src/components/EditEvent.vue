@@ -1,6 +1,8 @@
 <script setup>
 import { ref } from 'vue';
-import ConfirmEditEvent from './ConfirmEditEvent.vue';
+import ConfirmDeleteEvent from './ConfirmDeleteEvent.vue';
+import EventDetails from './EventDetails.vue'
+const emit = defineEmits(['existChange'])
 const props = defineProps({
     item: {
         type: Object,
@@ -12,7 +14,23 @@ const props = defineProps({
     }
 })
 
-const cancel = ref(false)
+// const existChange = ref(true)
+const showCancel = ref(false)
+
+const date = ref('')
+const time = ref('')
+const description = ref('')
+
+const clearData = ()=>{
+    date.value = ''
+    time.value = ''
+    description.value = ''
+    showCancel.value = false
+    emit('existChange')
+}
+// const cancel = (status)=> {
+//     showCancel.value == status
+// }
 
 </script>
  
@@ -24,22 +42,27 @@ const cancel = ref(false)
                 <!-- CLINIC -->
                 <div class="flex py-1 pl-4 pt-0.5">
                     <span class="p-2 font-semibold text-[#5E6366]">Clinic</span>
-                    <div class="flex-none bg-[#F1F3F4] rounded-2xl w-4/5 py-2 px-4 text-[#C6CACC]">{{ item.categoryName }}</div> 
-                   
+                    <div class="flex-none bg-[#F1F3F4] rounded-2xl w-4/5 py-2 px-4 text-[#C6CACC]">{{ item.categoryName
+                    }}</div>
+
                 </div>
 
                 <!-- DATE -->
                 <div class="flex pl-4 py-1">
                     <span class="grid place-items-center py-2 font-semibold px-2 pr-3.5 text-[#5E6366]">Date</span>
-                    <input class="flex-none border-[0.5px] border-[#5E6366] bg-[#F1F3F4] rounded-2xl w-4/5 py-1 px-4 text-black-700 focus:outline-none focus:bg-white focus:border-purple-500" value="">
-                        <br />
+                    <input
+                        class="flex-none border-[0.5px] border-[#5E6366] bg-[#F1F3F4] rounded-2xl w-4/5 py-1 px-4 text-black-700 focus:outline-none focus:bg-white focus:border-purple-500"
+                        value="">
+                    <br />
                 </div>
 
                 <!-- TIME -->
                 <div class="grid grid-cols-2 divide-x-2">
                     <div class="flex pl-4 py-1">
                         <span class="font-semibold py-2 px-2 pr-3.5 text-[#5E6366]">Time</span>
-                        <input class="flex-none border-[0.5px] border-[#5E6366] bg-[#F1F3F4] rounded-2xl w-60 py-2 px-4 text-black-700 focus:outline-none focus:bg-white focus:border-purple-500" value="">
+                        <input
+                            class="flex-none border-[0.5px] border-[#5E6366] bg-[#F1F3F4] rounded-2xl w-60 py-2 px-4 text-black-700 focus:outline-none focus:bg-white focus:border-purple-500"
+                            value="">
 
                         <!-- DURATION -->
                         <div class="flex pl-4 float-right">
@@ -81,17 +104,18 @@ const cancel = ref(false)
         <!-- DESCRIPTION -->
         <div class="px-5 pt-1">
             <div class="p-2">
-                <span class="text-[#5E6366] font-semibold"> Description </span>
+                <span class="text-[#5E6366] font-semibold "> Description </span>
             </div>
-            <div class="resize-none rounded-2xl bg-[#F1F3F4] w-full h-32 px-5 pt-4 pb-5 text-[#C6CACC] ">
-                {{ item.eventNotes }}
-            </div>
+            <textarea
+                class="resize-none border-[0.5px] border-[#5E6366] rounded-2xl bg-[#F1F3F4] w-full pt-2 h-32 px-5 text-black ">
+            </textarea>
+
         </div>
 
         <!-- BUTTON -->
         <div class="grid grid-cols-2 pt-4">
             <!-- DELETE -->
-            <div class=" justify-self-end px-4 " @click="">
+            <div class=" justify-self-end px-4 " @click="showCancel = !showCancel">
                 <button
                     class="flex place-items-center  bg-[#EA3D2F] rounded-[5px] text-white font-semibold w-36 h-12 px-1">
                     <span class="p-1 bg-white rounded-[5px]">
@@ -117,9 +141,31 @@ const cancel = ref(false)
                 </button>
             </div>
         </div>
-        <!-- <ConfirmEditEvent/> -->
-    </div>
 
+        <div v-show="showCancel">
+            <div
+                class="bg-black/25 overflow-x-hidden overflow-y-auto absolute inset-0 z-40 outline-none focus:outline-none justify-center items-center flex">
+                <div class="modal-container bg-white w-[30%] px-3 pt-1 pb-20 h-[28%] rounded-2xl z-50">
+                    <div class="grid grid-cols-1 divide-y-[1px] px-1">
+                        <div class="grid place-items-center font-bold text-xl pt-2 pb-2 ">Are you sure?</div>
+                        <div class="grid place-items-center font-bold text-lg pt-7 pb-2">Do you want to exists?</div>
+                    </div>
+                    <div class="grid grid-cols-2 divided-x-0 pt-6">
+                        <div class="justify-self-end px-3">
+                            <button
+                                class="bg-[#FEE4E2] font-semibold text-lg text-[#EA3D2F] rounded-[20px] py-3 px-[65px]"
+                                @click="showCancel = !showCancel">CANCEL</button>
+                        </div>
+                        <div class="px-2">
+                            <button class="bg-[#DCF7E3] font-semibold text-lg text-[#2FA84F] rounded-[20px] py-3 px-16"
+                                @click="clearData">CONFIRM</button>
+                        </div>
+                    </div>
+
+                </div>
+            </div>
+        </div>
+    </div>
 </template> 
     
 

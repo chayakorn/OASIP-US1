@@ -26,6 +26,7 @@ const showMore = ref(false)
 
 const closeModal = (status) => {
   showMore.value = status
+
 }
 </script>
 
