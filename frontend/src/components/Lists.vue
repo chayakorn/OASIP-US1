@@ -13,6 +13,7 @@ const props = defineProps({
     // default: {}
   }
 })
+console.log(props.lists)
 const currentLists = computed(() => props.lists)
 </script>
 

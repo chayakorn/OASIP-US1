@@ -15,10 +15,10 @@ onBeforeMount(async () => {
   await getCategories()
 })
 const createModalStatus = ref(false)
-const cateToCreate = ref('')
-const createToggle = (name) => {
+const cateToCreate = ref({})
+const createToggle = (cate) => {
   createModalStatus.value = !createModalStatus.value
-  cateToCreate.value = name
+  cateToCreate.value = cate
 }
 </script>
 
@@ -32,12 +32,12 @@ const createToggle = (name) => {
       <Card
         v-for="cate in eventCategories"
         :cateItem="cate"
-        @create="createToggle($event)"
+        @create="createToggle(cate)"
       />
       <CreateEvent
         v-show="createModalStatus"
-        @closeCreate="createToggle"
-        :cateName="cateToCreate"
+        @closeCreate="createToggle(cateToCreate)"
+        :category="cateToCreate"
       />
     </div>
   </div>

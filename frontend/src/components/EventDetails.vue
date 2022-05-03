@@ -19,11 +19,14 @@ const edit = ref(true)
 // const myRouter = useRouter()
 // const { params } = useRoute()
 // const item = JSON.parse(params.item)
-const date = moment.utc(props.item.eventStartTime).format('DD MMM YYYY')
-let startTime = moment.utc(props.item.eventStartTime).format('h:mm A')
-// const closeModal = () => {}
+const date = moment(props.item.eventStartTime).format('DD MMM YYYY')
+let startTime = moment(props.item.eventStartTime).format('h:mm A')
 
-const endTime = moment(startTime, 'h:mm A').add(props.item.eventDuration, 'minutes').format('h:mm A')
+
+const endTime = moment(startTime, 'h:mm A')
+  .add(props.item.eventDuration, 'minutes')
+  .format('h:mm A')
+
 
 const log = (event) => {
   if (event.target.id == 'modal') {
