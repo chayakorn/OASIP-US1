@@ -33,11 +33,12 @@ public class EventbookingController {
     @PostMapping("")
     private Eventbooking addEvent(HttpServletResponse response,@RequestBody Eventbooking newEventBooking){
         response.addHeader("Access-Control-Allow-Origin","*");
-        return service.save(newEventBooking);
+        return service.save(newEventBooking,response);
     }
     @PutMapping("/{id}")
-    private Eventbooking update(HttpServletResponse response,@RequestBody EventbookingDto editEventBooking,@PathVariable int id){
-        return service.update(editEventBooking,id);
+    private Eventbooking update(HttpServletResponse response,@RequestBody Eventbooking editEventBooking,@PathVariable int id){
+        response.addHeader("Access-Control-Allow-Origin","*");
+        return service.update(editEventBooking,id,response);
     }
     @DeleteMapping("/{id}")
     private void delete(HttpServletResponse response,@PathVariable int id){

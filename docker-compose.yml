@@ -8,12 +8,13 @@ services:
     environment:
       - "MYSQL_ROOT_PASSWORD=us1t2pproject"
     volumes:
-      - ./data/oasip-create-insert.sql:/docker-entrypoint-initdb.d/setup.sql
+      - ./data/oasip-new-data.sql:/docker-entrypoint-initdb.d/setup.sql
+      - ./data/my.cnf:/etc/mysql/conf.d/custom.cnf
   oasipbackend:
     container_name: oasipbackend
     build: ./backend
     restart: always
-    image: backendhuakapook
+    image: backend
     ports:
       - "8080:8080"
     links:
@@ -22,8 +23,6 @@ services:
   oasipfrontend:
     container_name: oasipfrontend
     restart: always
-    environment:
-      - "VITE_BASE_URL=http://192.168.1.41:8080"
     build: 
       context: ./frontend
       dockerfile: Dockerfile

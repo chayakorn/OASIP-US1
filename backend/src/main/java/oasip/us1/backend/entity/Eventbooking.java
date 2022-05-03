@@ -32,6 +32,9 @@ public class Eventbooking {
     @Column(name = "eventStartTime", nullable = false)
     private Instant eventStartTime;
 
+    @Column(name = "eventEndTime")
+    private Instant eventEndTime;
+
     @Column(name = "eventDuration", nullable = false)
     private Integer eventDuration;
 
