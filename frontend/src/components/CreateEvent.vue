@@ -42,7 +42,16 @@ const reset = () => {
 
 // CREATE
 const createEvent = async (newEvent) => {
-  console.log(newEvent)
+  console.log('create', newEvent)
+  console.log('response', {
+    bookingName: newEvent.bookingName,
+    bookingEmail: newEvent.bookingEmail,
+    eventStartTime: moment(newEvent.eventStartTime).format("DD MMMM YYYY h:mm A"),
+    eventCategoryId: newEvent.eventCategoryId,
+    eventDuration: newEvent.eventDuration,
+    eventNotes: newEvent.eventNotes,
+    name: newEvent.name
+  })
   // const res = await fetch(`http://10.4.56.127:8080/api/event`, {
   //   method: 'POST',
   //   headers: { 'content-type': 'application/json' },

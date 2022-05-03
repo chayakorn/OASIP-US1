@@ -44,7 +44,7 @@ const closeModal = (status) => {
     </div>
     <div class="font-bold text-sm m-2">{{ item.categoryName }}</div>
     <div class="text-sm m-2">
-      {{ moment.utc(item.eventStartTime).format('DD MMM YYYY | h:mm A') }}
+      {{ moment(item.eventStartTime).format('DD MMM YYYY | h:mm A') }}
       <span class="float-right">{{ item.eventDuration }} mins</span>
     </div>
     <div

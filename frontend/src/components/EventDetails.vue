@@ -16,11 +16,11 @@ const props = defineProps({
 // const myRouter = useRouter()
 // const { params } = useRoute()
 // const item = JSON.parse(params.item)
-const date = moment.utc(props.item.eventStartTime).format('DD MMM YYYY')
-let startTime = moment.utc(props.item.eventStartTime).format('h:mm A')
+const date = moment(props.item.eventStartTime).format('DD MMM YYYY')
+let startTime = moment(props.item.eventStartTime).format('h:mm A')
 // const closeModal = () => {}
 
-const endTime = moment(startTime, 'h:mm')
+const endTime = moment(startTime, 'h:mm A')
   .add(props.item.eventDuration, 'minutes')
   .format('h:mm A')
 // .add(props.eventDuration, 'minutes')
