@@ -28,9 +28,7 @@ const clearData = ()=>{
     showCancel.value = false
     emit('existChange')
 }
-// const cancel = (status)=> {
-//     showCancel.value == status
-// }
+
 
 </script>
  
@@ -106,8 +104,8 @@ const clearData = ()=>{
             <div class="p-2">
                 <span class="text-[#5E6366] font-semibold "> Description </span>
             </div>
-            <textarea
-                class="resize-none border-[0.5px] border-[#5E6366] rounded-2xl bg-[#F1F3F4] w-full pt-2 h-32 px-5 text-black ">
+            <textarea maxlength="500"
+                class="break-words resize-none border-[0.5px] border-[#5E6366] rounded-2xl bg-[#F1F3F4] w-full pt-2 h-32 px-5 text-black ">
             </textarea>
 
         </div>
