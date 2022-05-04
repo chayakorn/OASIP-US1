@@ -42,6 +42,7 @@ public class EventbookingController {
     }
     @DeleteMapping("/{id}")
     private void delete(HttpServletResponse response,@PathVariable int id){
+        response.addHeader("Access-Control-Allow-Origin","*");
         service.delete(id);
     }
 }
