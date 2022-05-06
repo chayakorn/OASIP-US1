@@ -22,14 +22,12 @@ public class EventbookingController {
     @CrossOrigin
     @GetMapping("")
     public List<EventbookingDto> getAllEvent(HttpServletResponse response){
-        response.addHeader("Access-Control-Allow-Origin","*");
         return service.getAll();
     }
 
     @CrossOrigin
     @GetMapping("/{id}")
     private EventbookingDto getEventById(HttpServletResponse response,@PathVariable int id){
-        response.addHeader("Access-Control-Allow-Origin","*");
         return service.getEventById(id);
     }
 
@@ -37,23 +35,17 @@ public class EventbookingController {
     @PostMapping("")
     @ResponseStatus(HttpStatus.CREATED)
     private Eventbooking addEvent(HttpServletResponse response,@RequestBody Eventbooking newEventBooking){
-        response.addHeader("Access-Control-Allow-Origin","*");
-        response.addHeader("Access-Control-Allow-Methods","POST");
         return service.save(newEventBooking,response);
     }
     @CrossOrigin
     @PutMapping("/{id}")
     private Eventbooking update(HttpServletResponse response,@RequestBody Eventbooking editEventBooking,@PathVariable int id){
-        response.addHeader("Access-Control-Allow-Origin","*");
-        response.addHeader("Access-Control-Allow-Methods","PUT");
         return service.update(editEventBooking,id,response);
     }
     @CrossOrigin
     @DeleteMapping("/{id}")
     @ResponseStatus(HttpStatus.OK)
     private void delete(HttpServletResponse response,@PathVariable int id){
-        response.addHeader("Access-Control-Allow-Origin","*");
-        response.addHeader("Access-Control-Allow-Methods","DELETE");
         service.delete(id);
     }
 }
