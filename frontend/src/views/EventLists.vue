@@ -1,6 +1,7 @@
 <script setup>
-import { onBeforeMount, ref } from 'vue'
-import Lists from '../components/Lists.vue'
+import { onBeforeMount, ref, computed } from 'vue'
+import EventItem from '../components/EventItem.vue';
+// import Lists from '../components/Lists.vue'
 
 const eventLists = ref([])
 const getAllEvents = async () => {
@@ -23,6 +24,11 @@ onBeforeMount(async () => {
 //     return acc
 //   }, {})
 // )
+const currentLists = computed(() =>
+  eventLists.value.sort(
+    (a, b) => new Date(b.eventStartTime) - new Date(a.eventStartTime)
+  )
+)
 </script>
 
 <template>
@@ -34,13 +40,9 @@ onBeforeMount(async () => {
     </div>
     <div v-if="eventLists.length > 0">
       <!-- No Group -->
-      <Lists
-        :lists="
-          eventLists.sort(
-            (a, b) => new Date(b.eventStartTime) - new Date(a.eventStartTime)
-          )
-        "
-      />
+      <div class="contentSize flex flex-wrap gap-x-10 gap-y-5">
+        <EventItem v-for="list in currentLists" :item="list" />
+      </div>
       <!-- GroupBy Day -->
       <!-- <Lists
         :lists="

@@ -3,7 +3,7 @@ import moment from 'moment'
 import { computed, ref } from 'vue'
 
 const emit = defineEmits(['closeCreate'])
-defineProps({
+const props = defineProps({
   category: {
     type: Object,
     require: true
@@ -23,8 +23,6 @@ const name = ref('')
 const email = ref('')
 const note = ref('')
 const date = ref('')
-// const time = ref('')
-const eventStartTime = computed(() => new Date(date).toISOString())
 const showBookingName = computed(() => bookingName.value.length)
 const showNote = computed(() => note.value.length)
 const reset = () => {
@@ -35,6 +33,19 @@ const reset = () => {
   date.value = ''
 }
 
+const creatingEvent = computed(() => ({
+  bookingName: bookingName.value,
+  bookingEmail: email.value,
+  eventStartTime: new Date(date.value).toISOString(),
+  eventEndTime: moment(date.value)
+    .add(props.category.eventDuration, 'minutes')
+    .toISOString(),
+  eventCategoryId: { id: props.category.id },
+  eventDuration: props.category.eventDuration,
+  eventNotes: note.value,
+  name: name.value,
+  categoryName: props.category.eventCategoryName
+}))
 // const test = (x) => console.log(new Date(x).toISOString())
 // moment.utc(x, y)._d.toISOString()
 // const test = (x, y) =>
@@ -42,26 +53,17 @@ const reset = () => {
 
 // CREATE
 const createEvent = async (newEvent) => {
-  console.log('create', newEvent)
-  console.log('response', {
-    bookingName: newEvent.bookingName,
-    bookingEmail: newEvent.bookingEmail,
-    eventStartTime: moment(newEvent.eventStartTime).format("DD MMMM YYYY h:mm A"),
-    eventCategoryId: newEvent.eventCategoryId,
-    eventDuration: newEvent.eventDuration,
-    eventNotes: newEvent.eventNotes,
-    name: newEvent.name
+  // console.log(newEvent)  
+  const res = await fetch(`${import.meta.env.VITE_BASE_URL}/event`, {
+    method: 'POST',
+    headers: { 'content-type': 'application/json' },
+    body: JSON.stringify(newEvent)
   })
-  // const res = await fetch(`http://10.4.56.127:8080/api/event`, {
-  //   method: 'POST',
-  //   headers: { 'content-type': 'application/json' },
-  //   body: JSON.stringify(newEvent)
-  // })
-  // if (res.status === 201) {
-  //   // const addedNote = await res.json()
-  //   // notes.value.push(addedNote)
-  //   console.log('created successfully')
-  // } else console.log('error, cannot create')
+  if (res.status === 201) {
+    // const addedNote = await res.json()
+    // notes.value.push(addedNote)
+    console.log('created successfully')
+  } else console.log('error, cannot create')
 }
 </script>
 
@@ -224,17 +226,7 @@ const createEvent = async (newEvent) => {
                   <div
                     class="grid place-items-center w-full text-white"
                     @click="
-                      createEvent({
-                        bookingName: bookingName,
-                        bookingEmail: email,
-                        eventStartTime: new Date(date).toISOString(),
-                        eventCategoryId: { id: category.id },
-                        eventDuration: category.eventDuration,
-                        eventNotes: note,
-                        name: name
-                      }),
-                        reset(),
-                        emit('closeCreate')
+                      createEvent(creatingEvent), reset(), emit('closeCreate')
                     "
                   >
                     CREATE
