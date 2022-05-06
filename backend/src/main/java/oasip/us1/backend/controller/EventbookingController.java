@@ -5,6 +5,7 @@ import oasip.us1.backend.DTO.EventbookingInsertDto;
 import oasip.us1.backend.entity.Eventbooking;
 import oasip.us1.backend.service.EventbookingService;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.*;
 
@@ -31,6 +32,7 @@ public class EventbookingController {
     }
 
     @PostMapping("")
+    @ResponseStatus(HttpStatus.CREATED)
     private Eventbooking addEvent(HttpServletResponse response,@RequestBody Eventbooking newEventBooking){
         response.addHeader("Access-Control-Allow-Origin","*");
         response.addHeader("Access-Control-Allow-Methods","POST");
@@ -43,6 +45,7 @@ public class EventbookingController {
         return service.update(editEventBooking,id,response);
     }
     @DeleteMapping("/{id}")
+    @ResponseStatus(HttpStatus.OK)
     private void delete(HttpServletResponse response,@PathVariable int id){
         response.addHeader("Access-Control-Allow-Origin","*");
         response.addHeader("Access-Control-Allow-Methods","DELETE");
