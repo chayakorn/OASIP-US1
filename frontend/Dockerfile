@@ -13,6 +13,6 @@ FROM nginx AS production-stage
 COPY --from=build-stage /oasipfrontend/dist /usr/share/nginx/html
 COPY ./nginxfrontend.conf /etc/nginx/conf.d/default.conf
 
-EXPOSE 3000
+EXPOSE 80
 
 CMD ["nginx", "-g", "daemon off;"]
