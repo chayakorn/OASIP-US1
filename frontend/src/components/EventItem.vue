@@ -35,7 +35,7 @@ const showDetails = ()=>{
 
 const refreshPage = ()=>{
   showMore.value = false
-  location.reload()
+  // location.reload()
 }
 </script>
 
