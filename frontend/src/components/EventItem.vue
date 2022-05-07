@@ -2,6 +2,7 @@
 import moment from 'moment'
 import { ref } from 'vue'
 import EventDetails from './EventDetails.vue'
+const emit = defineEmits(['itemId'])
 const props = defineProps({
   item: {
     type: Object,
@@ -36,7 +37,7 @@ const showDetails = ()=>{
 
 const refreshPage = (itemId)=>{
   showMore.value = false
- filter((item)=>{item !== itemId})
+  emit('itemId',itemId)
 }
 </script>
 
