@@ -21,7 +21,7 @@ const currentLists = computed(() => props.lists)
   <div>
     <!-- No Group -->
     <div class="contentSize flex flex-wrap gap-x-10 gap-y-5">
-      <EventItem v-for="list in currentLists" :item="list" />
+      <EventItem v-for="list in currentLists" :item="list" @refreshPage="refreshPage"/>
     </div>
 
     <!-- GroupBy Day -->

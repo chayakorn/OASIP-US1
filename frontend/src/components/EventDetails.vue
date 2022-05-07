@@ -2,7 +2,7 @@
 import moment from 'moment'
 import { ref } from 'vue';
 import EditEvent from './EditEvent.vue';
-const emit = defineEmits(['closeModal'])
+const emit = defineEmits(['closeModal', 'refreshPage'])
 // import { useRoute, useRouter } from 'vue-router'
 const props = defineProps({
   item: {
@@ -15,6 +15,7 @@ const props = defineProps({
   }
 })
 
+
 const edit = ref(true)
 const showDelete = ref(false)
 // const myRouter = useRouter()
@@ -22,6 +23,9 @@ const showDelete = ref(false)
 // const item = JSON.parse(params.item)
 const date = moment(props.item.eventStartTime).format('DD MMM YYYY')
 let startTime = moment(props.item.eventStartTime).format('h:mm A')
+
+
+
 
 
 const endTime = moment(startTime, 'h:mm A')
@@ -40,25 +44,25 @@ const existChange = () => {
   edit.value = true
 }
 
-  // const filterId = (id) => {
-  //   const a = props.item.filter(id => props.item.id != 8)
-  //   console.log(a)
-  // }
 
 const removeEvent = async (deleteEventId) => {
-  const res = await fetch(`http://10.4.56.127:8080/api/event/${deleteEventId}`, {
+  const res = await fetch(`${import.meta.env.VITE_BASE_URL}/event/${deleteEventId}`, {
     method: 'DELETE'
   })
 
   // if(res.status === 200)
   // {
-  //   ev.value = props.item.filter((event)=> event.props.item.id !== deleteEventId)
-  //   console.log('deleted successfully')
+    // emit('refreshPage')
 
+  //   ev.value = props.item.filter((event)=> event.props.item.id !== deleteEventId)
+    // console.log('deleted successfully')
   // }
   // else console.log('error, cannot delete')
+}
 
-  // showDelete.value = false
+
+const closeDelete = ()=>{
+  showDelete.value = false
 }
 
 
@@ -68,7 +72,7 @@ const removeEvent = async (deleteEventId) => {
 
   <div
     class="bg-black/25 overflow-x-hidden overflow-y-auto absolute inset-0 z-40 outline-none focus:outline-none justify-center items-center flex"
-    @click="log" id="modal">
+    @click="log " id="modal">
     <div class="modal-container bg-white w-9/12 px-5 pt-4 pb-20 h-[76%] rounded-3xl z-50">
       <div class="modal-header">
         <div class="grid grid-cols-3">
@@ -210,7 +214,8 @@ const removeEvent = async (deleteEventId) => {
           </div>
 
         </div>
-        <EditEvent v-show="!edit" :item="item" @existChange="existChange" />
+        <EditEvent v-show="!edit" :item="item" @existChange="existChange" :showCancelFn="showCancel"/>
+        
         <div v-show="showDelete">
           <div
             class="bg-black/25 overflow-x-hidden overflow-y-auto absolute inset-0 z-40 outline-none focus:outline-none justify-center items-center flex">
@@ -227,7 +232,7 @@ const removeEvent = async (deleteEventId) => {
                 </div>
                 <div class="px-2">
                   <button class="bg-[#DCF7E3] font-semibold text-lg text-[#2FA84F] rounded-[20px] py-3 px-16"
-                    @click="removeEvent(item.id)">CONFIRM</button>
+                    @click="removeEvent()">CONFIRM</button>
                 </div>
               </div>
 

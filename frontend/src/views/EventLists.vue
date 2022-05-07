@@ -14,6 +14,10 @@ const getAllEvents = async () => {
 onBeforeMount(async () => {
   await getAllEvents()
 })
+
+// const refreshPage = ()=>{
+//   location.reload()
+// }
 // const result = Object.values(
 //   eventLists.value.reduce((acc, x) => {
 //     acc[moment.utc(x.eventStartTime).format('DD MMM YYYY')] = [
@@ -39,7 +43,7 @@ onBeforeMount(async () => {
           eventLists.sort(
             (a, b) => new Date(b.eventStartTime) - new Date(a.eventStartTime)
           )
-        "
+        " @refreshPage="refreshPage"
       />
       <!-- GroupBy Day -->
       <!-- <Lists
