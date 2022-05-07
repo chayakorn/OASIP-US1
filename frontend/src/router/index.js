@@ -4,7 +4,7 @@ import EventLists from '../views/EventLists.vue'
 import Calendar from '../views/Calendar.vue'
 import Setting from '../views/Setting.vue'
 import NotFound from '../views/NotFound.vue'
-const history = createWebHistory()
+const history = createWebHistory('/us1')
 const routes = [
   {
     path: '/:catchNotMatchPath(.*)',

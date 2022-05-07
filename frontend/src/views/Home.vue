@@ -2,6 +2,7 @@
 import { onBeforeMount, ref } from 'vue'
 import Card from '../components/Card.vue'
 import CreateEvent from '../components/CreateEvent.vue'
+import Notice from '../components/Notice.vue'
 
 const eventCategories = ref([])
 const getCategories = async () => {
@@ -40,6 +41,25 @@ const createToggle = (cate) => {
         :category="cateToCreate"
       />
     </div>
+    <div>
+      <!-- <input
+        :class="[
+          borderStyle,
+          'peer peer-invalid:border-2 peer-invalid:border-red-500'
+        ]"
+        type="text"
+        required
+        placeholder="username@example.com"
+      /> -->
+      <!-- <p class="mt-2 invisible peer-invalid:visible text-pink-600 text-sm">
+        Please provide a valid email address.
+      </p> -->
+    </div>
+    <!-- <Notice
+      v-show="noticeCreate"
+      text="Successfully created the schedule !"
+      classCSS="mt-10 bg-[#2FA84F] text-white text-xl grid place-content-center w-1/3 h-16 rounded-full"
+    /> -->
   </div>
 </template>
 
@@ -52,4 +72,24 @@ const createToggle = (cate) => {
   background-position: bottom;
   background-attachment: fixed;
 }
+
+/* .validation {
+  opacity: 0;
+  font-size: 12px;
+  font-family: sans-serif;
+  color: crimson;
+  transition: opacity;
+}
+
+input:required:valid {
+  border-color: forestgreen;
+}
+
+input:required:invalid {
+  border-color: crimson;
+}
+
+input:required:invalid:not(:placeholder-shown) + .validation {
+  opacity: 1;
+} */
 </style>

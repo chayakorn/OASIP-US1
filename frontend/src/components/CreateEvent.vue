@@ -17,7 +17,7 @@ const log = (event) => {
 }
 
 const borderStyle =
-  'rounded-xl w-full py-2 px-3 mt-2 mb-5 bg-[#F1F3F4] border border-[#5E6366] focus:outline-none focus:shadow-outline required:border-red-500'
+  'rounded-xl w-full py-2 px-3 mt-2 bg-[#F1F3F4] border border-[#5E6366] focus:outline-none focus:shadow-outline required:border-red-500'
 const bookingName = ref('')
 const name = ref('')
 const email = ref('')
@@ -27,10 +27,10 @@ const showBookingName = computed(() => bookingName.value.length)
 const showNote = computed(() => note.value.length)
 const reset = () => {
   bookingName.value = ''
-  name.value = ''
   email.value = ''
-  note.value = ''
   date.value = ''
+  note.value = ''
+  name.value = ''
 }
 
 const creatingEvent = computed(() => ({
@@ -46,22 +46,16 @@ const creatingEvent = computed(() => ({
   name: name.value,
   categoryName: props.category.eventCategoryName
 }))
-// const test = (x) => console.log(new Date(x).toISOString())
-// moment.utc(x, y)._d.toISOString()
-// const test = (x, y) =>
-//   console.log(moment('2022-05-23T06:30:00Z').format('DD MMM YYYY h:mm A'))
 
 // CREATE
 const createEvent = async (newEvent) => {
-  // console.log(newEvent)  
+  console.log(newEvent)
   const res = await fetch(`${import.meta.env.VITE_BASE_URL}/event`, {
     method: 'POST',
     headers: { 'content-type': 'application/json' },
     body: JSON.stringify(newEvent)
   })
   if (res.status === 201) {
-    // const addedNote = await res.json()
-    // notes.value.push(addedNote)
     console.log('created successfully')
   } else console.log('error, cannot create')
 }
@@ -91,7 +85,7 @@ const createEvent = async (newEvent) => {
         </div>
         <div class="grid grid-cols-5 pt-5">
           <div class="col-span-2">
-            <div class="relative">
+            <div class="relative mb-5">
               <div class="font-medium">Booking Name | Subject</div>
               <input
                 :class="[borderStyle]"
@@ -104,15 +98,15 @@ const createEvent = async (newEvent) => {
                 {{ showBookingName }}/100
               </div>
             </div>
-            <div>
+            <div class="mb-5">
               <div class="font-medium">Category</div>
               <div
-                class="rounded-xl w-full py-2 px-3 mt-2 mb-5 bg-[#F1F3F4] focus:outline-none focus:shadow-outline"
+                class="rounded-xl w-full py-2 px-3 mt-2 bg-[#F1F3F4] focus:outline-none focus:shadow-outline"
               >
                 {{ category.eventCategoryName }}
               </div>
             </div>
-            <div>
+            <div class="mb-5">
               <div class="font-medium">Name</div>
               <input
                 :class="[borderStyle]"
@@ -121,14 +115,19 @@ const createEvent = async (newEvent) => {
                 v-model="name"
               />
             </div>
-            <div>
+            <div class="mb-5">
               <div class="font-medium">Email</div>
               <input
-                :class="[borderStyle]"
+                :class="[borderStyle, 'peer']"
                 type="email"
                 placeholder="username@example.com"
                 v-model="email"
               />
+              <p
+                class="mt-2 invisible peer-invalid:visible text-pink-600 text-sm"
+              >
+                Please provide a valid email address.
+              </p>
             </div>
           </div>
           <div

@@ -3,13 +3,13 @@ import { onBeforeMount, ref, computed } from 'vue'
 import EventItem from '../components/EventItem.vue';
 // import Lists from '../components/Lists.vue'
 
-const eventLists = ref([])
-const getAllEvents = async () => {
-  const res = await fetch(`${import.meta.env.VITE_BASE_URL}/event`)
-  if (res.status === 200) {
-    eventLists.value = await res.json()
-  } else console.log('error, cannot get events')
-}
+  const eventLists = ref([])
+  const getAllEvents = async () => {
+    const res = await fetch(`${import.meta.env.VITE_BASE_URL}/event`)
+    if (res.status === 200) {
+      eventLists.value = await res.json()
+    } else console.log('error, cannot get events')
+  }
 
 // getAllEvents()
 onBeforeMount(async () => {
