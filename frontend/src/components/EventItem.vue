@@ -28,11 +28,20 @@ const closeModal = (status) => {
   showMore.value = status
 
 }
+
+const showDetails = ()=>{
+  showMore.value = !showMore.value
+}
+
+const refreshPage = ()=>{
+  showMore.value = false
+  // location.reload()
+}
 </script>
 
 <template>
   <div
-    @click="showMore = !showMore"
+    @click="showDetails"
     class="bg-white w-[22.5%] p-2 rounded-lg cursor-pointer"
   >
     <div
@@ -59,6 +68,7 @@ const closeModal = (status) => {
     :item="item"
     :color="categoryBg(item.eventCategoryId)"
     @closeModal="closeModal"
+    @refreshPage="refreshPage"
   />
 </template>
 

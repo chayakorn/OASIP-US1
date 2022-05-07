@@ -15,6 +15,10 @@ const getAllEvents = async () => {
 onBeforeMount(async () => {
   await getAllEvents()
 })
+
+// const refreshPage = ()=>{
+//   location.reload()
+// }
 // const result = Object.values(
 //   eventLists.value.reduce((acc, x) => {
 //     acc[moment.utc(x.eventStartTime).format('DD MMM YYYY')] = [

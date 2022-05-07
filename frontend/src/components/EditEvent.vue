@@ -14,8 +14,13 @@ const props = defineProps({
     }
 })
 
-// const existChange = ref(true)
 const showCancel = ref(false)
+
+const showCancelFn = () => {
+    showCancel.value = !showCancel.value
+    emit('closeCancel')
+}
+
 
 const date = ref('')
 const time = ref('')
@@ -113,7 +118,7 @@ const clearData = ()=>{
         <!-- BUTTON -->
         <div class="grid grid-cols-2 pt-4">
             <!-- DELETE -->
-            <div class=" justify-self-end px-4 " @click="showCancel = !showCancel">
+            <div class=" justify-self-end px-4 " @click="showCancelFn()">
                 <button
                     class="flex place-items-center  bg-[#EA3D2F] rounded-[5px] text-white font-semibold w-36 h-12 px-1">
                     <span class="p-1 bg-white rounded-[5px]">
@@ -152,7 +157,7 @@ const clearData = ()=>{
                         <div class="justify-self-end px-3">
                             <button
                                 class="bg-[#FEE4E2] font-semibold text-lg text-[#EA3D2F] rounded-[20px] py-3 px-[65px]"
-                                @click="showCancel = !showCancel">CANCEL</button>
+                                @click="showCancelFn()">CANCEL</button>
                         </div>
                         <div class="px-2">
                             <button class="bg-[#DCF7E3] font-semibold text-lg text-[#2FA84F] rounded-[20px] py-3 px-16"
