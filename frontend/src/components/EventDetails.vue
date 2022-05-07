@@ -213,7 +213,7 @@ const closeDelete = ()=>{
           </div>
 
         </div>
-        <EditEvent v-show="!edit" :item="item" @existChange="existChange" :showCancelFn="showCancel"/>
+        <EditEvent v-show="!edit" :item="item" @existChange="existChange" />
         
         <div v-show="showDelete">
           <div
@@ -231,7 +231,7 @@ const closeDelete = ()=>{
                 </div>
                 <div class="px-2">
                   <button class="bg-[#DCF7E3] font-semibold text-lg text-[#2FA84F] rounded-[20px] py-3 px-16"
-                    @click="removeEvent(item.id), closeDelete(), emit('refreshPage')">CONFIRM</button>
+                    @click="removeEvent(item.id), closeDelete(), emit('refreshPage', item.id)">CONFIRM</button>
                 </div>
               </div>
 

@@ -2,12 +2,13 @@
 import moment from 'moment'
 import { ref } from 'vue'
 import EventDetails from './EventDetails.vue'
-defineProps({
+const props = defineProps({
   item: {
     type: Object,
     require: true
   }
 })
+
 const categoryBg = (cateId) => {
   switch (cateId) {
     case 1:
@@ -33,9 +34,9 @@ const showDetails = ()=>{
   showMore.value = !showMore.value
 }
 
-const refreshPage = ()=>{
+const refreshPage = (itemId)=>{
   showMore.value = false
-  // location.reload()
+//  filter((item)=>{item !== itemId})
 }
 </script>
 

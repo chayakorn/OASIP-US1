@@ -16,9 +16,6 @@ onBeforeMount(async () => {
   await getAllEvents()
 })
 
-// const refreshPage = ()=>{
-//   location.reload()
-// }
 // const result = Object.values(
 //   eventLists.value.reduce((acc, x) => {
 //     acc[moment.utc(x.eventStartTime).format('DD MMM YYYY')] = [
@@ -45,7 +42,7 @@ const currentLists = computed(() =>
     <div v-if="eventLists.length > 0">
       <!-- No Group -->
       <div class="contentSize flex flex-wrap gap-x-10 gap-y-5">
-        <EventItem v-for="list in currentLists" :item="list" />
+        <EventItem v-for="list in currentLists" :item="list"/>
       </div>
       <!-- GroupBy Day -->
       <!-- <Lists
