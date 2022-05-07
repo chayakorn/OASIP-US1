@@ -36,7 +36,7 @@ const showDetails = ()=>{
 
 const refreshPage = (itemId)=>{
   showMore.value = false
-//  filter((item)=>{item !== itemId})
+ filter((item)=>{item !== itemId})
 }
 </script>
 
