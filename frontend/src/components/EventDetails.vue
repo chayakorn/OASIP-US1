@@ -232,7 +232,7 @@ const closeDelete = ()=>{
                 </div>
                 <div class="px-2">
                   <button class="bg-[#DCF7E3] font-semibold text-lg text-[#2FA84F] rounded-[20px] py-3 px-16"
-                    @click="removeEvent()">CONFIRM</button>
+                    @click="removeEvent(), closeDelete(), emit('refreshPage')">CONFIRM</button>
                 </div>
               </div>
 
