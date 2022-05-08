@@ -194,7 +194,7 @@ const closeDelete = ()=>{
               </button>
             </div>
             <!-- EDIT -->
-            <div class="px-4" @click="edit = !edit">
+            <div class="px-4" @click="edit = !edit" v-show="false">
               <button
                 class="flex place-items-center rounded-[5px] bg-[#367BF5] text-white font-semibold w-36 h-12 px-1">
                 <span class="p-1 bg-white rounded-[5px]">

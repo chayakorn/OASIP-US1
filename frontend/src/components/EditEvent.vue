@@ -131,7 +131,7 @@ const clearData = ()=>{
                 </button>
             </div>
             <!-- EDIT -->
-            <div class="px-4" @click="">
+            <div class="px-4"  @click="" >
                 <button
                     class="flex place-items-center rounded-[5px] bg-[#2FA84F] text-white font-semibold w-36 h-12 px-1">
                     <span class="p-1 bg-white rounded-[5px]">
