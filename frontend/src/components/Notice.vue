@@ -8,7 +8,7 @@ defineProps({
     type: String,
     default: 'OK'
   },
-  classCSS: {
+  color: {
     type: String,
     default: ''
   }
@@ -19,10 +19,63 @@ defineProps({
   <div
     class="bg-black/25 overflow-x-hidden overflow-y-auto absolute inset-0 z-40 outline-none focus:outline-none"
   >
-    <div class="absolute inset-x-0 top-0 flex justify-center">
-      <div :class="[classCSS]"><div class="flex"><img :src="imagePath" />{{ text }}</div></div>
+    <div class="grid place-content-center mt-10 text-white text-xl">
+      <div
+        id="notice"
+        :class="`bg-[${color}] px-5 h-16 rounded-full grid place-content-center`"
+      >
+        <div class="flex">
+          <svg width="2em" height="2em" viewBox="0 0 1024 1024">
+            <path
+              fill="currentColor"
+              d="M880 112c-3.8 0-7.7.7-11.6 2.3L292 345.9H128c-8.8 0-16 7.4-16 16.6v299c0 9.2 7.2 16.6 16 16.6h101.7c-3.7 11.6-5.7 23.9-5.7 36.4c0 65.9 53.8 119.5 120 119.5c55.4 0 102.1-37.6 115.9-88.4l408.6 164.2c3.9 1.5 7.8 2.3 11.6 2.3c16.9 0 32-14.2 32-33.2V145.2C912 126.2 897 112 880 112zM344 762.3c-26.5 0-48-21.4-48-47.8c0-11.2 3.9-21.9 11-30.4l84.9 34.1c-2 24.6-22.7 44.1-47.9 44.1zm496 58.4L318.8 611.3l-12.9-5.2H184V417.9h121.9l12.9-5.2L840 203.3v617.4z"
+            ></path>
+          </svg>
+          <div class="grid content-center ml-2">{{ text }}</div>
+        </div>
+      </div>
     </div>
+    <!-- <div class="absolute inset-x-0 top-0 grid place-content-center">
+      <div :class="[classCSS]">
+        <div class="flex">
+        <svg width="2em" height="2em" viewBox="0 0 1024 1024">
+          <path
+            fill="currentColor"
+            d="M880 112c-3.8 0-7.7.7-11.6 2.3L292 345.9H128c-8.8 0-16 7.4-16 16.6v299c0 9.2 7.2 16.6 16 16.6h101.7c-3.7 11.6-5.7 23.9-5.7 36.4c0 65.9 53.8 119.5 120 119.5c55.4 0 102.1-37.6 115.9-88.4l408.6 164.2c3.9 1.5 7.8 2.3 11.6 2.3c16.9 0 32-14.2 32-33.2V145.2C912 126.2 897 112 880 112zM344 762.3c-26.5 0-48-21.4-48-47.8c0-11.2 3.9-21.9 11-30.4l84.9 34.1c-2 24.6-22.7 44.1-47.9 44.1zm496 58.4L318.8 611.3l-12.9-5.2H184V417.9h121.9l12.9-5.2L840 203.3v617.4z"
+          ></path>
+        </svg>
+        <div>{{ text }}</div>
+        </div>
+      </div>
+    </div> -->
   </div>
 </template>
 
-<style></style>
+<style scoped>
+#notice {
+  animation: sildeFromTop 1s linear;
+}
+
+@keyframes sildeFromTop {
+  0% {
+    transform: translateY(0);
+    opacity: 0;
+  }
+  25% {
+    transform: translateY(0.5em);
+    opacity: 1;
+  }
+  50% {
+    transform: translateY(0.5em);
+    opacity: 1;
+  }
+  75% {
+    transform: translateY(0.5em);
+    opacity: 1;
+  }
+  100% {
+    transform: translateY(0);
+    opacity: 0;
+  }
+}
+</style>

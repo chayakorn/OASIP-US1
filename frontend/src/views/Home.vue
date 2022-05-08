@@ -21,6 +21,11 @@ const createToggle = (cate) => {
   createModalStatus.value = !createModalStatus.value
   cateToCreate.value = cate
 }
+const noticeCreate = ref(false)
+const closeNotice = () =>
+  setTimeout(() => {
+    noticeCreate.value = false
+  }, 1000)
 </script>
 
 <template>
@@ -37,29 +42,21 @@ const createToggle = (cate) => {
       />
       <CreateEvent
         v-show="createModalStatus"
+        @notice="
+          (notice) => {
+            noticeCreate = notice
+            closeNotice()
+          }
+        "
         @closeCreate="createToggle(cateToCreate)"
         :category="cateToCreate"
       />
     </div>
-    <div>
-      <!-- <input
-        :class="[
-          borderStyle,
-          'peer peer-invalid:border-2 peer-invalid:border-red-500'
-        ]"
-        type="text"
-        required
-        placeholder="username@example.com"
-      /> -->
-      <!-- <p class="mt-2 invisible peer-invalid:visible text-pink-600 text-sm">
-        Please provide a valid email address.
-      </p> -->
-    </div>
-    <!-- <Notice
+    <Notice
       v-show="noticeCreate"
       text="Successfully created the schedule !"
-      classCSS="mt-10 bg-[#2FA84F] text-white text-xl grid place-content-center w-1/3 h-16 rounded-full"
-    /> -->
+      color="#2FA84F"
+    />
   </div>
 </template>
 
@@ -72,24 +69,4 @@ const createToggle = (cate) => {
   background-position: bottom;
   background-attachment: fixed;
 }
-
-/* .validation {
-  opacity: 0;
-  font-size: 12px;
-  font-family: sans-serif;
-  color: crimson;
-  transition: opacity;
-}
-
-input:required:valid {
-  border-color: forestgreen;
-}
-
-input:required:invalid {
-  border-color: crimson;
-}
-
-input:required:invalid:not(:placeholder-shown) + .validation {
-  opacity: 1;
-} */
 </style>

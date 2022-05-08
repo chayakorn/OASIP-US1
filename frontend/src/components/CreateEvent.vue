@@ -2,7 +2,7 @@
 import moment from 'moment'
 import { computed, ref } from 'vue'
 
-const emit = defineEmits(['closeCreate'])
+const emit = defineEmits(['closeCreate', 'notice'])
 const props = defineProps({
   category: {
     type: Object,
@@ -17,7 +17,7 @@ const log = (event) => {
 }
 
 const borderStyle =
-  'rounded-xl w-full py-2 px-3 mt-2 bg-[#F1F3F4] border border-[#5E6366] focus:outline-none focus:shadow-outline required:border-red-500'
+  'rounded-xl w-full py-2 px-3 mt-2 bg-[#F1F3F4] border border-[#5E6366] focus:outline-none focus:shadow-outline'
 const bookingName = ref('')
 const name = ref('')
 const email = ref('')
@@ -49,7 +49,6 @@ const creatingEvent = computed(() => ({
 
 // CREATE
 const createEvent = async (newEvent) => {
-  console.log(newEvent)
   const res = await fetch(`${import.meta.env.VITE_BASE_URL}/event`, {
     method: 'POST',
     headers: { 'content-type': 'application/json' },
@@ -59,6 +58,19 @@ const createEvent = async (newEvent) => {
     console.log('created successfully')
   } else console.log('error, cannot create')
 }
+
+const checkNull = (newEvent) => {
+  if (
+    bookingName.value.length != 0 &&
+    email.value.length != 0 &&
+    date.value.length != 0
+  ) {
+    createEvent(newEvent)
+    reset()
+    emit('closeCreate')
+    emit('notice', true)
+  }
+}
 </script>
 
 <template>
@@ -67,7 +79,7 @@ const createEvent = async (newEvent) => {
     @click="log"
     class="bg-black/25 overflow-x-hidden overflow-y-auto absolute inset-0 z-40 outline-none focus:outline-none justify-center items-center flex"
   >
-    <div class="relative bg-white w-10/12 h-[80%] rounded-3xl">
+    <div class="relative bg-white w-10/12 h-4/5 rounded-3xl">
       <div
         @click="emit('closeCreate', false)"
         class="cursor-pointer absolute right-0 hover:bg-[#F1F3F4] rounded-lg m-4"
@@ -88,12 +100,18 @@ const createEvent = async (newEvent) => {
             <div class="relative mb-5">
               <div class="font-medium">Booking Name | Subject</div>
               <input
-                :class="[borderStyle]"
+                :class="[borderStyle, 'peer']"
                 type="text"
                 maxlength="100"
                 placeholder="Enter your booking name . . ."
                 v-model="bookingName"
+                required
               />
+              <p
+                class="absolute top-0 left-48 ml-2 mt-1 invisible peer-invalid:visible text-red-500 text-xs"
+              >
+                * Please fill out this field.
+              </p>
               <div class="absolute right-0 top-4 text-xs text-gray-500">
                 {{ showBookingName }}/100
               </div>
@@ -106,16 +124,22 @@ const createEvent = async (newEvent) => {
                 {{ category.eventCategoryName }}
               </div>
             </div>
-            <div class="mb-5">
+            <div class="relative mb-5">
               <div class="font-medium">Name</div>
               <input
-                :class="[borderStyle]"
+                :class="[borderStyle, 'peer']"
                 type="text"
                 placeholder="Firstname Lastname"
                 v-model="name"
+                required
               />
+              <p
+                class="absolute top-0 left-14 mt-1 invisible peer-invalid:visible text-red-500 text-xs"
+              >
+                * Please fill out this field.
+              </p>
             </div>
-            <div class="mb-5">
+            <div class="relative mb-5">
               <div class="font-medium">Email</div>
               <input
                 :class="[borderStyle, 'peer']"
@@ -124,9 +148,9 @@ const createEvent = async (newEvent) => {
                 v-model="email"
               />
               <p
-                class="mt-2 invisible peer-invalid:visible text-pink-600 text-sm"
+                class="absolute top-0 left-12 mt-1 invisible peer-invalid:visible text-red-500 text-xs"
               >
-                Please provide a valid email address.
+                * Please provide a valid email address.
               </p>
             </div>
           </div>
@@ -225,7 +249,8 @@ const createEvent = async (newEvent) => {
                   <div
                     class="grid place-items-center w-full text-white"
                     @click="
-                      createEvent(creatingEvent), reset(), emit('closeCreate')
+                      // createEvent(creatingEvent), reset(), emit('closeCreate')
+                      checkNull(creatingEvent)
                     "
                   >
                     CREATE
