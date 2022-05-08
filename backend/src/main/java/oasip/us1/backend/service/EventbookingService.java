@@ -43,6 +43,7 @@ public class EventbookingService {
         return modelMapper.map(repository.getById(id),EventbookingDto.class) ;
     }
     public Eventbooking save(Eventbooking event , HttpServletResponse response){
+        System.out.println(repository.findByEventStartTimeBetweenForPut(DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm").withZone(ZoneId.from(ZoneOffset.ofHours(7))).format(event.getEventStartTime()),DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm").withZone(ZoneId.from(ZoneOffset.ofHours(7))).format(event.getEventEndTime()),event.getEventCategoryId().getId(),event.getId()));
         if(repository.findByEventStartTimeBetween(DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm").withZone(ZoneId.from(ZoneOffset.ofHours(7))).format(event.getEventStartTime()),DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm").withZone(ZoneId.from(ZoneOffset.ofHours(7))).format(event.getEventEndTime()),event.getEventCategoryId().getId()).isEmpty()){
             System.out.println("Insert!");
             return repository.saveAndFlush(event);
@@ -53,7 +54,7 @@ public class EventbookingService {
     }
     public Eventbooking update(Eventbooking updateEventbooking , int bookingid, HttpServletResponse response){
         Eventbooking event = repository.findById(bookingid).map(eventbooking1 -> mapEvent(eventbooking1,updateEventbooking,bookingid)).get();
-        System.out.println(repository.findByEventStartTimeBetweenForPut(DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm").withZone(ZoneId.from(ZoneOffset.ofHours(7))).format(event.getEventStartTime()),DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm").withZone(ZoneId.from(ZoneOffset.ofHours(7))).format(event.getEventEndTime()),event.getEventCategoryId().getId(),event.getId()));
+
         if(repository.findByEventStartTimeBetweenForPut(DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm").withZone(ZoneId.from(ZoneOffset.ofHours(7))).format(event.getEventStartTime()),DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm").withZone(ZoneId.from(ZoneOffset.ofHours(7))).format(event.getEventEndTime()),event.getEventCategoryId().getId(),event.getId()).isEmpty()){
             System.out.println("Insert!");
             return repository.saveAndFlush(event);
