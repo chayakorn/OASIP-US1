@@ -46,7 +46,7 @@ public class EventbookingService {
     public Eventbooking update(Eventbooking updateEventbooking , int bookingid, HttpServletResponse response){
         Eventbooking event = repository.findById(bookingid).map(eventbooking1 -> mapEvent(eventbooking1,updateEventbooking,bookingid)).get();
 
-        if(repository.findByEventStartTimeBetweenForPut(DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm").withZone(ZoneId.from(ZoneOffset.ofHours(7))).format(event.getEventStartTime()),DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm").withZone(ZoneId.from(ZoneOffset.ofHours(7))).format(event.getEventEndTime()),event.getEventCategoryId().getId(),event.getId()).isEmpty()){
+        if(repository.findByEventStartTimeBetweenForPut(DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm").withZone(ZoneId.from(ZoneOffset.UTC)).format(event.getEventStartTime()),DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm").withZone(ZoneId.from(ZoneOffset.UTC)).format(event.getEventEndTime()),event.getEventCategoryId().getId(),event.getId()).isEmpty()){
             System.out.println("Insert!");
             return repository.saveAndFlush(event);
         }else{
