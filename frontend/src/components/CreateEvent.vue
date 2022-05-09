@@ -12,7 +12,7 @@ const props = defineProps({
 
 const log = (event) => {
   if (event.target.id == 'backdrop') {
-    emit('closeCreate', category)
+    emit('closeCreate')
   }
 }
 
@@ -81,7 +81,7 @@ const checkNull = (newEvent) => {
   >
     <div class="relative bg-white w-10/12 h-4/5 rounded-3xl">
       <div
-        @click="emit('closeCreate', false)"
+        @click="emit('closeCreate')"
         class="cursor-pointer absolute right-0 hover:bg-[#F1F3F4] rounded-lg m-4"
       >
         <svg width="2em" height="2em" viewBox="0 0 24 24">
