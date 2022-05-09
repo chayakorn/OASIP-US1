@@ -9,7 +9,7 @@ import javax.servlet.http.HttpServletResponse;
 import java.util.List;
 
 @RestController
-@RequestMapping("/us1/api/eventcat")
+@RequestMapping("/api/eventcat")
 public class EventcategoryController {
     @Autowired
     private EventcategoryService service;
