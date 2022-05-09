@@ -72,7 +72,7 @@ const closeDelete = ()=>{
   <div
     class="bg-black/25 overflow-x-hidden overflow-y-auto absolute inset-0 z-40 outline-none focus:outline-none justify-center items-center flex"
     @click="log " id="modal">
-    <div class="modal-container bg-white w-9/12 px-5 pt-4 pb-20 h-[76%] rounded-3xl z-50">
+    <div class="modal-container bg-white w-9/12 px-5 pt-4 pb-20 h-[80%] rounded-3xl z-50">
       <div class="modal-header">
         <div class="grid grid-cols-3">
           <div></div>
@@ -173,7 +173,7 @@ const closeDelete = ()=>{
             <div class="p-2">
               <span class="text-[#5E6366] font-semibold"> Description </span>
             </div>
-            <div class="resize-none rounded-2xl bg-[#F1F3F4] w-full h-32 px-5 pt-4 pb-5 ">
+            <div class="resize-none rounded-2xl bg-[#F1F3F4] w-full h-32 px-5 pt-4 pb-5 overflow-auto">
               <span v-show="item.eventNotes.length"> {{ item.eventNotes }}</span>
               <span v-if="!item.eventNotes.length" class="text-gray-400"> No description</span>
             </div>
