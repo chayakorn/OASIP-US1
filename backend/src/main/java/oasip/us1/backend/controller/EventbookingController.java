@@ -13,7 +13,7 @@ import javax.servlet.http.HttpServletResponse;
 import java.util.List;
 
 @RestController
-@RequestMapping("/api/event")
+@RequestMapping("/us1/api/event")
 public class EventbookingController {
 
     @Autowired
