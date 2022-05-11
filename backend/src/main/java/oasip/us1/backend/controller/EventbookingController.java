@@ -13,12 +13,12 @@ import javax.servlet.http.HttpServletResponse;
 import java.util.List;
 
 @RestController
+@CrossOrigin
 @RequestMapping("/api/event")
 public class EventbookingController {
 
     @Autowired
     private EventbookingService service;
-
     @GetMapping("")
     public List<EventbookingDto> getAllEvent(HttpServletResponse response){
         return service.getAll();
