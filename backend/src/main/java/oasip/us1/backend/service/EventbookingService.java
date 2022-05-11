@@ -8,6 +8,7 @@ import oasip.us1.backend.repository.EventcategoryRepository;
 import oasip.us1.backend.utils.ListMapper;
 import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 
 import javax.servlet.http.HttpServletResponse;
@@ -34,14 +35,13 @@ public class EventbookingService {
     public EventbookingDto getEventById(int id){
         return modelMapper.map(repository.getById(id),EventbookingDto.class) ;
     }
-    public Eventbooking save(Eventbooking event , HttpServletResponse response){
+    public Eventbooking save(Eventbooking event , HttpServletResponse response) throws Exception {
         if(repository.findByEventStartTimeBetween(DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm").withZone(ZoneId.from(ZoneOffset.UTC)).format(event.getEventStartTime()),DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm").withZone(ZoneId.from(ZoneOffset.UTC)).format(event.getEventEndTime()),event.getEventCategoryId().getId()).isEmpty()){
             System.out.println("Insert!");
             return repository.saveAndFlush(event);
         }else{
-            response.setStatus(422);
+            throw new Exception("superman");
         }
-        return new Eventbooking();
     }
     public Eventbooking update(Eventbooking updateEventbooking , int bookingid, HttpServletResponse response){
         Eventbooking event = repository.findById(bookingid).map(eventbooking1 -> mapEvent(eventbooking1,updateEventbooking,bookingid)).get();

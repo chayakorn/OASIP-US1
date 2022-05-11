@@ -31,7 +31,7 @@ public class EventbookingController {
 
     @PostMapping("")
     @ResponseStatus(HttpStatus.CREATED)
-    private Eventbooking addEvent(HttpServletResponse response,@RequestBody Eventbooking newEventBooking){
+    private Eventbooking addEvent(HttpServletResponse response,@RequestBody Eventbooking newEventBooking) throws Exception {
         return service.save(newEventBooking,response);
     }
 
