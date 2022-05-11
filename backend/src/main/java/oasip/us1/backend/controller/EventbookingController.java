@@ -19,30 +19,27 @@ public class EventbookingController {
     @Autowired
     private EventbookingService service;
 
-    @CrossOrigin
     @GetMapping("")
     public List<EventbookingDto> getAllEvent(HttpServletResponse response){
         return service.getAll();
     }
 
-    @CrossOrigin
     @GetMapping("/{id}")
     private EventbookingDto getEventById(HttpServletResponse response,@PathVariable int id){
         return service.getEventById(id);
     }
 
-    @CrossOrigin
     @PostMapping("")
     @ResponseStatus(HttpStatus.CREATED)
     private Eventbooking addEvent(HttpServletResponse response,@RequestBody Eventbooking newEventBooking){
         return service.save(newEventBooking,response);
     }
-    @CrossOrigin
+
     @PutMapping("/{id}")
     private Eventbooking update(HttpServletResponse response,@RequestBody Eventbooking editEventBooking,@PathVariable int id){
         return service.update(editEventBooking,id,response);
     }
-    @CrossOrigin
+
     @DeleteMapping("/{id}")
     @ResponseStatus(HttpStatus.OK)
     private void delete(HttpServletResponse response,@PathVariable int id){
