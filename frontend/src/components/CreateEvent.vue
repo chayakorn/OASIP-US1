@@ -127,17 +127,12 @@ const checkNull = (newEvent) => {
             <div class="relative mb-5">
               <div class="font-medium">Name</div>
               <input
-                :class="[borderStyle, 'peer']"
+                :class="[borderStyle]"
                 type="text"
                 placeholder="Firstname Lastname"
                 v-model="name"
                 required
               />
-              <p
-                class="absolute top-0 left-14 mt-1 invisible peer-invalid:visible text-red-500 text-xs"
-              >
-                * Please fill out this field.
-              </p>
             </div>
             <div class="relative mb-5">
               <div class="font-medium">Email</div>
