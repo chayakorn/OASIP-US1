@@ -6,6 +6,7 @@ import oasip.us1.backend.entity.Eventbooking;
 import oasip.us1.backend.service.EventbookingService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.*;
 
@@ -20,29 +21,28 @@ public class EventbookingController {
     @Autowired
     private EventbookingService service;
     @GetMapping("")
-    public List<EventbookingDto> getAllEvent(HttpServletResponse response){
+    public List<EventbookingDto> getAllEvent(){
         return service.getAll();
     }
 
     @GetMapping("/{id}")
-    private EventbookingDto getEventById(HttpServletResponse response,@PathVariable int id){
+    private EventbookingDto getEventById(@PathVariable int id){
         return service.getEventById(id);
     }
 
     @PostMapping("")
     @ResponseStatus(HttpStatus.CREATED)
-    private Eventbooking addEvent(HttpServletResponse response,@RequestBody Eventbooking newEventBooking){
-        return service.save(newEventBooking,response);
+    private ResponseEntity addEvent(@RequestBody Eventbooking newEventBooking){
+        return service.save(newEventBooking);
     }
 
     @PutMapping("/{id}")
-    private Eventbooking update(HttpServletResponse response,@RequestBody Eventbooking editEventBooking,@PathVariable int id){
-        return service.update(editEventBooking,id,response);
+    private ResponseEntity update(@RequestBody Eventbooking editEventBooking,@PathVariable int id){
+        return service.update(editEventBooking,id);
     }
 
     @DeleteMapping("/{id}")
-    @ResponseStatus(HttpStatus.OK)
-    private void delete(HttpServletResponse response,@PathVariable int id){
+    private void delete(@PathVariable int id){
         service.delete(id);
     }
 }

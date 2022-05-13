@@ -12,6 +12,7 @@ const props = defineProps({
 
 const log = (event) => {
   if (event.target.id == 'backdrop') {
+    reset()
     emit('closeCreate')
   }
 }
@@ -63,13 +64,26 @@ const checkNull = (newEvent) => {
   if (
     bookingName.value.length != 0 &&
     email.value.length != 0 &&
-    date.value.length != 0
+    date.value.length != 0 &&
+    !error.value
   ) {
     createEvent(newEvent)
     reset()
     emit('closeCreate')
     emit('notice', true)
   }
+}
+const error = ref(true)
+const prevent = (event)=>{
+  email.value.includes('.') ? error.value = false : error.value = true;
+  event.preventDefault();
+  checkNull(creatingEvent.value)
+}
+const invalid = ()=>{
+  error.value = true
+}
+const valid = ()=>{
+  error.value = false
 }
 </script>
 
@@ -81,7 +95,7 @@ const checkNull = (newEvent) => {
   >
     <div class="relative bg-white w-10/12 h-4/5 rounded-3xl">
       <div
-        @click="emit('closeCreate')"
+        @click="emit('closeCreate');reset()"
         class="cursor-pointer absolute right-0 hover:bg-[#F1F3F4] rounded-lg m-4"
       >
         <svg width="2em" height="2em" viewBox="0 0 24 24">
@@ -91,6 +105,7 @@ const checkNull = (newEvent) => {
           ></path>
         </svg>
       </div>
+      <form action="#" @submit="prevent">
       <div class="h-full mx-14">
         <div class="font-bold text-2xl text-center pt-5">
           Create new appointmenet
@@ -131,7 +146,7 @@ const checkNull = (newEvent) => {
                 type="text"
                 placeholder="Firstname Lastname"
                 v-model="name"
-                required
+                
               />
             </div>
             <div class="relative mb-5">
@@ -141,6 +156,8 @@ const checkNull = (newEvent) => {
                 type="email"
                 placeholder="username@example.com"
                 v-model="email"
+                @invalid="invalid"
+                @keypress="valid"
               />
               <p
                 class="absolute top-0 left-12 mt-1 invisible peer-invalid:visible text-red-500 text-xs"
@@ -226,9 +243,10 @@ const checkNull = (newEvent) => {
                   </div>
                 </div>
               </div>
+              <button type="submit">
               <div
                 class="bg-[#2FA84F] cursor-pointer h-10 drop-shadow-lg rounded-md"
-                @click="reset()"
+                
               >
                 <div class="flex">
                   <div
@@ -243,19 +261,16 @@ const checkNull = (newEvent) => {
                   </div>
                   <div
                     class="grid place-items-center w-full text-white"
-                    @click="
-                      // createEvent(creatingEvent), reset(), emit('closeCreate')
-                      checkNull(creatingEvent)
-                    "
-                  >
-                    CREATE
+                  >CREATE
                   </div>
+                    
+                  
                 </div>
-              </div>
+              </div></button>
             </div>
           </div>
         </div>
-      </div>
+      </div></form>
     </div>
   </div>
 </template>
