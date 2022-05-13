@@ -54,11 +54,15 @@ public class EventbookingService {
     public ResponseEntity update(Eventbooking updateEventbooking , int bookingid){
         Eventbooking event = repository.findById(bookingid).map(eventbooking1 -> mapEvent(eventbooking1,updateEventbooking,bookingid)).get();
 
-        if(repository.findByEventStartTimeBetweenForPut(DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm").withZone(ZoneId.from(ZoneOffset.UTC)).format(event.getEventStartTime()),DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm").withZone(ZoneId.from(ZoneOffset.UTC)).format(event.getEventEndTime()),event.getEventCategoryId().getId(),event.getId()).isEmpty()){
-            System.out.println("Insert!");
-            return ResponseEntity.status(200).body(repository.saveAndFlush(event));
+        if(!repository.findByEventStartTimeBetweenForPut(DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm").withZone(ZoneId.from(ZoneOffset.UTC)).format(event.getEventStartTime()),DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm").withZone(ZoneId.from(ZoneOffset.UTC)).format(event.getEventEndTime()),event.getEventCategoryId().getId(),event.getId()).isEmpty()
+                || event.getEventStartTime().isBefore(Instant.now())
+                || event.getEventEndTime().isBefore(event.getEventStartTime())
+                || event.getEventNotes().length()>500){
+            return ResponseEntity.status(400).body("Overlapped time");
+
         }
-       return ResponseEntity.status(400).body("Overlapped time");
+        System.out.println("Insert!");
+        return ResponseEntity.status(200).body(repository.saveAndFlush(event));
     }
 
     public void delete(int id){
@@ -66,14 +70,9 @@ public class EventbookingService {
     }
     private Eventbooking mapEvent(Eventbooking existingEventbooking, Eventbooking updateEventbooking, int bookingid){
         existingEventbooking.setId(bookingid);
-        existingEventbooking.setEventCategoryId(updateEventbooking.getEventCategoryId());
-        existingEventbooking.setEventDuration(updateEventbooking.getEventDuration());
         existingEventbooking.setEventNotes(updateEventbooking.getEventNotes());
         existingEventbooking.setEventStartTime(updateEventbooking.getEventStartTime());
         existingEventbooking.setEventEndTime(updateEventbooking.getEventEndTime());
-        existingEventbooking.setBookingEmail(updateEventbooking.getBookingEmail());
-        existingEventbooking.setName(updateEventbooking.getName());
-        existingEventbooking.setBookingName(updateEventbooking.getBookingName());
         return existingEventbooking;
     }
     private Eventbooking mapForInsert(EventbookingInsertDto newEventbooking){
