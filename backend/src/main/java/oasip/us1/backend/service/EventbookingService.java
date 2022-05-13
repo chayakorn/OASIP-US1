@@ -8,6 +8,7 @@ import oasip.us1.backend.repository.EventcategoryRepository;
 import oasip.us1.backend.utils.ListMapper;
 import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 
 import javax.servlet.http.HttpServletResponse;
@@ -34,25 +35,21 @@ public class EventbookingService {
     public EventbookingDto getEventById(int id){
         return modelMapper.map(repository.getById(id),EventbookingDto.class) ;
     }
-    public Eventbooking save(Eventbooking event , HttpServletResponse response){
+    public ResponseEntity save(Eventbooking event){
         if(repository.findByEventStartTimeBetween(DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm").withZone(ZoneId.from(ZoneOffset.UTC)).format(event.getEventStartTime()),DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm").withZone(ZoneId.from(ZoneOffset.UTC)).format(event.getEventEndTime()),event.getEventCategoryId().getId()).isEmpty()){
             System.out.println("Insert!");
-            return repository.saveAndFlush(event);
-        }else{
-            response.setStatus(422);
+            return ResponseEntity.status(201).body(repository.saveAndFlush(event));
         }
-        return new Eventbooking();
+        return ResponseEntity.status(422).body("Overlapped time");
     }
-    public Eventbooking update(Eventbooking updateEventbooking , int bookingid, HttpServletResponse response){
+    public ResponseEntity update(Eventbooking updateEventbooking , int bookingid){
         Eventbooking event = repository.findById(bookingid).map(eventbooking1 -> mapEvent(eventbooking1,updateEventbooking,bookingid)).get();
 
         if(repository.findByEventStartTimeBetweenForPut(DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm").withZone(ZoneId.from(ZoneOffset.UTC)).format(event.getEventStartTime()),DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm").withZone(ZoneId.from(ZoneOffset.UTC)).format(event.getEventEndTime()),event.getEventCategoryId().getId(),event.getId()).isEmpty()){
             System.out.println("Insert!");
-            return repository.saveAndFlush(event);
-        }else{
-            response.setStatus(422);
+            return ResponseEntity.status(200).body(repository.saveAndFlush(event));
         }
-       return new Eventbooking();
+       return ResponseEntity.status(400).body("Overlapped time");
     }
 
     public void delete(int id){
