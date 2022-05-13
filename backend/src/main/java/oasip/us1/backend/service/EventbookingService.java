@@ -37,18 +37,15 @@ public class EventbookingService {
         return modelMapper.map(repository.getById(id),EventbookingDto.class) ;
     }
     public ResponseEntity save(Eventbooking event){
-//        if(!repository.findByEventStartTimeBetween(DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm").withZone(ZoneId.from(ZoneOffset.UTC)).format(event.getEventStartTime()),DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm").withZone(ZoneId.from(ZoneOffset.UTC)).format(event.getEventEndTime()),event.getEventCategoryId().getId()).isEmpty()
-//                || event.getEventStartTime().isBefore(Instant.now())
-//                || event.getEventEndTime().isBefore(event.getEventStartTime())
-//                || event.getBookingName() == null
-//                || event.getEventCategoryId() == null
-//                || event.getBookingName().length() > 100
-//                || !event.getBookingEmail().matches("/^[0-z._!#$%&{|}+]+@[0-z]+(.[0-z]+)*$/")
-//                || event.getBookingEmail() == null
-//                || event.getEventNotes().length()>500)
         if(!repository.findByEventStartTimeBetween(DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm").withZone(ZoneId.from(ZoneOffset.UTC)).format(event.getEventStartTime()),DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm").withZone(ZoneId.from(ZoneOffset.UTC)).format(event.getEventEndTime()),event.getEventCategoryId().getId()).isEmpty()
-        || !event.getBookingEmail().matches("^[0-z.!#$%&'*+/=?^_`{|}~-]+@[0-z-]+(.[0-z-]+)*$")
-){
+                || event.getEventStartTime().isBefore(Instant.now())
+                || event.getEventEndTime().isBefore(event.getEventStartTime())
+                || event.getBookingName() == null
+                || event.getEventCategoryId() == null
+                || event.getBookingName().length() > 100
+                || !event.getBookingEmail().matches("^[0-z.!#$%&'*+/=?^_`{|}~-]+@[0-z-]+(.[0-z-]+)*$")
+                || event.getBookingEmail() == null
+                || event.getEventNotes().length()>500) {
             return ResponseEntity.status(422).body("Overlapped time or value is invalid");
         }
         System.out.println("Insert!");
