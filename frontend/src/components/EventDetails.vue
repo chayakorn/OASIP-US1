@@ -18,14 +18,8 @@ const props = defineProps({
 
 const edit = ref(true)
 const showDelete = ref(false)
-// const myRouter = useRouter()
-// const { params } = useRoute()
-// const item = JSON.parse(params.item)
 const date = moment(props.item.eventStartTime).format('DD MMM YYYY')
 let startTime = moment(props.item.eventStartTime).format('h:mm A')
-
-
-
 
 
 const endTime = moment(startTime, 'h:mm A')
@@ -37,7 +31,6 @@ const log = (event) => {
   if (event.target.id == 'modal') {
     emit('closeModal', false)
   }
-
 }
 
 const existChange = () => {
@@ -72,7 +65,7 @@ const closeDelete = ()=>{
   <div
     class="bg-black/25 overflow-x-hidden overflow-y-auto absolute inset-0 z-40 outline-none focus:outline-none justify-center items-center flex"
     @click="log " id="modal">
-    <div class="modal-container bg-white w-9/12 px-5 pt-4 pb-20 h-[80%] rounded-3xl z-50">
+    <div class="modal-container bg-white w-9/12 px-5 pt-4 pb-8 max-h-fit rounded-3xl z-50">
       <div class="modal-header">
         <div class="grid grid-cols-3">
           <div></div>
@@ -194,7 +187,7 @@ const closeDelete = ()=>{
               </button>
             </div>
             <!-- EDIT -->
-            <div class="px-4" @click="edit = !edit" v-show="false">
+            <div class="px-4" @click="edit = !edit" >
               <button
                 class="flex place-items-center rounded-[5px] bg-[#367BF5] text-white font-semibold w-36 h-12 px-1">
                 <span class="p-1 bg-white rounded-[5px]">
@@ -213,7 +206,7 @@ const closeDelete = ()=>{
           </div>
 
         </div>
-        <EditEvent v-show="!edit" :item="item" @existChange="existChange" />
+        <EditEvent v-show="!edit" :item="item" @existChange="existChange" @closeModal="closeModal"/>
         
         <div v-show="showDelete">
           <div

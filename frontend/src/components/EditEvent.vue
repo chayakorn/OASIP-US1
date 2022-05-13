@@ -1,8 +1,7 @@
 <script setup>
+import { DatePicker } from 'v-calendar';
 import { ref } from 'vue';
-import ConfirmDeleteEvent from './ConfirmDeleteEvent.vue';
-import EventDetails from './EventDetails.vue'
-const emit = defineEmits(['existChange'])
+const emit = defineEmits(['existChange', 'closeModal'])
 const props = defineProps({
     item: {
         type: Object,
@@ -13,20 +12,34 @@ const props = defineProps({
         require: true
     }
 })
-
 const showCancel = ref(false)
 
-const showCancelFn = () => {
-    showCancel.value = !showCancel.value
-    // emit('closeCancel')
+const editEvent = async (eventId) => {
+    const res = await fetch(`${import.meta.env.VITE_BASE_URL}/event/${eventId}`, {
+        method: 'PUT',
+        headers: {
+            'content-type': 'application/json'
+        },
+        body: JSON.stringify(eventId)
+    })
 }
 
 
+const showCancelFn = () => {
+    showCancel.value = !showCancel.value
+}
+
+const editingEvent = () => {
+
+}
+
 const date = ref('')
 const time = ref('')
+const sepTime = new Date(date.value).toISOString
+
 const description = ref('')
 
-const clearData = ()=>{
+const clearData = () => {
     date.value = ''
     time.value = ''
     description.value = ''
@@ -34,11 +47,17 @@ const clearData = ()=>{
     emit('existChange')
 }
 
+const checkNull = (eventId) => {
+    if (date.value.length.trim() != 0 && time.value.length.trim() != 0) {
+        clearData(), editEvent(eventId)
+    }
+}
 
 </script>
  
 <template>
     <div>
+
         <div class="grid grid-cols-2 divide-x-2">
             <!-- col1 -->
             <div>
@@ -53,19 +72,36 @@ const clearData = ()=>{
                 <!-- DATE -->
                 <div class="flex pl-4 py-1">
                     <span class="grid place-items-center py-2 font-semibold px-2 pr-3.5 text-[#5E6366]">Date</span>
-                    <input
-                        class="flex-none border-[0.5px] border-[#5E6366] bg-[#F1F3F4] rounded-2xl w-4/5 py-1 px-4 text-black-700 focus:outline-none focus:bg-white focus:border-purple-500"
-                        value="">
+                    <v-date-picker v-model="date" :update-on-input="false" :min-date="new Date()">
+                        <template v-slot="{ inputValue, inputEvents }">
+                            <input
+                                class="flex-none border-[0.5px] border-[#5E6366] bg-[#F1F3F4] rounded-2xl pr-[215px] py-2 px-4  text-black-700 focus:outline-none focus:bg-white focus:border-[#5E6366]"
+                                :value="inputValue" v-on="inputEvents" />
+                        </template>
+                    </v-date-picker>
+
+                    <!-- <input type="date"
+                                class="flex-none border-[0.5px] border-[#5E6366] bg-[#F1F3F4] rounded-2xl pr-[215px] py-2 px-4  text-black-700 focus:outline-none focus:bg-white focus:border-[#5E6366]"/> -->
+
+                    <!-- <div class="flex items-center justify-center">
+                        <div class="datepicker relative form-floating mb-3 xl:w-96">
+                            <input type="text"
+                                class="form-control block w-full px-3 py-1.5 text-base font-normal text-gray-700 bg-white bg-clip-padding border border-solid border-gray-300 rounded transition ease-in-out m-0 focus:text-gray-700 focus:bg-white focus:border-blue-600 focus:outline-none"
+                                placeholder="Select a date" />
+                            <label for="floatingInput" class="text-gray-700">Select a date</label>
+                        </div>
+                    </div> -->
+
                     <br />
                 </div>
-
                 <!-- TIME -->
                 <div class="grid grid-cols-2 divide-x-2">
                     <div class="flex pl-4 py-1">
                         <span class="font-semibold py-2 px-2 pr-3.5 text-[#5E6366]">Time</span>
-                        <input
-                            class="flex-none border-[0.5px] border-[#5E6366] bg-[#F1F3F4] rounded-2xl w-60 py-2 px-4 text-black-700 focus:outline-none focus:bg-white focus:border-purple-500"
-                            value="">
+                        <input type="time"
+                            class="flex-none border-[0.5px] border-[#5E6366] bg-[#F1F3F4] rounded-2xl w-60 py-2 px-4 text-black-700 focus:outline-none focus:bg-white focus:border-[#5E6366]"
+                            v-model="time">
+
 
                         <!-- DURATION -->
                         <div class="flex pl-4 float-right">
@@ -101,7 +137,9 @@ const clearData = ()=>{
                 </div>
             </div>
         </div>
-
+        {{ time }} <br>
+        {{ date }}
+        <!-- {{ sepTime }} -->
         <div class="pt-5 border-b-2 mx-5 text-[#5E6366]"></div>
 
         <!-- DESCRIPTION -->
@@ -110,7 +148,8 @@ const clearData = ()=>{
                 <span class="text-[#5E6366] font-semibold "> Description </span>
             </div>
             <textarea maxlength="500"
-                class="break-words resize-none border-[0.5px] border-[#5E6366] rounded-2xl bg-[#F1F3F4] w-full pt-2 h-32 px-5 text-black ">
+                class="break-words resize-none border-[0.5px] border-[#5E6366] rounded-2xl bg-[#F1F3F4] w-full pt-2 h-32 px-5 text-black focus:outline-none focus:bg-white focus:border-[#5E6366]"
+                v-model="description">
             </textarea>
 
         </div>
@@ -131,7 +170,7 @@ const clearData = ()=>{
                 </button>
             </div>
             <!-- EDIT -->
-            <div class="px-4"  @click="" >
+            <div class="px-4" @click="checkNull(eventId)">
                 <button
                     class="flex place-items-center rounded-[5px] bg-[#2FA84F] text-white font-semibold w-36 h-12 px-1">
                     <span class="p-1 bg-white rounded-[5px]">
