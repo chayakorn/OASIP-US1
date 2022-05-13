@@ -31,6 +31,7 @@
         ></router-link>
         <!-- Calendar -->
         <router-link
+          v-show="false"
           :to="{ name: 'Calendar' }"
           class="ml-1 hover:scale-110 duration-700"
           ><svg width="2.5em" height="2.5em" viewBox="0 0 512 512">
