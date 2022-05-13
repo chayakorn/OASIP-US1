@@ -165,47 +165,49 @@ const valid = () => {
                 </p>
               </div>
             </div>
-            <!-- <div
-            class="col-span-3 bg-[#F7F9FA] ml-10 rounded-2xl grid grid-cols-2"
-          >
-            <div class="grid place-content-center">
-              <v-date-picker
-                color="blue"
-                mode="datetime"
-                v-model="date"
-                timezone=""
-                :min-date="new Date()"
-              />
+            <div
+              class="col-span-3 bg-[#F7F9FA] ml-10 rounded-2xl grid grid-cols-2"
+            >
+              <div class="grid place-content-center">
+                <v-date-picker
+                  color="blue"
+                  mode="datetime"
+                  v-model="date"
+                  timezone=""
+                  :min-date="new Date()"
+                />
+              </div>
+              <div class="grid grid-rows-3 my-10 ml-5">
+                <div>
+                  <div class="font-medium">Date :</div>
+                  <div
+                    class="bg-white h-1/2 w-5/6 rounded-xl mt-2 grid content-center pl-4"
+                  >
+                    {{ date ? moment(date).format('DD MMMM YYYY') : '' }}
+                  </div>
+                </div>
+                <div>
+                  <div class="font-medium">Time :</div>
+                  <div
+                    class="bg-white h-1/2 w-5/6 rounded-xl mt-2 grid content-center pl-4"
+                  >
+                    {{ date ? moment(date).format('h : mm A') : '' }}
+                  </div>
+                </div>
+                <div>
+                  <div class="font-medium">
+                    Duratione:
+                    <span class="text-red-500">{{
+                      category.eventDuration
+                    }}</span>
+                    minutes
+                  </div>
+                  <span class="text-sm text-gray-400"
+                    >* Duration depends on category.</span
+                  >
+                </div>
+              </div>
             </div>
-            <div class="grid grid-rows-3 my-10 ml-5">
-              <div>
-                <div class="font-medium">Date :</div>
-                <div
-                  class="bg-white h-1/2 w-5/6 rounded-xl mt-2 grid content-center pl-4"
-                >
-                  {{ date ? moment(date).format('DD MMMM YYYY') : '' }}
-                </div>
-              </div>
-              <div>
-                <div class="font-medium">Time :</div>
-                <div
-                  class="bg-white h-1/2 w-5/6 rounded-xl mt-2 grid content-center pl-4"
-                >
-                  {{ date ? moment(date).format('h : mm A') : '' }}
-                </div>
-              </div>
-              <div>
-                <div class="font-medium">
-                  Duratione:
-                  <span class="text-red-500">{{ category.eventDuration }}</span>
-                  minutes
-                </div>
-                <span class="text-sm text-gray-400"
-                  >* Duration depends on category.</span
-                >
-              </div>
-            </div>
-          </div> -->
           </div>
           <div class="grid grid-cols-3">
             <div class="relative col-span-2">

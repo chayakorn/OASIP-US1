@@ -28,16 +28,15 @@ const showMore = ref(false)
 
 const closeModal = (status) => {
   showMore.value = status
-
 }
 
-const showDetails = ()=>{
+const showDetails = () => {
   showMore.value = !showMore.value
 }
 
-const refreshPage = (itemId)=>{
+const refreshPage = (itemId) => {
   showMore.value = false
-  emit('itemId',itemId)
+  emit('itemId', itemId)
 }
 </script>
 
@@ -49,7 +48,7 @@ const refreshPage = (itemId)=>{
     <div
       :class="[
         categoryBg(item.eventCategoryId),
-        'text-white text-lg p-2 font-medium rounded-lg'
+        'text-white text-lg p-2 font-medium rounded-lg truncate'
       ]"
     >
       {{ item.bookingName }}

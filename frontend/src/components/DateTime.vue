@@ -1,5 +1,5 @@
 <script setup>
-import { ref } from 'vue'
+import { computed, ref } from 'vue'
 import moment from 'moment'
 import Datepicker from '@vuepic/vue-datepicker'
 import '@vuepic/vue-datepicker/dist/main.css'
@@ -7,6 +7,13 @@ import '@vuepic/vue-datepicker/dist/main.css'
 const props = defineProps({ events: { type: Array, default: [] } })
 
 const date = ref()
+const time = ref()
+const dateTime = computed(
+  () =>
+    `${moment(date.value).format('YYYY-MM-DD')} ${moment(time.value).format(
+      'HH:mm'
+    )}`
+)
 
 function getTimeStops(start, end) {
   var startTime = moment(start, 'HH:mm')
@@ -32,6 +39,13 @@ var timeStops = getTimeStops('00:00', '23:59')
 // console.log('timeStops ', timeStops)
 // timeStops = getTimeStops('11:00', '23:59')
 // console.log('timeStops ', timeStops)
+const format = (date) => {
+  const day = date.getDate()
+  const month = date.getMonth() + 1
+  const year = date.getFullYear()
+
+  return `${day}/${month}/${year}`
+}
 </script>
 
 <template>
@@ -47,8 +61,12 @@ var timeStops = getTimeStops('00:00', '23:59')
         max: 24
       }"
     /> -->
-    <Datepicker v-model="date" :enableTimePicker="false" />
-    {{ moment(new Date(date)).format('YYYY-MM-DD') }}
+    <Datepicker v-model="date" :enableTimePicker="false" :format="format" :minDate="new Date()" />
+    <Datepicker v-model="time" timePicker is24 />
+    {{ dateTime }}
+    <!-- {{ moment(date).format('DD-MM-YYYY') }}
+    {{ moment(time).format('HH:mm') }} -->
+    <!-- {{ moment(new Date(`${date} ${time}`)).format('DD-MM-YYYY HH:mm') }} -->
     <div></div>
   </div>
 </template>
