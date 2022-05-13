@@ -1,15 +1,15 @@
 <script setup>
 import { onBeforeMount, ref, computed } from 'vue'
-import EventItem from '../components/EventItem.vue';
+import EventItem from '../components/EventItem.vue'
 // import Lists from '../components/Lists.vue'
 
-  const eventLists = ref([])
-  const getAllEvents = async () => {
-    const res = await fetch(`${import.meta.env.VITE_BASE_URL}/event`)
-    if (res.status === 200) {
-      eventLists.value = await res.json()
-    } else console.log('error, cannot get events')
-  }
+const eventLists = ref([])
+const getAllEvents = async () => {
+  const res = await fetch(`${import.meta.env.VITE_BASE_URL}/event`)
+  if (res.status === 200) {
+    eventLists.value = await res.json()
+  } else console.log('error, cannot get events')
+}
 
 // getAllEvents()
 onBeforeMount(async () => {
@@ -45,7 +45,7 @@ const currentLists = computed(() =>
     <div v-if="eventLists.length > 0">
       <!-- No Group -->
       <div class="contentSize flex flex-wrap gap-x-10 gap-y-5">
-        <EventItem v-for="list in currentLists" :item="list" @itemId="itemId"/>
+        <EventItem v-for="list in currentLists" :item="list" @itemId="itemId" />
       </div>
       <!-- GroupBy Day -->
       <!-- <Lists
