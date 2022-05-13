@@ -12,6 +12,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 
 import javax.servlet.http.HttpServletResponse;
+import java.time.Instant;
 import java.time.ZoneId;
 import java.time.ZoneOffset;
 import java.time.format.DateTimeFormatter;
@@ -36,11 +37,20 @@ public class EventbookingService {
         return modelMapper.map(repository.getById(id),EventbookingDto.class) ;
     }
     public ResponseEntity save(Eventbooking event){
-        if(repository.findByEventStartTimeBetween(DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm").withZone(ZoneId.from(ZoneOffset.UTC)).format(event.getEventStartTime()),DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm").withZone(ZoneId.from(ZoneOffset.UTC)).format(event.getEventEndTime()),event.getEventCategoryId().getId()).isEmpty()){
-            System.out.println("Insert!");
-            return ResponseEntity.status(201).body(repository.saveAndFlush(event));
+
+        if(!repository.findByEventStartTimeBetween(DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm").withZone(ZoneId.from(ZoneOffset.UTC)).format(event.getEventStartTime()),DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm").withZone(ZoneId.from(ZoneOffset.UTC)).format(event.getEventEndTime()),event.getEventCategoryId().getId()).isEmpty()
+                || event.getEventStartTime().isBefore(Instant.now())
+                || event.getEventEndTime().isBefore(event.getEventStartTime())
+                || event.getBookingName() == null
+        || event.getEventCategoryId() == null
+        || event.getBookingName().length() > 100
+        || !event.getBookingEmail().matches("/^[0-z._!#$%&{|}+]+@[0-z]+(.[0-z]+)*$/")
+        || event.getBookingEmail() == null
+        || event.getEventNotes().length()>500){
+            return ResponseEntity.status(422).body("Overlapped time or value is invalid");
         }
-        return ResponseEntity.status(422).body("Overlapped time");
+        System.out.println("Insert!");
+        return ResponseEntity.status(201).body(repository.saveAndFlush(event));
     }
     public ResponseEntity update(Eventbooking updateEventbooking , int bookingid){
         Eventbooking event = repository.findById(bookingid).map(eventbooking1 -> mapEvent(eventbooking1,updateEventbooking,bookingid)).get();
