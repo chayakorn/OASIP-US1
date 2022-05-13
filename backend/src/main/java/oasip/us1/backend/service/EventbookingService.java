@@ -47,7 +47,7 @@ public class EventbookingService {
 //                || event.getBookingEmail() == null
 //                || event.getEventNotes().length()>500)
         if(!repository.findByEventStartTimeBetween(DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm").withZone(ZoneId.from(ZoneOffset.UTC)).format(event.getEventStartTime()),DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm").withZone(ZoneId.from(ZoneOffset.UTC)).format(event.getEventEndTime()),event.getEventCategoryId().getId()).isEmpty()
-        || !event.getBookingEmail().matches("/^[0-z._!#$%&{|}+]+@[0-z]+(.[0-z]+)*$/")
+        || !event.getBookingEmail().matches("^[0-z.!#$%&'*+/=?^_`{|}~-]+@[0-z-]+(.[0-z-]+)*$")
 ){
             return ResponseEntity.status(422).body("Overlapped time or value is invalid");
         }
