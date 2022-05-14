@@ -38,25 +38,34 @@ public class EventbookingService {
     }
     public ResponseEntity save(Eventbooking event){
         if(!repository.findByEventStartTimeBetween(DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm").withZone(ZoneId.from(ZoneOffset.UTC)).format(event.getEventStartTime()),DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm").withZone(ZoneId.from(ZoneOffset.UTC)).format(event.getEventEndTime()),event.getEventCategoryId().getId()).isEmpty()) {
-            return ResponseEntity.status(422).body("Overlapped time");
+            return ResponseEntity.status(400).body("Overlapped time");
         }
         if(event.getEventStartTime().isBefore(Instant.now())){
-            return ResponseEntity.status(422).body("EventStartTime is past");
+            return ResponseEntity.status(400).body("EventStartTime is past");
         }
         if(event.getEventEndTime().isBefore(event.getEventStartTime())){
-            return ResponseEntity.status(422).body("EventEndTime is before eventStartTime");
+            return ResponseEntity.status(400).body("EventEndTime is before eventStartTime");
         }
-        if(event.getBookingName() == null || event.getBookingName().length() > 100){
-            return ResponseEntity.status(422).body("BookingName error null or length");
+        if(event.getBookingName() == null ){
+            return ResponseEntity.status(400).body("BookingName error null");
+        }
+        if(event.getBookingName().length() > 100){
+            return ResponseEntity.status(400).body("BookingName over length");
         }
         if(event.getEventCategoryId() == null){
-            return ResponseEntity.status(422).body("EventCategory is null");
+            return ResponseEntity.status(400).body("EventCategory is null");
         }
-        if(!event.getBookingEmail().matches("^[0-z.!#$%&'*+/=?^_`{|}~-]+@[0-z-]+(.[0-z-]+)*$") || event.getBookingEmail() == null || event.getBookingEmail().length() > 100){
-            return ResponseEntity.status(422).body("Email is not valid or null or over length");
+        if(!event.getBookingEmail().matches("^[0-z.!#$%&'*+/=?^_`{|}~-]+@[0-z-]+(.[0-z-]+)*$") ){
+            return ResponseEntity.status(400).body("Email is not valid");
+        }
+        if (event.getBookingEmail().length() > 100){
+            return ResponseEntity.status(400).body("Email is over length");
+        }
+        if (event.getBookingEmail() == null ){
+            return ResponseEntity.status(400).body("Email is null");
         }
         if(event.getEventNotes().length()>500){
-            return ResponseEntity.status(422).body("Eventnote over length");
+            return ResponseEntity.status(400).body("Eventnote over length");
         }
         System.out.println("Insert!");
         return ResponseEntity.status(201).body(repository.saveAndFlush(event));
@@ -68,13 +77,13 @@ public class EventbookingService {
             return ResponseEntity.status(400).body("Overlapped time");
         }
         if(event.getEventStartTime().isBefore(Instant.now())){
-            return ResponseEntity.status(422).body("EventStartTime is past");
+            return ResponseEntity.status(400).body("EventStartTime is past");
         }
         if(event.getEventEndTime().isBefore(event.getEventStartTime())){
-            return ResponseEntity.status(422).body("EventEndTime is before eventStartTime");
+            return ResponseEntity.status(400).body("EventEndTime is before eventStartTime");
         }
         if(event.getEventNotes().length()>500){
-            return ResponseEntity.status(422).body("Eventnote over length");
+            return ResponseEntity.status(400).body("Eventnote over length");
         }
         System.out.println("Insert!");
         return ResponseEntity.status(200).body(repository.saveAndFlush(event));
