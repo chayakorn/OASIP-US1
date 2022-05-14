@@ -46,7 +46,7 @@ public class EventbookingService {
         if(event.getEventEndTime().isBefore(event.getEventStartTime())){
             return ResponseEntity.status(400).body("EventEndTime is before eventStartTime");
         }
-        if(event.getBookingName() == null ){
+        if(event.getBookingName() == null || event.getBookingEmail().length() == 0){
             return ResponseEntity.status(400).body("BookingName error null");
         }
         if(event.getBookingName().length() > 100){
