@@ -28,4 +28,13 @@ services:
       dockerfile: Dockerfile
     image: frontend
     ports:
+      - "3000:3000"
+  oasipproxy:
+    container_name: oasipproxy
+    restart: always
+    image: nginx
+    volumes:
+      - ./nginx.conf:/etc/nginx/conf.d/default.conf
+    ports: 
       - "80:80"
+
