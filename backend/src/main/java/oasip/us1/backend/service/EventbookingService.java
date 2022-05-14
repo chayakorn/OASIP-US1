@@ -37,16 +37,26 @@ public class EventbookingService {
         return modelMapper.map(repository.getById(id),EventbookingDto.class) ;
     }
     public ResponseEntity save(Eventbooking event){
-        if(!repository.findByEventStartTimeBetween(DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm").withZone(ZoneId.from(ZoneOffset.UTC)).format(event.getEventStartTime()),DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm").withZone(ZoneId.from(ZoneOffset.UTC)).format(event.getEventEndTime()),event.getEventCategoryId().getId()).isEmpty()
-                || event.getEventStartTime().isBefore(Instant.now())
-                || event.getEventEndTime().isBefore(event.getEventStartTime())
-                || event.getBookingName() == null
-                || event.getEventCategoryId() == null
-                || event.getBookingName().length() > 100
-                || !event.getBookingEmail().matches("^[0-z.!#$%&'*+/=?^_`{|}~-]+@[0-z-]+(.[0-z-]+)*$")
-                || event.getBookingEmail() == null
-                || event.getEventNotes().length()>500) {
-            return ResponseEntity.status(422).body("Overlapped time or value is invalid");
+        if(!repository.findByEventStartTimeBetween(DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm").withZone(ZoneId.from(ZoneOffset.UTC)).format(event.getEventStartTime()),DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm").withZone(ZoneId.from(ZoneOffset.UTC)).format(event.getEventEndTime()),event.getEventCategoryId().getId()).isEmpty()) {
+            return ResponseEntity.status(422).body("Overlapped time");
+        }
+        if(event.getEventStartTime().isBefore(Instant.now())){
+            return ResponseEntity.status(422).body("EventStartTime is past");
+        }
+        if(event.getEventEndTime().isBefore(event.getEventStartTime())){
+            return ResponseEntity.status(422).body("EventEndTime is before eventStartTime");
+        }
+        if(event.getBookingName() == null || event.getBookingName().length() > 100){
+            return ResponseEntity.status(422).body("BookingName error null or length");
+        }
+        if(event.getEventCategoryId() == null){
+            return ResponseEntity.status(422).body("EventCategory is null");
+        }
+        if(!event.getBookingEmail().matches("^[0-z.!#$%&'*+/=?^_`{|}~-]+@[0-z-]+(.[0-z-]+)*$") || event.getBookingEmail() == null || event.getBookingEmail().length() > 100){
+            return ResponseEntity.status(422).body("Email is not valid or null or over length");
+        }
+        if(event.getEventNotes().length()>500){
+            return ResponseEntity.status(422).body("Eventnote over length");
         }
         System.out.println("Insert!");
         return ResponseEntity.status(201).body(repository.saveAndFlush(event));
@@ -54,12 +64,17 @@ public class EventbookingService {
     public ResponseEntity update(Eventbooking updateEventbooking , int bookingid){
         Eventbooking event = repository.findById(bookingid).map(eventbooking1 -> mapEvent(eventbooking1,updateEventbooking,bookingid)).get();
 
-        if(!repository.findByEventStartTimeBetweenForPut(DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm").withZone(ZoneId.from(ZoneOffset.UTC)).format(event.getEventStartTime()),DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm").withZone(ZoneId.from(ZoneOffset.UTC)).format(event.getEventEndTime()),event.getEventCategoryId().getId(),event.getId()).isEmpty()
-                || event.getEventStartTime().isBefore(Instant.now())
-                || event.getEventEndTime().isBefore(event.getEventStartTime())
-                || event.getEventNotes().length()>500){
+        if(!repository.findByEventStartTimeBetweenForPut(DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm").withZone(ZoneId.from(ZoneOffset.UTC)).format(event.getEventStartTime()),DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm").withZone(ZoneId.from(ZoneOffset.UTC)).format(event.getEventEndTime()),event.getEventCategoryId().getId(),event.getId()).isEmpty()){
             return ResponseEntity.status(400).body("Overlapped time");
-
+        }
+        if(event.getEventStartTime().isBefore(Instant.now())){
+            return ResponseEntity.status(422).body("EventStartTime is past");
+        }
+        if(event.getEventEndTime().isBefore(event.getEventStartTime())){
+            return ResponseEntity.status(422).body("EventEndTime is before eventStartTime");
+        }
+        if(event.getEventNotes().length()>500){
+            return ResponseEntity.status(422).body("Eventnote over length");
         }
         System.out.println("Insert!");
         return ResponseEntity.status(200).body(repository.saveAndFlush(event));
