@@ -26,7 +26,7 @@ jobs:
 
       - name: compose down delete image
         run: |
-          docker-compose rm -svf oasipfrontend oasipbackend
+          docker-compose rm -svf oasipfrontend oasipbackend oasipproxy
           docker rmi $(docker images -f "dangling=true" -q) --force
       # Runs a set of commands using the runners shell
       - name: build and deploy
