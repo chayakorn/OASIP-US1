@@ -58,12 +58,13 @@ public class EventbookingService {
         if(!event.getBookingEmail().matches("^[0-z.!#$%&'*+/=?^_`{|}~-]+@[0-z-]+(.[0-z-]+)*$") ){
             return ResponseEntity.status(400).body("Email is not valid");
         }
-        if (event.getBookingEmail().length() > 100){
-            return ResponseEntity.status(400).body("Email is over length");
-        }
         if (event.getBookingEmail() == null ){
             return ResponseEntity.status(400).body("Email is null");
         }
+        if (event.getBookingEmail().length() > 100){
+            return ResponseEntity.status(400).body("Email is over length");
+        }
+
         if(event.getEventNotes().length()>500){
             return ResponseEntity.status(400).body("Eventnote over length");
         }
