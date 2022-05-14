@@ -1,7 +1,11 @@
 <script setup>
-import { DatePicker } from 'v-calendar';
-import { ref } from 'vue';
-const emit = defineEmits(['existChange', 'closeModal'])
+// import { DatePicker } from 'v-calendar';
+import { computed, ref } from 'vue';
+import moment from 'moment'
+import Datepicker from '@vuepic/vue-datepicker'
+import '@vuepic/vue-datepicker/dist/main.css'
+
+const emit = defineEmits(['existChange'])
 const props = defineProps({
     item: {
         type: Object,
@@ -12,52 +16,133 @@ const props = defineProps({
         require: true
     }
 })
-const showCancel = ref(false)
 
-const editEvent = async (eventId) => {
-    const res = await fetch(`${import.meta.env.VITE_BASE_URL}/event/${eventId}`, {
-        method: 'PUT',
-        headers: {
-            'content-type': 'application/json'
-        },
-        body: JSON.stringify(eventId)
-    })
+console.log(props.item.eventStartTime)
+const eventLists = ref([])
+const getAllEvents = async () => {
+    const res = await fetch(`${import.meta.env.VITE_BASE_URL}/event`)
+    if (res.status === 200) {
+        eventLists.value = await res.json()
+    } else console.log('error, cannot get events')
 }
+
+getAllEvents()
+
+const format = (date) => {
+    const day = date.getDate()
+    const month = moment(date).format('MMMM')
+    const year = date.getFullYear()
+
+    return `${day} ${month} ${year}`
+}
+
+const checkOverlap = () => {
+    let selectedStartTime = moment(new Date(dateTime.value), 'DD-MM-YYYY HH:mm')
+    let selectedEndTime = moment(
+        new Date(dateTime.value),
+        'DD-MM-YYYY HH:mm'
+    ).add(props.item.eventDuration, 'minutes')
+    if (
+        !eventLists.value
+            .filter((item) => item.eventCategoryId == props.item.id)
+            .some((e) => {
+                if (
+                    selectedStartTime.isBetween(
+                        moment(new Date(e.eventStartTime), 'DD-MM-YYYY HH:mm').add(
+                            -1,
+                            'minutes'
+                        ),
+                        moment(new Date(e.eventEndTime), 'DD-MM-YYYY HH:mm').add(
+                            1,
+                            'minutes'
+                        )
+                    ) ||
+                    selectedEndTime.isBetween(
+                        moment(new Date(e.eventStartTime), 'DD-MM-YYYY HH:mm').add(
+                            -1,
+                            'minutes'
+                        ),
+                        moment(new Date(e.eventEndTime), 'DD-MM-YYYY HH:mm').add(
+                            1,
+                            'minutes'
+                        )
+                    )
+                )
+                    return true
+                else return false
+            })
+    )
+    console.log(dateTime.value) 
+    // dates.value = dateTime.value
+    // console.log(dates.value = dateTime.value)
+    else {alert('your selected time has been booked, please choose a new time!')}
+}
+
+const showCancel = ref(false)
+const description = ref('')
+const date = ref()
+const time = ref()
+// const dates = ref()
+const dateTime = computed(() =>
+    `${moment(date.value).format('YYYY-MM-DD')} ${moment(time.value).format('HH:mm')}`
+)
 
 
 const showCancelFn = () => {
     showCancel.value = !showCancel.value
 }
 
-const editingEvent = () => {
-
+const editEvent = async (event, id) => {
+    const res = await fetch(`${import.meta.env.VITE_BASE_URL}/event/${id}`, {
+        method: 'PUT',
+        headers: {
+            'content-type': 'application/json'
+        },
+        body: JSON.stringify(event)
+    })
 }
 
-const date = ref('')
-const time = ref('')
-const sepTime = new Date(date.value).toISOString
+// console.log(moment(new Date(date.value)).toISOString())
 
-const description = ref('')
+const editingEvent = computed(() => ({
+    bookingName: props.item.bookingName,
+    bookingEmail: props.item.bookingEmail,
+    eventStartTime: moment(new Date(date.value)).toISOString(),
+    eventEndTime: moment(date.value).add(props.item.eventDuration, 'minutes').toISOString(),
+    eventCategoryId: { id: props.item.eventCategoryId },
+    eventDuration: props.item.eventDuration,
+    eventNotes: description.value,
+    name: props.item.eventName,
+    categoryName: props.item.categoryName
+}))
 
+// console.log(moment(new Date(date.value)).toISOString())
 const clearData = () => {
-    date.value = ''
-    time.value = ''
+    dateTime.value = ''
+    // time.value = ''
     description.value = ''
     showCancel.value = false
     emit('existChange')
 }
 
-const checkNull = (eventId) => {
-    if (date.value.length.trim() != 0 && time.value.length.trim() != 0) {
-        clearData(), editEvent(eventId)
-    }
+const checkNull = (event, id) => {
+    if (date.value != '' && time.value != '') {
+        clearData(), editEvent(event, id) , getAllEvents()
+    } 
+    // console.log(event)
 }
+
+const prevent = (event, id) =>{
+    // console.log(editingEvent.value, id)
+    checkNull(editingEvent.value, id)
+    // console.log(id)
+}
+
 
 </script>
  
 <template>
     <div>
-
         <div class="grid grid-cols-2 divide-x-2">
             <!-- col1 -->
             <div>
@@ -72,13 +157,25 @@ const checkNull = (eventId) => {
                 <!-- DATE -->
                 <div class="flex pl-4 py-1">
                     <span class="grid place-items-center py-2 font-semibold px-2 pr-3.5 text-[#5E6366]">Date</span>
-                    <v-date-picker v-model="date" :update-on-input="false" :min-date="new Date()">
-                        <template v-slot="{ inputValue, inputEvents }">
-                            <input
-                                class="flex-none border-[0.5px] border-[#5E6366] bg-[#F1F3F4] rounded-2xl pr-[215px] py-2 px-4  text-black-700 focus:outline-none focus:bg-white focus:border-[#5E6366]"
-                                :value="inputValue" v-on="inputEvents" />
-                        </template>
-                    </v-date-picker>
+
+                    <div class="flex items-center gap-x-2">
+
+                        <Datepicker v-model="date" :enableTimePicker="false" :format="format" :minDate="new Date()"
+                            placeholder="Select Date" hideInputIcon vertical />
+                    </div>
+                    <!-- DURATION -->
+                    <div class="flex pl-4">
+                        <span class="pt-2 px-2">
+                            <svg class="" width="1.5em" height="1.5em" viewBox="0 0 24 24">
+                                <path fill="#5E6366"
+                                    d="M12 20c4.4 0 8-3.6 8-8s-3.6-8-8-8s-8 3.6-8 8s3.6 8 8 8m0-18c5.5 0 10 4.5 10 10s-4.5 10-10 10S2 17.5 2 12S6.5 2 12 2m5 11.9l-.7 1.3l-5.3-2.9V7h1.5v4.4l4.5 2.5Z">
+                                </path>
+                            </svg>
+                        </span>
+                        <div class="flex-none bg-[#F1F3F4] rounded-2xl w-36 py-2 px-4 text-[#C6CACC]">
+                            {{ item.eventDuration }} mins
+                        </div>
+                    </div>
 
                     <!-- <input type="date"
                                 class="flex-none border-[0.5px] border-[#5E6366] bg-[#F1F3F4] rounded-2xl pr-[215px] py-2 px-4  text-black-700 focus:outline-none focus:bg-white focus:border-[#5E6366]"/> -->
@@ -95,29 +192,29 @@ const checkNull = (eventId) => {
                     <br />
                 </div>
                 <!-- TIME -->
-                <div class="grid grid-cols-2 divide-x-2">
-                    <div class="flex pl-4 py-1">
-                        <span class="font-semibold py-2 px-2 pr-3.5 text-[#5E6366]">Time</span>
-                        <input type="time"
-                            class="flex-none border-[0.5px] border-[#5E6366] bg-[#F1F3F4] rounded-2xl w-60 py-2 px-4 text-black-700 focus:outline-none focus:bg-white focus:border-[#5E6366]"
-                            v-model="time">
-
-
-                        <!-- DURATION -->
-                        <div class="flex pl-4 float-right">
-                            <span class="pt-2 px-2">
-                                <svg class="" width="1.5em" height="1.5em" viewBox="0 0 24 24">
-                                    <path fill="#5E6366"
-                                        d="M12 20c4.4 0 8-3.6 8-8s-3.6-8-8-8s-8 3.6-8 8s3.6 8 8 8m0-18c5.5 0 10 4.5 10 10s-4.5 10-10 10S2 17.5 2 12S6.5 2 12 2m5 11.9l-.7 1.3l-5.3-2.9V7h1.5v4.4l4.5 2.5Z">
-                                    </path>
-                                </svg>
-                            </span>
-                            <div class="flex-none bg-[#F1F3F4] rounded-2xl w-36 py-2 px-4 text-[#C6CACC]">
-                                {{ item.eventDuration }} mins
-                            </div>
-                        </div>
+                <!-- <div class="grid grid-cols-2 divide-x-2"> -->
+                <div class="flex pl-4 py-1">
+                    <div class="flex items-center gap-x-2">
+                        <span class="font-semibold py-2 px-2 pr-2 text-[#5E6366]">Time</span>
+                        <Datepicker v-model="time" timePicker is24 :minDate="new Date()" :minTime="{
+                            hours: moment(date).isAfter(moment(new Date()))
+                                ? null
+                                : new Date().getHours(),
+                            minutes: moment(date).isAfter(moment(new Date()))
+                                ? null
+                                : new Date().getMinutes()
+                        }" @closed="checkOverlap" placeholder="Select Time"
+                            :disabled="date == undefined ? true : false" hideInputIcon />
                     </div>
+                    <!-- <span class="font-semibold py-2 px-2 pr-3.5 text-[#5E6366]">Time</span> -->
+                    <div class="flex-none  rounded-2xl w-60 py-2 px-4 text-black-700">
+                        {{ `${moment(time).format('HH:mm')}  -  ${moment(dateTime).add(props.item.eventDuration, 'minutes').format('HH:mm')}` }}
+                    </div>
+                    <!-- <input type="time"
+                            class="flex-none border-[0.5px] border-[#5E6366] bg-[#F1F3F4] rounded-2xl w-60 py-2 px-4 text-black-700 focus:outline-none focus:bg-white focus:border-[#5E6366]"
+                            v-model="time"> -->
                 </div>
+                <!-- </div> -->
             </div>
             <!-- col2 -->
             <div>
@@ -137,9 +234,7 @@ const checkNull = (eventId) => {
                 </div>
             </div>
         </div>
-        {{ time }} <br>
-        {{ date }}
-        <!-- {{ sepTime }} -->
+
         <div class="pt-5 border-b-2 mx-5 text-[#5E6366]"></div>
 
         <!-- DESCRIPTION -->
@@ -170,7 +265,7 @@ const checkNull = (eventId) => {
                 </button>
             </div>
             <!-- EDIT -->
-            <div class="px-4" @click="checkNull(eventId)">
+            <div class="px-4" @click="prevent(event, item.id) ">
                 <button
                     class="flex place-items-center rounded-[5px] bg-[#2FA84F] text-white font-semibold w-36 h-12 px-1">
                     <span class="p-1 bg-white rounded-[5px]">

@@ -206,7 +206,7 @@ const closeDelete = ()=>{
           </div>
 
         </div>
-        <EditEvent v-show="!edit" :item="item" @existChange="existChange" @closeModal="closeModal"/>
+        <EditEvent v-show="!edit" :item="item" @existChange="existChange" />
         
         <div v-show="showDelete">
           <div
