@@ -26,11 +26,12 @@ public class Eventbooking {
 
     @Column(name = "bookingName", nullable = false, length = 100)
     @NotBlank(message = "bookingName can't be null or blank")
+    @Size(max = 100 , message = "bookingName must be between 1-100 characters")
     private String bookingName;
 
     @Email(message = "email must be valid form")
     @NotBlank(message = "email is mendatory")
-    @Size(max = 100 , message = "email must be between 1-100 character")
+    @Size(max = 100 , message = "email must be between 1-100 characters")
     @Column(name = "bookingEmail", nullable = false, length = 100)
     private String bookingEmail;
 
