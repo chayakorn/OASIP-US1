@@ -39,8 +39,8 @@ const refreshPage = (itemId) => {
   emit('itemId', itemId)
 }
 
-const updatedAllEvents = (id) =>{
-  emit('updateEvent', id)
+const updatedAllEvents = (updatedEvent,id) =>{
+  emit('updateEvent',updatedEvent , id)
 }
 
 </script>

@@ -20,8 +20,13 @@ const itemId = (itemId) => {
   eventLists.value = eventLists.value.filter((id) => id.id != itemId)
 }
 
-const updateEvent = (id) => {
-//  eventLists.value.map(x => x.id = id)
+const updateEvent = (updatedEvent, id) => {
+  eventLists.value.forEach(e => {
+    if (e.id === id) 
+      e.eventStartTime = updatedEvent.eventStartTime
+      e.eventEndTime = updatedEvent.eventEndTime
+      e.eventNotes = updatedEvent.eventNotes
+  })
 }
 // const result = Object.values(
 //   eventLists.value.reduce((acc, x) => {
@@ -43,8 +48,8 @@ const currentLists = computed(() =>
   <div class="p-10">
     <div class="text-4xl font-bold">Scheduled Events</div>
     <div class="my-5">
-      <span class="text-2xl font-bold">All Events</span
-      ><span class="ml-2 text-gray-400">{{ eventLists.length }} events</span>
+      <span class="text-2xl font-bold">All Events</span><span class="ml-2 text-gray-400">{{ eventLists.length }}
+        events</span>
     </div>
     <div v-if="eventLists.length > 0">
       <!-- No Group -->
@@ -68,13 +73,11 @@ const currentLists = computed(() =>
         "
       /> -->
     </div>
-    <div
-      v-else
-      class="h-3/4 grid place-content-center text-[#C6CACC] font-bold text-4xl"
-    >
+    <div v-else class="h-3/4 grid place-content-center text-[#C6CACC] font-bold text-4xl">
       No Scheduled Events.
     </div>
   </div>
 </template>
 
-<style></style>
+<style>
+</style>

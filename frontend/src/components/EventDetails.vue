@@ -18,7 +18,7 @@ const sendEditData = (updatedEvent, id)=>{
   startTime.value = moment(updatedEvent.eventStartTime).format('H:mm')
   endTime.value = moment(updatedEvent.eventEndTime).format('H:mm')
   date.value = moment(updatedEvent.eventStartTime).format('DD MMM YYYY')
-  emit('updatedAllEvents', id)
+  emit('updatedAllEvents',updatedEvent, id)
 }
 
 const edit = ref(true)
