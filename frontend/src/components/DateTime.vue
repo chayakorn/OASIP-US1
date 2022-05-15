@@ -3,52 +3,57 @@ import { computed, ref } from 'vue'
 import moment from 'moment'
 import Datepicker from '@vuepic/vue-datepicker'
 import '@vuepic/vue-datepicker/dist/main.css'
-const emits = defineEmits(['sendDate'])
+import { useEvents } from '../stores/events.js'
+
+const emits = defineEmits(['sendDate', 'sendTime'])
 const props = defineProps({
-  // events: { type: Array, default: [] },
-  category: { type: Object, default: {} }
+  category: { type: Object, default: {} },
+  date: { type: String, default: '' },
+  time: { type: String, default: '' }
 })
 
-const date = ref()
-const time = ref()
-const dateTime = computed(
-  () =>
-    `${moment(date.value).format('YYYY-MM-DD')} ${moment(time.value).format(
-      'HH:mm'
-    )}`
-)
+const dateTime = computed(() => {
+  return { date: props.date, time: props.time }
+})
 
-function getTimeStops(start, end) {
-  var startTime = moment(start, 'HH:mm')
-  var endTime = moment(end, 'HH:mm')
+// const date = ref()
+// const time = ref()
+// const dateTime = computed(
+//   () =>
+//     `${moment(date.value).format('YYYY-MM-DD')} ${moment(time.value).format(
+//       'HH:mm'
+//     )}`
+// )
 
-  if (endTime.isBefore(startTime)) {
-    endTime.add(1, 'day')
-  }
+// const selectedDateTime = computed(() => {
+//   return { date: props.date, time: props.time }
+// })
 
-  var timeStops = []
+// function getTimeStops(start, end) {
+//   var startTime = moment(start, 'HH:mm')
+//   var endTime = moment(end, 'HH:mm')
 
-  while (startTime <= endTime) {
-    timeStops.push({
-      date: moment(startTime).format('DD-MM-YYYY HH:mm'),
-      status: ref(false)
-    })
-    startTime.add(30, 'minutes')
-  }
-  return timeStops
-}
+//   if (endTime.isBefore(startTime)) {
+//     endTime.add(1, 'day')
+//   }
 
-var timeStops = getTimeStops('00:00', '23:59')
+//   var timeStops = []
 
-const eventLists = ref([])
-const getAllEvents = async () => {
-  const res = await fetch(`${import.meta.env.VITE_BASE_URL}/event`)
-  if (res.status === 200) {
-    eventLists.value = await res.json()
-  } else console.log('error, cannot get events')
-}
+//   while (startTime <= endTime) {
+//     timeStops.push({
+//       date: moment(startTime).format('DD-MM-YYYY HH:mm'),
+//       status: ref(false)
+//     })
+//     startTime.add(30, 'minutes')
+//   }
+//   return timeStops
+// }
 
-getAllEvents()
+// var timeStops = getTimeStops('00:00', '23:59')
+const myEvents = useEvents()
+const eventLists = computed(() => myEvents.eventLists)
+// GET
+myEvents.getAllEvents()
 
 const format = (date) => {
   const day = date.getDate()
@@ -79,22 +84,25 @@ const checkOverlap = () => {
               'minutes'
             )
           ) ||
-          selectedEndTime.isBetween(
-            moment(new Date(e.eventStartTime), 'DD-MM-YYYY HH:mm').add(
-              -1,
-              'minutes'
-            ),
-            moment(new Date(e.eventEndTime), 'DD-MM-YYYY HH:mm').add(
-              1,
-              'minutes'
-            )
+          moment(new Date(e.eventStartTime), 'DD-MM-YYYY HH:mm').isBetween(
+            selectedStartTime.add(-1, 'minutes'),
+            selectedEndTime.add(1, 'minutes')
+          ) ||
+          moment(new Date(e.eventEndTime), 'DD-MM-YYYY HH:mm').isBetween(
+            selectedStartTime.add(-1, 'minutes'),
+            selectedEndTime.add(1, 'minutes')
           )
         )
           return true
         else return false
       })
   )
-    emits('sendDate', dateTime.value)
+    // {
+    //   console.log(date.value)
+    //   console.log(moment(time.value).format('HH:mm'))
+    //   console.log(dateTime.value)
+    // }
+    emits('sendTime', moment(dateTime.value.time).format('HH:mm'))
   else alert('your selected time has been booked, please choose a new time!')
 }
 </script>
@@ -109,13 +117,14 @@ const checkOverlap = () => {
         ></path>
       </svg>
       <Datepicker
-        v-model="date"
+        v-model="dateTime.date"
         :enableTimePicker="false"
         :format="format"
         :minDate="new Date()"
         placeholder="Select Date"
         hideInputIcon
         vertical
+        @closed="$emit('sendDate', moment(dateTime.date).format('YYYY-MM-DD'))"
       />
     </div>
     <div>
@@ -134,7 +143,7 @@ const checkOverlap = () => {
         ></path>
       </svg>
       <Datepicker
-        v-model="time"
+        v-model="dateTime.time"
         timePicker
         is24
         :minDate="new Date()"
@@ -157,7 +166,7 @@ const checkOverlap = () => {
       <span :class="[time ? '' : 'text-[#F3A72E]']">
         {{
           time
-            ? `${moment(time).format('HH:mm')} - ${moment(dateTime)
+            ? `${moment(time).format('HH:mm')} - ${moment(time)
                 .add(props.category.eventDuration, 'minutes')
                 .format('HH:mm')}`
             : 'Please select time !'

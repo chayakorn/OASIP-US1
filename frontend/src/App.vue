@@ -53,6 +53,21 @@
         ></router-link>
       </div>
     </div>
+    <div
+      class="absolute w-1/12 bottom-5 -ml-1 mt-5 grid place-content-center hover:scale-110 duration-700"
+    >
+      <router-link :to="{ name: 'Developer' }"
+        ><svg width="2.5em" height="2.5em" viewBox="0 0 32 32">
+          <path
+            fill="currentColor"
+            d="M8 4v4H4V4h4M2 2v8h8V2zm16 5v4h-4V7h4m-6-2v8h8V5zM8 16v4H4v-4h4m-6-2v8h8v-8z"
+          ></path>
+          <path
+            fill="currentColor"
+            d="M22 10v6h-6v6h-6v8h20V10Zm-4 8h4v4h-4Zm-2 10h-4v-4h4Zm6 0h-4v-4h4Zm6 0h-4v-4h4Zm0-6h-4v-4h4Zm-4-6v-4h4v4Z"
+          ></path></svg
+      ></router-link>
+    </div>
     <div class="w-full">
       <router-view
         :class="[

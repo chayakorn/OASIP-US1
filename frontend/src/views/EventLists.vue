@@ -1,42 +1,14 @@
 <script setup>
-import { onBeforeMount, ref, computed } from 'vue'
+import { computed } from 'vue'
 import EventItem from '../components/EventItem.vue'
-// import Lists from '../components/Lists.vue'
+import { useEvents } from '../stores/events.js'
 
-const eventLists = ref([])
-const getAllEvents = async () => {
-  const res = await fetch(`${import.meta.env.VITE_BASE_URL}/event`)
-  if (res.status === 200) {
-    eventLists.value = await res.json()
-  } else console.log('error, cannot get events')
-}
+//use state "Events"
+const myEvents = useEvents()
+const eventLists = computed(() => myEvents.eventLists)
+//  GET
+myEvents.getAllEvents()
 
-// getAllEvents()
-onBeforeMount(async () => {
-  await getAllEvents()
-})
-
-const itemId = (itemId) => {
-  eventLists.value = eventLists.value.filter((id) => id.id != itemId)
-}
-
-const updateEvent = (updatedEvent, id) => {
-  eventLists.value.forEach(e => {
-    if (e.id === id) 
-      e.eventStartTime = updatedEvent.eventStartTime
-      e.eventEndTime = updatedEvent.eventEndTime
-      e.eventNotes = updatedEvent.eventNotes
-  })
-}
-// const result = Object.values(
-//   eventLists.value.reduce((acc, x) => {
-//     acc[moment.utc(x.eventStartTime).format('DD MMM YYYY')] = [
-//       ...(acc[moment.utc(x.eventStartTime).format('DD MMM YYYY')] || []),
-//       x
-//     ]
-//     return acc
-//   }, {})
-// )
 const currentLists = computed(() =>
   eventLists.value.sort(
     (a, b) => new Date(b.eventStartTime) - new Date(a.eventStartTime)
@@ -48,13 +20,13 @@ const currentLists = computed(() =>
   <div class="p-10">
     <div class="text-4xl font-bold">Scheduled Events</div>
     <div class="my-5">
-      <span class="text-2xl font-bold">All Events</span><span class="ml-2 text-gray-400">{{ eventLists.length }}
-        events</span>
+      <span class="text-2xl font-bold">All Events</span
+      ><span class="ml-2 text-gray-400">{{ eventLists.length }} events</span>
     </div>
     <div v-if="eventLists.length > 0">
       <!-- No Group -->
       <div class="contentSize flex flex-wrap gap-x-10 gap-y-5">
-        <EventItem v-for="list in currentLists" :item="list" @itemId="itemId" @updateEvent="updateEvent" />
+        <EventItem v-for="list in currentLists" :item="list" />
       </div>
       <!-- GroupBy Day -->
       <!-- <Lists
@@ -73,11 +45,13 @@ const currentLists = computed(() =>
         "
       /> -->
     </div>
-    <div v-else class="h-3/4 grid place-content-center text-[#C6CACC] font-bold text-4xl">
+    <div
+      v-else
+      class="h-3/4 grid place-content-center text-[#C6CACC] font-bold text-4xl"
+    >
       No Scheduled Events.
     </div>
   </div>
 </template>
 
-<style>
-</style>
+<style></style>

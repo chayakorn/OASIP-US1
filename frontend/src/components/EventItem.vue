@@ -2,8 +2,7 @@
 import moment from 'moment'
 import { ref } from 'vue'
 import EventDetails from './EventDetails.vue'
-const emit = defineEmits(['itemId', 'updateEvent'])
-const props = defineProps({
+defineProps({
   item: {
     type: Object,
     require: true
@@ -33,16 +32,6 @@ const closeModal = (status) => {
 const showDetails = () => {
   showMore.value = !showMore.value
 }
-
-const refreshPage = (itemId) => {
-  showMore.value = false
-  emit('itemId', itemId)
-}
-
-const updatedAllEvents = (updatedEvent,id) =>{
-  emit('updateEvent',updatedEvent , id)
-}
-
 </script>
 
 <template>
@@ -74,8 +63,6 @@ const updatedAllEvents = (updatedEvent,id) =>{
     :item="item"
     :color="categoryBg(item.eventCategoryId)"
     @closeModal="closeModal"
-    @refreshPage="refreshPage"
-    @updatedAllEvents="updatedAllEvents"
   />
 </template>
 

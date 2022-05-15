@@ -3,7 +3,6 @@ import App from './App.vue'
 import router from './router'
 import './index.css'
 import moment from 'moment'
-import 'v-calendar/dist/style.css'
-import VCalendar from 'v-calendar'
+import { createPinia } from 'pinia'
 
-createApp(App).use(router).use(VCalendar, {}).use(moment).mount('#app')
+createApp(App).use(router).use(createPinia()).use(moment).mount('#app')
