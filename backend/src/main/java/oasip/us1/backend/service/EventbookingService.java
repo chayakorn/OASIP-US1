@@ -64,7 +64,6 @@ public class EventbookingService {
         if (event.getBookingEmail().length() > 100){
             return ResponseEntity.status(400).body("Email is over length");
         }
-
         if(event.getEventNotes().length()>500){
             return ResponseEntity.status(400).body("Eventnote over length");
         }

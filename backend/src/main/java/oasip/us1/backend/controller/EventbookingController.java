@@ -11,6 +11,8 @@ import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.*;
 
 import javax.servlet.http.HttpServletResponse;
+import javax.validation.ConstraintViolationException;
+import javax.validation.Valid;
 import java.util.List;
 
 @RestController
@@ -31,13 +33,13 @@ public class EventbookingController {
     }
 
     @PostMapping("")
-    @ResponseStatus(HttpStatus.CREATED)
-    private ResponseEntity addEvent(@RequestBody Eventbooking newEventBooking){
+    private ResponseEntity addEvent(@Valid @RequestBody Eventbooking newEventBooking){
         return service.save(newEventBooking);
     }
 
     @PutMapping("/{id}")
-    private ResponseEntity update(@RequestBody Eventbooking editEventBooking,@PathVariable int id){
+    private ResponseEntity update(@Valid @RequestBody Eventbooking editEventBooking,@PathVariable int id){
+
         return service.update(editEventBooking,id);
     }
 
