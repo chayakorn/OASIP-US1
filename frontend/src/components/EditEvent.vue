@@ -5,7 +5,7 @@ import moment from 'moment'
 import Datepicker from '@vuepic/vue-datepicker'
 import '@vuepic/vue-datepicker/dist/main.css'
 
-const emit = defineEmits(['existChange'])
+const emit = defineEmits(['existChange', 'sendEditData'])
 const props = defineProps({
     item: {
         type: Object,
@@ -17,7 +17,7 @@ const props = defineProps({
     }
 })
 
-console.log(props.item.eventStartTime)
+// console.log(props.item.eventStartTime)
 const eventLists = ref([])
 const getAllEvents = async () => {
     const res = await fetch(`${import.meta.env.VITE_BASE_URL}/event`)
@@ -36,6 +36,7 @@ const format = (date) => {
     return `${day} ${month} ${year}`
 }
 
+// console.log(eventLists)
 const checkOverlap = () => {
     let selectedStartTime = moment(new Date(dateTime.value), 'DD-MM-YYYY HH:mm')
     let selectedEndTime = moment(
@@ -44,7 +45,7 @@ const checkOverlap = () => {
     ).add(props.item.eventDuration, 'minutes')
     if (
         !eventLists.value
-            .filter((item) => item.eventCategoryId == props.item.id)
+            .filter((item) => item.eventCategoryId == props.item.eventCategoryId)
             .some((e) => {
                 if (
                     selectedStartTime.isBetween(
@@ -72,17 +73,14 @@ const checkOverlap = () => {
                 else return false
             })
     )
-    console.log(dateTime.value) 
-    // dates.value = dateTime.value
-    // console.log(dates.value = dateTime.value)
-    else {alert('your selected time has been booked, please choose a new time!')}
+        dateTime.value
+    else alert('your selected time has been booked, please choose a new time!')
 }
 
 const showCancel = ref(false)
 const description = ref('')
 const date = ref()
 const time = ref()
-// const dates = ref()
 const dateTime = computed(() =>
     `${moment(date.value).format('YYYY-MM-DD')} ${moment(time.value).format('HH:mm')}`
 )
@@ -102,13 +100,12 @@ const editEvent = async (event, id) => {
     })
 }
 
-// console.log(moment(new Date(date.value)).toISOString())
 
 const editingEvent = computed(() => ({
     bookingName: props.item.bookingName,
     bookingEmail: props.item.bookingEmail,
-    eventStartTime: moment(new Date(date.value)).toISOString(),
-    eventEndTime: moment(date.value).add(props.item.eventDuration, 'minutes').toISOString(),
+    eventStartTime: moment(new Date(dateTime.value)).toISOString(),
+    eventEndTime: moment(dateTime.value).add(props.item.eventDuration, 'minutes').toISOString(),
     eventCategoryId: { id: props.item.eventCategoryId },
     eventDuration: props.item.eventDuration,
     eventNotes: description.value,
@@ -116,10 +113,9 @@ const editingEvent = computed(() => ({
     categoryName: props.item.categoryName
 }))
 
-// console.log(moment(new Date(date.value)).toISOString())
 const clearData = () => {
-    dateTime.value = ''
-    // time.value = ''
+    date.value = null
+    time.value = null
     description.value = ''
     showCancel.value = false
     emit('existChange')
@@ -127,15 +123,12 @@ const clearData = () => {
 
 const checkNull = (event, id) => {
     if (date.value != '' && time.value != '') {
-        clearData(), editEvent(event, id) , getAllEvents()
-    } 
-    // console.log(event)
+        editEvent(event, id), getAllEvents(),  emit('sendEditData', editingEvent.value, id), clearData()
+    }
 }
 
-const prevent = (event, id) =>{
-    // console.log(editingEvent.value, id)
+const prevent = (event, id) => {
     checkNull(editingEvent.value, id)
-    // console.log(id)
 }
 
 
@@ -176,7 +169,6 @@ const prevent = (event, id) =>{
                             {{ item.eventDuration }} mins
                         </div>
                     </div>
-
                     <!-- <input type="date"
                                 class="flex-none border-[0.5px] border-[#5E6366] bg-[#F1F3F4] rounded-2xl pr-[215px] py-2 px-4  text-black-700 focus:outline-none focus:bg-white focus:border-[#5E6366]"/> -->
 
@@ -208,7 +200,9 @@ const prevent = (event, id) =>{
                     </div>
                     <!-- <span class="font-semibold py-2 px-2 pr-3.5 text-[#5E6366]">Time</span> -->
                     <div class="flex-none  rounded-2xl w-60 py-2 px-4 text-black-700">
-                        {{ `${moment(time).format('HH:mm')}  -  ${moment(dateTime).add(props.item.eventDuration, 'minutes').format('HH:mm')}` }}
+                        {{ `${moment(time).format('HH:mm')} - ${moment(dateTime).add(props.item.eventDuration,
+                                'minutes').format('HH:mm')}`
+                        }}
                     </div>
                     <!-- <input type="time"
                             class="flex-none border-[0.5px] border-[#5E6366] bg-[#F1F3F4] rounded-2xl w-60 py-2 px-4 text-black-700 focus:outline-none focus:bg-white focus:border-[#5E6366]"
@@ -265,7 +259,7 @@ const prevent = (event, id) =>{
                 </button>
             </div>
             <!-- EDIT -->
-            <div class="px-4" @click="prevent(event, item.id) ">
+            <div class="px-4" @click="prevent(event, item.id)">
                 <button
                     class="flex place-items-center rounded-[5px] bg-[#2FA84F] text-white font-semibold w-36 h-12 px-1">
                     <span class="p-1 bg-white rounded-[5px]">
@@ -295,7 +289,7 @@ const prevent = (event, id) =>{
                         </div>
                         <div class="px-2">
                             <button class="bg-[#DCF7E3] font-semibold text-lg text-[#2FA84F] rounded-[20px] py-3 px-16"
-                                @click="clearData">CONFIRM</button>
+                                @click="clearData()">CONFIRM</button>
                         </div>
                     </div>
 

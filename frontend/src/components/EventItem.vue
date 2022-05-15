@@ -2,7 +2,7 @@
 import moment from 'moment'
 import { ref } from 'vue'
 import EventDetails from './EventDetails.vue'
-const emit = defineEmits(['itemId'])
+const emit = defineEmits(['itemId', 'updateEvent'])
 const props = defineProps({
   item: {
     type: Object,
@@ -38,6 +38,11 @@ const refreshPage = (itemId) => {
   showMore.value = false
   emit('itemId', itemId)
 }
+
+const updatedAllEvents = (id) =>{
+  emit('updateEvent', id)
+}
+
 </script>
 
 <template>
@@ -55,7 +60,7 @@ const refreshPage = (itemId) => {
     </div>
     <div class="font-bold text-sm m-2">{{ item.categoryName }}</div>
     <div class="text-sm m-2">
-      {{ moment(item.eventStartTime).format('DD MMM YYYY | h:mm A') }}
+      {{ moment(item.eventStartTime).format('DD MMM YYYY | H:mm') }}
       <span class="float-right">{{ item.eventDuration }} mins</span>
     </div>
     <div
@@ -70,6 +75,7 @@ const refreshPage = (itemId) => {
     :color="categoryBg(item.eventCategoryId)"
     @closeModal="closeModal"
     @refreshPage="refreshPage"
+    @updatedAllEvents="updatedAllEvents"
   />
 </template>
 

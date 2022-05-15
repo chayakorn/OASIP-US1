@@ -1,9 +1,8 @@
 <script setup>
 import moment from 'moment'
-import { ref } from 'vue';
+import { ref, computed } from 'vue';
 import EditEvent from './EditEvent.vue';
-const emit = defineEmits(['closeModal', 'refreshPage'])
-// import { useRoute, useRouter } from 'vue-router'
+const emit = defineEmits(['closeModal', 'refreshPage','updatedAllEvents'])
 const props = defineProps({
   item: {
     type: Object,
@@ -15,17 +14,21 @@ const props = defineProps({
   }
 })
 
+const sendEditData = (updatedEvent, id)=>{
+  startTime.value = moment(updatedEvent.eventStartTime).format('H:mm')
+  endTime.value = moment(updatedEvent.eventEndTime).format('H:mm')
+  date.value = moment(updatedEvent.eventStartTime).format('DD MMM YYYY')
+  emit('updatedAllEvents', id)
+}
 
 const edit = ref(true)
 const showDelete = ref(false)
-const date = moment(props.item.eventStartTime).format('DD MMM YYYY')
-let startTime = moment(props.item.eventStartTime).format('h:mm A')
+const date = ref(moment(props.item.eventStartTime).format('DD MMM YYYY'))
+let startTime = ref(moment(props.item.eventStartTime).format('H:mm'))
 
-
-const endTime = moment(startTime, 'h:mm A')
+const endTime = ref(moment(startTime.value, 'H:mm')
   .add(props.item.eventDuration, 'minutes')
-  .format('h:mm A')
-
+  .format('H:mm'))
 
 const log = (event) => {
   if (event.target.id == 'modal') {
@@ -42,14 +45,6 @@ const removeEvent = async (deleteEventId) => {
   const res = await fetch(`${import.meta.env.VITE_BASE_URL}/event/${deleteEventId}`, {
     method: 'DELETE'
   })
-  // if(res.status === 200)
-  // {
-    // emit('refreshPage')
-
-  //   ev.value = props.item.filter((event)=> event.props.item.id !== deleteEventId)
-    // console.log('deleted successfully')
-  // }
-  // else console.log('error, cannot delete')
 }
 
 
@@ -206,7 +201,7 @@ const closeDelete = ()=>{
           </div>
 
         </div>
-        <EditEvent v-show="!edit" :item="item" @existChange="existChange" />
+        <EditEvent v-show="!edit" :item="item" @existChange="existChange" @sendEditData="sendEditData"/>
         
         <div v-show="showDelete">
           <div
