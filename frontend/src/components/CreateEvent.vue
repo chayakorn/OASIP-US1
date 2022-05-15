@@ -65,8 +65,6 @@ const dateTime = computed(() =>
     )}`
   )
 )
-const showBookingName = computed(() => bookingName.value.length)
-const showNote = computed(() => note.value.length)
 const reset = () => {
   bookingName.value = ''
   email.value = ''
@@ -202,7 +200,7 @@ const checkOverlap = () => {
                   * Please fill out this field.
                 </p>
                 <div class="absolute right-0 top-4 text-xs text-gray-500">
-                  {{ showBookingName }}/100
+                  {{ bookingName.length }}/100
                 </div>
               </div>
               <div class="mb-5">
@@ -227,6 +225,7 @@ const checkOverlap = () => {
                 <input
                   :class="[borderStyle, 'peer']"
                   type="email"
+                  maxlength="100"
                   placeholder="username@example.com"
                   v-model="email"
                   @invalid="invalid"
@@ -237,6 +236,9 @@ const checkOverlap = () => {
                 >
                   * Please provide a valid email address.
                 </p>
+                <div class="absolute right-0 top-4 text-xs text-gray-500">
+                  {{ email.length }}/100
+                </div>
               </div>
             </div>
             <div class="bg-[#F7F9FA] ml-10 rounded-2xl grid content-center">
@@ -331,7 +333,7 @@ const checkOverlap = () => {
                 v-model="note"
               />
               <div class="absolute right-0 top-4 text-xs text-gray-500">
-                {{ showNote }}/500
+                {{ note.length }}/500
               </div>
             </div>
             <div class="ml-10 mb-1 relative">

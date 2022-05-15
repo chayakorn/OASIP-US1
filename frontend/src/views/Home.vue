@@ -1,4 +1,5 @@
 <script setup>
+import moment from 'moment'
 import { onBeforeMount, ref } from 'vue'
 import Card from '../components/Card.vue'
 import CreateEvent from '../components/CreateEvent.vue'
