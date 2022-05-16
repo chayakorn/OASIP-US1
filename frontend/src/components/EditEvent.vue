@@ -225,8 +225,8 @@ const prevent = (event, id) => {
           <!-- <span class="font-semibold py-2 px-2 pr-3.5 text-[#5E6366]">Time</span> -->
           <div class="flex-none rounded-2xl w-60 py-2 px-4 text-black-700">
             {{
-              `${moment(time).format('HH:mm')} - ${moment(dateTime)
-                .add(props.item.eventDuration, 'minutes')
+              `${moment(time).format('HH:mm')} - ${moment(time)
+                .add(item.eventDuration, 'minutes')
                 .format('HH:mm')}`
             }}
           </div>
