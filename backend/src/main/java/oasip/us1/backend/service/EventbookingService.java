@@ -8,16 +8,23 @@ import oasip.us1.backend.repository.EventcategoryRepository;
 import oasip.us1.backend.utils.ListMapper;
 import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
+import org.springframework.validation.BindingResult;
+import org.springframework.validation.FieldError;
+import org.springframework.web.context.request.ServletWebRequest;
+import org.springframework.web.context.request.WebRequest;
 
 import javax.servlet.http.HttpServletResponse;
 import java.time.Instant;
 import java.time.ZoneId;
 import java.time.ZoneOffset;
 import java.time.format.DateTimeFormatter;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Collection;
+import java.util.Map;
 
 @Service
 public class EventbookingService {
@@ -36,57 +43,62 @@ public class EventbookingService {
     public EventbookingDto getEventById(int id){
         return modelMapper.map(repository.getById(id),EventbookingDto.class) ;
     }
-    public ResponseEntity save(Eventbooking event){
-        if(!repository.findByEventStartTimeBetween(DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm").withZone(ZoneId.from(ZoneOffset.UTC)).format(event.getEventStartTime()),DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm").withZone(ZoneId.from(ZoneOffset.UTC)).format(event.getEventEndTime()),event.getEventCategoryId().getId()).isEmpty()) {
-            return ResponseEntity.status(400).body("Overlapped time");
-        }
+    public ResponseEntity save(Eventbooking event, BindingResult bindingResult, WebRequest request){
+        Map<Object,Object> errorBody = new HashMap<>();
+        Map<Object,Object> fieldError = new HashMap<>();
+
         if(event.getEventStartTime().isBefore(Instant.now())){
-            return ResponseEntity.status(400).body("EventStartTime is past");
+            fieldError.put("eventStartTime","eventStartTime can't be past");
         }
         if(event.getEventEndTime().isBefore(event.getEventStartTime())){
-            return ResponseEntity.status(400).body("EventEndTime is before eventStartTime");
+
+            fieldError.put("eventEndTime","eventEndTime can not begin before eventStartTime");
         }
-        if(event.getBookingName() == null || event.getBookingEmail().length() == 0){
-            return ResponseEntity.status(400).body("BookingName error null");
+        if(!repository.findByEventStartTimeBetween(DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm").withZone(ZoneId.from(ZoneOffset.UTC)).format(event.getEventStartTime()),DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm").withZone(ZoneId.from(ZoneOffset.UTC)).format(event.getEventEndTime()),event.getEventCategoryId().getId()).isEmpty() ) {
+            fieldError.put("TimeOverlap","your selected time is not available");
         }
-        if(event.getBookingName().length() > 100){
-            return ResponseEntity.status(400).body("BookingName over length");
-        }
-        if(event.getEventCategoryId() == null){
-            return ResponseEntity.status(400).body("EventCategory is null");
-        }
-        if(!event.getBookingEmail().matches("^[0-z.!#$%&'*+/=?^_`{|}~-]+@[0-z-]+(.[0-z-]+)*$") ){
-            return ResponseEntity.status(400).body("Email is not valid");
-        }
-        if (event.getBookingEmail() == null ){
-            return ResponseEntity.status(400).body("Email is null");
-        }
-        if (event.getBookingEmail().length() > 100){
-            return ResponseEntity.status(400).body("Email is over length");
-        }
-        if(event.getEventNotes().length()>500){
-            return ResponseEntity.status(400).body("Eventnote over length");
-        }
+        if(!bindingResult.hasErrors()){
         System.out.println("Insert!");
         return ResponseEntity.status(201).body(repository.saveAndFlush(event));
-    }
-    public ResponseEntity update(Eventbooking updateEventbooking , int bookingid){
-        Eventbooking event = repository.findById(bookingid).map(eventbooking1 -> mapEvent(eventbooking1,updateEventbooking,bookingid)).get();
-
-        if(!repository.findByEventStartTimeBetweenForPut(DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm").withZone(ZoneId.from(ZoneOffset.UTC)).format(event.getEventStartTime()),DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm").withZone(ZoneId.from(ZoneOffset.UTC)).format(event.getEventEndTime()),event.getEventCategoryId().getId(),event.getId()).isEmpty()){
-            return ResponseEntity.status(400).body("Overlapped time");
         }
+        bindingResult.getAllErrors().forEach((error)->{
+            fieldError.put(((FieldError)error).getField(),error.getDefaultMessage());
+
+        });
+        errorBody.put("timestamp",Instant.now().atZone(ZoneId.of("Asia/Bangkok")));
+        errorBody.put("status",HttpStatus.BAD_REQUEST);
+        errorBody.put("message","Validation failed");
+        errorBody.put("fieldErrors",fieldError);
+        errorBody.put("path", ((ServletWebRequest) request).getContextPath().toString());
+        return new ResponseEntity(errorBody, HttpStatus.BAD_REQUEST);
+    }
+    public ResponseEntity update(Eventbooking updateEventbooking , int bookingid, BindingResult bindingResult,WebRequest request ){
+        Eventbooking event = repository.findById(bookingid).map(eventbooking1 -> mapEvent(eventbooking1,updateEventbooking,bookingid)).get();
+        Map<Object,Object> errorBodyput = new HashMap<>();
+        Map<Object,Object> fieldError = new HashMap<>();
+
         if(event.getEventStartTime().isBefore(Instant.now())){
-            return ResponseEntity.status(400).body("EventStartTime is past");
+            fieldError.put("eventStartTime","eventStartTime can't be past");
         }
         if(event.getEventEndTime().isBefore(event.getEventStartTime())){
-            return ResponseEntity.status(400).body("EventEndTime is before eventStartTime");
+
+            fieldError.put("eventEndTime","eventEndTime can not begin before eventStartTime");
         }
-        if(event.getEventNotes().length()>500){
-            return ResponseEntity.status(400).body("Eventnote over length");
+        if(!repository.findByEventStartTimeBetweenForPut(DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm").withZone(ZoneId.from(ZoneOffset.UTC)).format(event.getEventStartTime()),DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm").withZone(ZoneId.from(ZoneOffset.UTC)).format(event.getEventEndTime()),event.getEventCategoryId().getId(),event.getId()).isEmpty()){
+            fieldError.put("TimeOverlap","your selected time is not available");
         }
+        if (!bindingResult.hasErrors()){
         System.out.println("Insert!");
         return ResponseEntity.status(200).body(repository.saveAndFlush(event));
+        }
+
+        errorBodyput.put("timestamp",Instant.now().atZone(ZoneId.of("Asia/Bangkok")));
+        errorBodyput.put("status",HttpStatus.BAD_REQUEST);
+        errorBodyput.put("message","Validation failed");
+        errorBodyput.put("fieldErrors",fieldError);
+        errorBodyput.put("path", ((ServletWebRequest) request).getContextPath().toString());
+        return new ResponseEntity(errorBodyput, HttpStatus.BAD_REQUEST);
+
     }
 
     public void delete(int id){

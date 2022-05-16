@@ -8,7 +8,9 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
+import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.context.request.WebRequest;
 
 import javax.servlet.http.HttpServletResponse;
 import javax.validation.ConstraintViolationException;
@@ -33,14 +35,15 @@ public class EventbookingController {
     }
 
     @PostMapping("")
-    private ResponseEntity addEvent(@Valid @RequestBody Eventbooking newEventBooking){
-        return service.save(newEventBooking);
+    @ExceptionHandler
+    private ResponseEntity addEvent(@Valid @RequestBody Eventbooking newEventBooking, BindingResult result, WebRequest request){
+        return service.save(newEventBooking,result,request);
     }
 
     @PutMapping("/{id}")
-    private ResponseEntity update(@Valid @RequestBody Eventbooking editEventBooking,@PathVariable int id){
-
-        return service.update(editEventBooking,id);
+    @ExceptionHandler
+    private ResponseEntity update(@Valid @RequestBody Eventbooking editEventBooking, @PathVariable int id,BindingResult result,WebRequest request){
+        return service.update(editEventBooking,id,result,request);
     }
 
     @DeleteMapping("/{id}")
