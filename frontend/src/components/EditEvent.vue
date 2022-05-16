@@ -119,12 +119,13 @@ const clearData = () => {
 }
 
 const checkNull = (event, id) => {
-  if (date.value != '' && time.value != '') {
+  if (date.value != null && time.value != null) {
     editEvent(event, id),
       emit('sendEditData', editingEvent.value, id),
       myEvents.editEvent(editingEvent.value, id)
     clearData()
   }
+  else(alert('Please selected date that you want to change.'))
 }
 
 const prevent = (event, id) => {
