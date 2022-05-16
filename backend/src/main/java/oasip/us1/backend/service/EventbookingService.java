@@ -82,9 +82,6 @@ public class EventbookingService {
         Eventbooking event = repository.findById(bookingid).get();
 
         Map<String,String> fieldError = new HashMap<>();
-        if(updateEventbooking.getEventEndTime().isBefore(event.getEventStartTime())){
-            fieldError.put("eventEndTime","eventEndTime can not begin before eventStartTime");
-        }
         if(updateEventbooking.getEventStartTime().isBefore(Instant.now())){
             fieldError.put("eventStartTime","eventStartTime can not be past");
         }
