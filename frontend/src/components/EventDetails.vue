@@ -1,6 +1,6 @@
 <script setup>
 import moment from 'moment'
-import { ref } from 'vue'
+import { ref, computed } from 'vue'
 import EditEvent from './EditEvent.vue'
 import { useEvents } from '../stores/events.js'
 
@@ -22,9 +22,10 @@ const sendEditData = (updatedEvent) => {
   startTime.value = moment(updatedEvent.eventStartTime).format('H:mm')
   endTime.value = moment(updatedEvent.eventEndTime).format('H:mm')
   date.value = moment(updatedEvent.eventStartTime).format('DD MMM YYYY')
-  props.item.eventNotes = updatedEvent.eventNotes
+  description.value = updatedEvent.eventNotes
 }
 
+const description = ref()
 const edit = ref(true)
 const showDelete = ref(false)
 const date = ref(moment(props.item.eventStartTime).format('DD MMM YYYY'))
@@ -38,12 +39,12 @@ const endTime = ref(
 
 const log = (event) => {
   if (event.target.id == 'modal') {
-    emit('closeModal', false)
+    existChange()
   }
 }
 
 const existChange = () => {
-  edit.value = true
+  emit('closeModal', false)
 }
 
 const closeDelete = () => {
@@ -245,7 +246,7 @@ const closeDelete = () => {
           </div>
         </div>
         <EditEvent
-          v-show="!edit"
+          v-if="!edit"
           :item="item"
           @existChange="existChange"
           @sendEditData="sendEditData"
