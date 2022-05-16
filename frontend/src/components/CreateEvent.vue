@@ -1,6 +1,6 @@
 <script setup>
 import moment from 'moment'
-import { computed, ref } from 'vue'
+import { computed, onUpdated, ref } from 'vue'
 
 import Datepicker from '@vuepic/vue-datepicker'
 import '@vuepic/vue-datepicker/dist/main.css'
@@ -26,8 +26,7 @@ const creatingEvent = computed(() => ({
   eventCategoryId: { id: props.category.id },
   eventDuration: props.category.eventDuration,
   eventNotes: note.value,
-  name: name.value,
-  categoryName: props.category.eventCategoryName
+  name: name.value
 }))
 const checkNull = (newEvent) => {
   if (
@@ -155,7 +154,11 @@ const checkOverlap = () => {
       })
   )
     true
-  else alert('your selected time has been booked, please choose a new time!')
+  else {
+    date.value = ''
+    time.value = ''
+    alert('your selected time has been booked, please selete a new time!')
+  }
 }
 </script>
 
@@ -199,6 +202,13 @@ const checkOverlap = () => {
                 >
                   * Please fill out this field.
                 </p>
+                <div
+                  v-if="bookingName.length == 100"
+                  class="absolute text-xs text-[#F3A72E]"
+                >
+                  The number of characters has a limit of 100 characters. If it
+                  exceeds 100, it will not be able to continue typing.
+                </div>
                 <div class="absolute right-0 top-4 text-xs text-gray-500">
                   {{ bookingName.length }}/100
                 </div>
@@ -236,6 +246,13 @@ const checkOverlap = () => {
                 >
                   * Please provide a valid email address.
                 </p>
+                <div
+                  v-if="email.length == 100"
+                  class="absolute text-xs text-[#F3A72E]"
+                >
+                  The number of characters has a limit of 100 characters. If it
+                  exceeds 100, it will not be able to continue typing.
+                </div>
                 <div class="absolute right-0 top-4 text-xs text-gray-500">
                   {{ email.length }}/100
                 </div>
@@ -332,6 +349,13 @@ const checkOverlap = () => {
                 placeholder="Enter your description . . ."
                 v-model="note"
               />
+              <div
+                v-if="note.length == 500"
+                class="absolute text-xs text-[#F3A72E]"
+              >
+                The number of characters has a limit of 100 characters. If it
+                exceeds 100, it will not be able to continue typing.
+              </div>
               <div class="absolute right-0 top-4 text-xs text-gray-500">
                 {{ note.length }}/500
               </div>
