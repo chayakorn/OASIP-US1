@@ -74,7 +74,11 @@ const checkOverlap = () => {
 const showCancel = ref(false)
 const description = ref('')
 const date = ref(props.item.eventStartTime)
-const time = ref({hours: moment(props.item.eventStartTime).format('HH'), minutes: moment(props.item.eventStartTime).format('mm'), seconds: 0})
+const time = ref({
+  hours: moment(props.item.eventStartTime).format('HH'),
+  minutes: moment(props.item.eventStartTime).format('mm'),
+  seconds: 0
+})
 const dateTime = computed(
   () =>
     `${moment(date.value).format('YYYY-MM-DD')} ${moment(time.value).format(
@@ -84,16 +88,6 @@ const dateTime = computed(
 
 const showCancelFn = () => {
   showCancel.value = !showCancel.value
-}
-
-const editEvent = async (event, id) => {
-  const res = await fetch(`${import.meta.env.VITE_BASE_URL}/event/${id}`, {
-    method: 'PUT',
-    headers: {
-      'content-type': 'application/json'
-    },
-    body: JSON.stringify(event)
-  })
 }
 
 const editingEvent = computed(() => ({
@@ -120,12 +114,10 @@ const clearData = () => {
 
 const checkNull = (event, id) => {
   if (date.value != null && time.value != null) {
-    editEvent(event, id),
-      emit('sendEditData', editingEvent.value, id),
-      myEvents.editEvent(editingEvent.value, id)
+    emit('sendEditData', editingEvent.value, id)
+    myEvents.editEvent(editingEvent.value, id)
     clearData()
-  }
-  else(alert('Please selected date that you want to change.'))
+  } else alert('Please selected date that you want to change.')
 }
 
 const prevent = (event, id) => {
@@ -223,7 +215,7 @@ const prevent = (event, id) => {
             />
           </div>
           <!-- <span class="font-semibold py-2 px-2 pr-3.5 text-[#5E6366]">Time</span> -->
-          <div class="flex-none rounded-2xl w-60 py-2 px-4 text-black-700">
+          <div v-show="time" class="flex-none rounded-2xl w-60 py-2 px-4 text-black-700">
             {{
               `${moment(time).format('HH:mm')} - ${moment(time)
                 .add(item.eventDuration, 'minutes')

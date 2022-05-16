@@ -26,8 +26,7 @@ const creatingEvent = computed(() => ({
   eventCategoryId: { id: props.category.id },
   eventDuration: props.category.eventDuration,
   eventNotes: note.value,
-  name: name.value,
-  categoryName: props.category.eventCategoryName
+  name: name.value
 }))
 const checkNull = (newEvent) => {
   if (
