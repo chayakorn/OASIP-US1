@@ -1,5 +1,8 @@
 package oasip.us1.backend.service;
 
+import lombok.Data;
+import lombok.NoArgsConstructor;
+import lombok.RequiredArgsConstructor;
 import oasip.us1.backend.DTO.EventbookingDto;
 import oasip.us1.backend.DTO.EventbookingPutDto;
 import oasip.us1.backend.entity.Eventbooking;
@@ -18,6 +21,7 @@ import org.springframework.web.context.request.ServletWebRequest;
 import org.springframework.web.context.request.WebRequest;
 
 import javax.servlet.http.HttpServletResponse;
+import java.sql.Timestamp;
 import java.time.Instant;
 import java.time.ZoneId;
 import java.time.ZoneOffset;
@@ -38,6 +42,16 @@ public class EventbookingService {
     @Autowired
     private ListMapper listMapper;
 
+    @Data
+    @RequiredArgsConstructor
+    private static class Error{
+        private final String timestamp;
+        private final int status;
+        private final String path;
+        private final String message;
+        private final Map<String,String> fieldErrors;
+
+    }
     public List<EventbookingDto> getAll()  {
         return listMapper.mapList(repository.findAll(),EventbookingDto.class,modelMapper) ;
     }
@@ -47,8 +61,7 @@ public class EventbookingService {
 
 
     public ResponseEntity save(Eventbooking event, BindingResult bindingResult, WebRequest request){
-        Map<Object,Object> errorBody = new HashMap<>();
-        Map<Object,Object> fieldError = new HashMap<>();
+        Map<String,String> fieldError = new HashMap<>();
         if(!repository.findByEventStartTimeBetween(DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm").withZone(ZoneId.from(ZoneOffset.UTC)).format(event.getEventStartTime()),DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm").withZone(ZoneId.from(ZoneOffset.UTC)).format(event.getEventEndTime()),event.getEventCategoryId().getId()).isEmpty() ) {
             fieldError.put("TimeOverlap","your selected time is not available");
         }
@@ -61,18 +74,14 @@ public class EventbookingService {
             fieldError.put(((FieldError)error).getField(),error.getDefaultMessage());
 
         });
-        errorBody.put("timestamp",Instant.now().atZone(ZoneId.of("Asia/Bangkok")));
-        errorBody.put("status",HttpStatus.BAD_REQUEST);
-        errorBody.put("message","Validation failed");
-        errorBody.put("fieldErrors",fieldError);
-        errorBody.put("path", ((ServletWebRequest)request).getRequest().getRequestURI().toString());
+        Error errorBody = new Error(Instant.now().atZone(ZoneId.of("Asia/Bangkok")).toString(), HttpStatus.BAD_REQUEST.value(), ((ServletWebRequest) request).getRequest().getRequestURI(), "Validation failed", fieldError);
         return new ResponseEntity(errorBody, HttpStatus.BAD_REQUEST);
     }
     public ResponseEntity update(EventbookingPutDto updateEventbooking , int bookingid, BindingResult bindingResult, WebRequest request ){
 
         Eventbooking event = repository.findById(bookingid).get();
-        Map<Object,Object> errorBody = new HashMap<>();
-        Map<Object,Object> fieldError = new HashMap<>();
+
+        Map<String,String> fieldError = new HashMap<>();
         if(updateEventbooking.getEventEndTime().isBefore(event.getEventStartTime())){
             fieldError.put("eventEndTime","eventEndTime can not begin before eventStartTime");
         }
@@ -92,12 +101,7 @@ public class EventbookingService {
             System.out.println("Insert!");
             return ResponseEntity.status(200).body(repository.saveAndFlush(event));
         }
-
-        errorBody.put("timestamp",Instant.now().atZone(ZoneId.of("Asia/Bangkok")));
-        errorBody.put("status",HttpStatus.BAD_REQUEST);
-        errorBody.put("message","Validation failed");
-        errorBody.put("fieldErrors",fieldError);
-        errorBody.put("path", ((ServletWebRequest) request).getRequest().getRequestURI().toString());
+        Error errorBody = new Error(Instant.now().atZone(ZoneId.of("Asia/Bangkok")).toString(), HttpStatus.BAD_REQUEST.value(), ((ServletWebRequest) request).getRequest().getRequestURI(), "Validation failed", fieldError);
         return new ResponseEntity(errorBody, HttpStatus.BAD_REQUEST);
 
     }
