@@ -119,7 +119,11 @@ const editingEvent = computed(() => ({
 
 const clearData = () => {
   date.value = editingEvent.value.eventStartTime
-  time.value = editingEvent.value.eventStartTime
+  time.value = {
+  hours: moment(props.item.eventStartTime).format('HH'),
+  minutes: moment(props.item.eventStartTime).format('mm'),
+  seconds: 0
+}
   description.value = editingEvent.value.eventNotes
   showCancel.value = false
   emit('existChange')
