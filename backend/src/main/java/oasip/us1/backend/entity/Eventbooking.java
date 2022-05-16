@@ -22,6 +22,7 @@ public class Eventbooking {
 
     @ManyToOne(optional = false)
     @JoinColumn(name = "eventCategoryId", nullable = false)
+    @NotNull
     private Eventcategory eventCategoryId;
 
     @Column(name = "bookingName", nullable = false, length = 100)
@@ -44,6 +45,7 @@ public class Eventbooking {
     private Instant eventEndTime;
 
     @Column(name = "eventDuration", nullable = false)
+    @NotNull
     private Integer eventDuration;
 
     @Column(name = "eventNotes", length = 500)

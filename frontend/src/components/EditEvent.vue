@@ -78,10 +78,6 @@ const checkOverlap = () => {
       })
   )
     true
-
-    // else if(time.value === null)
-    //     alert('Please select time')
-
   else {
     alert('your selected time has been booked, please choose a new time!')
     time.value = props.item.eventStartTime
@@ -91,7 +87,11 @@ const checkOverlap = () => {
 const showCancel = ref(false)
 const description = ref(props.item.eventNotes)
 const date = ref(props.item.eventStartTime)
-const time = ref(props.item.eventStartTime)
+const time = ref({
+  hours: moment(props.item.eventStartTime).format('HH'),
+  minutes: moment(props.item.eventStartTime).format('mm'),
+  seconds: 0
+})
 const dateTime = computed(
   () =>
     `${moment(date.value).format('YYYY-MM-DD')} ${moment(time.value).format(
@@ -101,16 +101,6 @@ const dateTime = computed(
 
 const showCancelFn = () => {
   showCancel.value = !showCancel.value
-}
-
-const editEvent = async (event, id) => {
-  const res = await fetch(`${import.meta.env.VITE_BASE_URL}/event/${id}`, {
-    method: 'PUT',
-    headers: {
-      'content-type': 'application/json'
-    },
-    body: JSON.stringify(event)
-  })
 }
 
 const editingEvent = computed(() => ({
@@ -130,19 +120,17 @@ const editingEvent = computed(() => ({
 const clearData = () => {
   date.value = editingEvent.value.eventStartTime
   time.value = editingEvent.value.eventStartTime
-  description.value = ''
+  description.value = editingEvent.value.eventNotes
   showCancel.value = false
   emit('existChange')
 }
 
 const checkNull = (event, id) => {
   if (date.value != null && time.value != null) {
-    editEvent(event, id),
-      emit('sendEditData', editingEvent.value, id),
-      myEvents.editEvent(editingEvent.value, id)
+    emit('sendEditData', editingEvent.value, id)
+    myEvents.editEvent(editingEvent.value, id)
     clearData()
-  }
-  else(alert('Please selected date that you want to change.'))
+  } else alert('Please selected date that you want to change.')
 }
 
 const prevent = (event, id) => {
@@ -166,9 +154,9 @@ const prevent = (event, id) => {
         </div>
 
         <!-- DATE -->
-        <div class="flex pl-4 py-1">
+        <div class="flex pl-4 py-1 gap-x-2">
           <span
-            class="grid place-items-center py-2 font-semibold px-2 pr-3.5 text-[#5E6366]"
+            class="grid place-items-center py-2 font-semibold px-2 pr-2 text-[#5E6366]"
             >Date</span
           >
 
@@ -239,13 +227,12 @@ const prevent = (event, id) => {
             />
           </div>
           <!-- <span class="font-semibold py-2 px-2 pr-3.5 text-[#5E6366]">Time</span> -->
-          <div class="flex-none rounded-2xl w-60 py-2 px-4 text-black-700">
-              <span class="font-semibold">Comfirm Time: <br>
+          <div v-show="time" class="flex-none rounded-2xl w-60 py-2 px-4 text-black-700">
             {{
-              `${moment(time).format('HH:mm')} - ${moment(dateTime)
-                .add(props.item.eventDuration, 'minutes')
+              `${moment(time).format('HH:mm')} - ${moment(time)
+                .add(item.eventDuration, 'minutes')
                 .format('HH:mm')}`
-            }}</span>
+            }}
           </div>
           <!-- <input type="time"
                             class="flex-none border-[0.5px] border-[#5E6366] bg-[#F1F3F4] rounded-2xl w-60 py-2 px-4 text-black-700 focus:outline-none focus:bg-white focus:border-[#5E6366]"
