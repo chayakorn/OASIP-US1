@@ -6,6 +6,7 @@ import lombok.RequiredArgsConstructor;
 import oasip.us1.backend.DTO.EventbookingDto;
 import oasip.us1.backend.DTO.EventbookingPutDto;
 import oasip.us1.backend.entity.Eventbooking;
+import oasip.us1.backend.entity.Eventcategory;
 import oasip.us1.backend.repository.EventbookingRepository;
 import oasip.us1.backend.repository.EventcategoryRepository;
 import oasip.us1.backend.utils.ListMapper;
@@ -62,7 +63,13 @@ public class EventbookingService {
 
     public ResponseEntity save(Eventbooking event, BindingResult bindingResult, WebRequest request){
         Map<String,String> fieldError = new HashMap<>();
-        if(!repository.findByEventStartTimeBetween(DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm").withZone(ZoneId.from(ZoneOffset.UTC)).format(event.getEventStartTime()),DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm").withZone(ZoneId.from(ZoneOffset.UTC)).format(event.getEventEndTime()),event.getEventCategoryId().getId()).isEmpty() ) {
+        bindingResult.getAllErrors().forEach((error)->{
+            fieldError.put(((FieldError)error).getField(),error.getDefaultMessage());
+        });
+        if (event.getEventCategoryId() == null || (event.getEventCategoryId().getId() == null && fieldError.get("eventCategory") == null)){
+            fieldError.put("eventCategory","eventCategoryId can not be null");
+        }else
+        if(!repository.findByEventStartTimeBetween(DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm").withZone(ZoneId.from(ZoneOffset.UTC)).format(event.getEventStartTime()),DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm").withZone(ZoneId.from(ZoneOffset.UTC)).format(event.getEventEndTime()),event.getEventCategoryId().getId()).isEmpty() && event.getEventCategoryId() != null) {
             fieldError.put("TimeOverlap","your selected time is not available");
         }
         if(fieldError.size() == 0){
@@ -70,10 +77,6 @@ public class EventbookingService {
             return ResponseEntity.status(201).body(repository.saveAndFlush(event));
         }
 
-        bindingResult.getAllErrors().forEach((error)->{
-            fieldError.put(((FieldError)error).getField(),error.getDefaultMessage());
-
-        });
         Error errorBody = new Error(Instant.now().atZone(ZoneId.of("Asia/Bangkok")).toString(), HttpStatus.BAD_REQUEST.value(), ((ServletWebRequest) request).getRequest().getRequestURI(), "Validation failed", fieldError);
         return new ResponseEntity(errorBody, HttpStatus.BAD_REQUEST);
     }

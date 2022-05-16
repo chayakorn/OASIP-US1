@@ -22,7 +22,7 @@ public class Eventbooking {
 
     @ManyToOne(optional = false)
     @JoinColumn(name = "eventCategoryId", nullable = false)
-    @NotNull
+    @NotNull(message = "eventCategoryId can not be null")
     private Eventcategory eventCategoryId;
 
     @Column(name = "bookingName", nullable = false, length = 100)

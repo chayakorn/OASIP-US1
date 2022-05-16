@@ -37,14 +37,16 @@ public class EventbookingController {
         return service.getEventById(id);
     }
 
-    @PutMapping("/{id}")
-    private ResponseEntity update( @RequestBody EventbookingPutDto editEventBooking, @PathVariable int id, BindingResult result, WebRequest request){
-        System.out.println("what");
-        return service.update(editEventBooking,id,result,request);
-    }
+
     @PostMapping("")
     private ResponseEntity addEvent(@Valid @RequestBody Eventbooking newEventBooking, BindingResult result, WebRequest request){
         return service.save(newEventBooking,result,request);
+    }
+    @PutMapping("/{id}")
+    private ResponseEntity update( @RequestBody EventbookingPutDto editEventBooking, @PathVariable int id, BindingResult result, WebRequest request){
+        System.out.println("what");
+
+        return service.update(editEventBooking,id,result,request);
     }
 
 
