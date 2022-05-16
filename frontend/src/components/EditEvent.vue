@@ -73,8 +73,8 @@ const checkOverlap = () => {
 
 const showCancel = ref(false)
 const description = ref('')
-const date = ref()
-const time = ref()
+const date = ref(props.item.eventStartTime)
+const time = ref({hours: moment(props.item.eventStartTime).format('HH'), minutes: moment(props.item.eventStartTime).format('mm'), seconds: 0})
 const dateTime = computed(
   () =>
     `${moment(date.value).format('YYYY-MM-DD')} ${moment(time.value).format(
@@ -148,9 +148,9 @@ const prevent = (event, id) => {
         </div>
 
         <!-- DATE -->
-        <div class="flex pl-4 py-1">
+        <div class="flex pl-4 py-1 gap-x-2">
           <span
-            class="grid place-items-center py-2 font-semibold px-2 pr-3.5 text-[#5E6366]"
+            class="grid place-items-center py-2 font-semibold px-2 pr-2 text-[#5E6366]"
             >Date</span
           >
 
