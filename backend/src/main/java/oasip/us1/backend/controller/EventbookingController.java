@@ -1,6 +1,8 @@
 package oasip.us1.backend.controller;
 
+import oasip.us1.backend.DTO.EventPageDto;
 import oasip.us1.backend.DTO.EventbookingDto;
+import oasip.us1.backend.DTO.EventbookingInsertDto;
 import oasip.us1.backend.DTO.EventbookingPutDto;
 import oasip.us1.backend.entity.Eventbooking;
 import oasip.us1.backend.service.EventbookingService;
@@ -28,8 +30,12 @@ public class EventbookingController {
     private EventbookingService service;
 
     @GetMapping("")
-    public List<EventbookingDto> getAllEvent(){
-        return service.getAll();
+    public EventPageDto getAllProducts(
+            @RequestParam(defaultValue = "0") int page,
+            @RequestParam(defaultValue = "12") int pageSize,
+            @RequestParam(defaultValue = "eventStartTime") String sortBy,
+            @RequestParam(defaultValue = "true") boolean isAsc) {
+        return service.getAllProduct(page, pageSize, sortBy,isAsc);
     }
 
     @GetMapping("/{id}")
@@ -39,7 +45,7 @@ public class EventbookingController {
 
 
     @PostMapping("")
-    private ResponseEntity addEvent(@Valid @RequestBody Eventbooking newEventBooking, BindingResult result, WebRequest request){
+    private ResponseEntity addEvent(@Valid @RequestBody EventbookingInsertDto newEventBooking, BindingResult result, WebRequest request){
         return service.save(newEventBooking,result,request);
     }
     @PutMapping("/{id}")

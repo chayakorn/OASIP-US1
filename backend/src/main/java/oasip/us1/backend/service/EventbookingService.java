@@ -3,7 +3,9 @@ package oasip.us1.backend.service;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 import lombok.RequiredArgsConstructor;
+import oasip.us1.backend.DTO.EventPageDto;
 import oasip.us1.backend.DTO.EventbookingDto;
+import oasip.us1.backend.DTO.EventbookingInsertDto;
 import oasip.us1.backend.DTO.EventbookingPutDto;
 import oasip.us1.backend.entity.Eventbooking;
 import oasip.us1.backend.entity.Eventcategory;
@@ -12,6 +14,8 @@ import oasip.us1.backend.repository.EventcategoryRepository;
 import oasip.us1.backend.utils.ListMapper;
 import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Sort;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
@@ -55,28 +59,32 @@ public class EventbookingService {
         private final Map<String,String> fieldErrors;
 
     }
-    public List<EventbookingDto> getAll()  {
-        return listMapper.mapList(repository.findAll(),EventbookingDto.class,modelMapper) ;
+    public EventPageDto getAllProduct(int page, int pageSize, String sortBy, boolean isAsc) {
+        return modelMapper.map(repository.findAll(
+                        PageRequest.of(page, pageSize, isAsc ? Sort.by(sortBy).ascending():Sort.by(sortBy).descending())),
+                EventPageDto.class);
     }
     public EventbookingDto getEventById(int id){
         return modelMapper.map(repository.getById(id),EventbookingDto.class) ;
     }
 
 
-    public ResponseEntity save(Eventbooking event, BindingResult bindingResult, WebRequest request){
+    public ResponseEntity save(EventbookingInsertDto event, BindingResult bindingResult, WebRequest request){
         Map<String,String> fieldError = new HashMap<>();
+
         bindingResult.getAllErrors().forEach((error)->{
             fieldError.put(((FieldError)error).getField(),error.getDefaultMessage());
         });
-        if (event.getEventCategoryId() == null || (event.getEventCategoryId().getId() == null && fieldError.get("eventCategory") == null)){
+        if (event.getEventCategoryId() == null){
             fieldError.put("eventCategory","eventCategoryId can not be null");
         }else
-        if(!repository.findByEventStartTimeBetween(DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm").withZone(ZoneId.from(ZoneOffset.UTC)).format(event.getEventStartTime().plus(1,ChronoUnit.SECONDS)),DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm").withZone(ZoneId.from(ZoneOffset.UTC)).format(event.getEventStartTime().plus(event.getEventDuration(),ChronoUnit.MINUTES).minus(1,ChronoUnit.SECONDS)),event.getEventCategoryId().getId()).isEmpty() && event.getEventCategoryId() != null) {
+        if(!repository.findByEventStartTimeBetween(DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm").withZone(ZoneId.from(ZoneOffset.UTC)).format(event.getEventStartTime().plus(1,ChronoUnit.SECONDS)),DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm").withZone(ZoneId.from(ZoneOffset.UTC)).format(event.getEventStartTime().plus(event.getEventDuration(),ChronoUnit.MINUTES).minus(1,ChronoUnit.SECONDS)),event.getEventCategoryId()).isEmpty() && event.getEventCategoryId() != null) {
             fieldError.put("TimeOverlap","your selected time is not available");
         }
         if(fieldError.size() == 0){
             System.out.println("Insert!");
-            return ResponseEntity.status(201).body(repository.saveAndFlush(event));
+            Eventbooking insertevent = mapEventForInsert(event);
+            return ResponseEntity.status(201).body(repository.saveAndFlush(insertevent));
         }
 
         Error errorBody = new Error(Instant.now().atZone(ZoneId.of("Asia/Bangkok")).toString(), HttpStatus.BAD_REQUEST.value(), ((ServletWebRequest) request).getRequest().getRequestURI(), "Validation failed", fieldError);
@@ -115,5 +123,16 @@ public class EventbookingService {
         existingEventbooking.setEventNotes(updateEventbooking.getEventNotes());
         existingEventbooking.setEventStartTime(updateEventbooking.getEventStartTime());
         return existingEventbooking;
+    }
+    private Eventbooking mapEventForInsert(EventbookingInsertDto insertDto){
+        Eventbooking eventbooking = new Eventbooking();
+        eventbooking.setBookingName(insertDto.getBookingName());
+        eventbooking.setEventDuration(insertDto.getEventDuration());
+        eventbooking.setEventNotes(insertDto.getEventNotes());
+        eventbooking.setName(insertDto.getName());
+        eventbooking.setEventStartTime(insertDto.getEventStartTime());
+        eventbooking.setEventCategoryId(eventcategoryRepository.findById(insertDto.getEventCategoryId()).get());
+        eventbooking.setBookingEmail(insertDto.getBookingEmail());
+        return eventbooking;
     }
 }

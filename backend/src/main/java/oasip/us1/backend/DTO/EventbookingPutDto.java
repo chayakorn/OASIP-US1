@@ -19,8 +19,6 @@ import java.time.Instant;
 public class EventbookingPutDto implements Serializable {
 
     private Instant eventStartTime;
-
-    private Instant eventEndTime;
     private String eventNotes;
 
 

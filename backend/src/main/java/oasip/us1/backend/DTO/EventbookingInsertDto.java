@@ -1,29 +1,15 @@
-package oasip.us1.backend.entity;
+package oasip.us1.backend.DTO;
 
-import lombok.Getter;
-import lombok.Setter;
-import lombok.ToString;
+import com.fasterxml.jackson.annotation.JsonFormat;
+import com.fasterxml.jackson.annotation.JsonIgnore;
+import lombok.Data;
+import oasip.us1.backend.entity.Eventcategory;
 
-import javax.persistence.*;
+import javax.persistence.Column;
 import javax.validation.constraints.*;
-import java.sql.Timestamp;
 import java.time.Instant;
-
-@Entity
-@Getter
-@Setter
-@ToString
-@Table(name = "eventbooking")
-public class Eventbooking {
-    @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
-    @Column(name = "bookingId",nullable = false)
-    private Integer id;
-
-    @ManyToOne(optional = false)
-    @JoinColumn(name = "eventCategoryId", nullable = false)
-    @NotNull(message = "eventCategoryId can not be null")
-    private Eventcategory eventCategoryId;
+@Data
+public class EventbookingInsertDto {
 
     @Column(name = "bookingName", nullable = false, length = 100)
     @NotBlank(message = "bookingName can't be null or blank")
@@ -33,7 +19,6 @@ public class Eventbooking {
     @Email(message = "email must be valid form")
     @NotBlank(message = "email is mendatory")
     @Size(max = 100 , message = "email must be between 1-100 characters")
-    @Column(name = "bookingEmail", nullable = false, length = 100)
     private String bookingEmail;
 
     @Column(name = "eventStartTime", nullable = false)
@@ -41,16 +26,13 @@ public class Eventbooking {
     @Future(message = "eventStartTime must be future")
     private Instant eventStartTime;
 
+    @NotNull(message = "eventCategoryId can not be null")
+    private Integer eventCategoryId;
 
-    @Column(name = "eventDuration", nullable = false)
     @NotNull(message = "eventDuration can be null")
     private Integer eventDuration;
 
     @Column(name = "eventNotes", length = 500)
-    @Size(max = 500, message = "eventNotes must be between 0-500 characters")
     private String eventNotes;
-
-    @Column(name = "name", length = 200)
     private String name;
-
 }
