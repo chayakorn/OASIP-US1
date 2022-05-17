@@ -43,8 +43,14 @@ const log = (event) => {
   }
 }
 
-const existChange = () => {
+const existChange = (cancle) => {
+  edit.value = true
+
+  if(cancle){
+    console.log("cancle");
+  }else{
   emit('closeModal', false)
+  }
 }
 
 const closeDelete = () => {

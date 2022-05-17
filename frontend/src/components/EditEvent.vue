@@ -119,7 +119,7 @@ const editingEvent = computed(() => ({
 
 
 
-const clearData = () => {
+const clearData = (cancle) => {
     date.value = editingEvent.value.eventStartTime
     time.value =
     {
@@ -129,14 +129,14 @@ const clearData = () => {
     }
     description.value = editingEvent.value.eventNotes
     showCancel.value = props.item.eventNotes
-    emit('existChange')
+    emit('existChange',cancle)
 }
 
 const checkNull = (event, id) => {
     if (date.value != null && time.value != null) {
         emit('sendEditData', editingEvent.value, id)
         myEvents.editEvent(editingEvent.value, id)
-        clearData()
+        clearData(false)
     } else alert('Please selected date that you want to change.')
 }
 
@@ -307,7 +307,7 @@ const prevent = (event, id) => {
                         </div>
                         <div class="px-2">
                             <button class="bg-[#DCF7E3] font-semibold text-lg text-[#2FA84F] rounded-[20px] py-3 px-16"
-                                @click="clearData()">
+                                @click="clearData(true)">
                                 CONFIRM
                             </button>
                         </div>
