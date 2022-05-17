@@ -131,22 +131,16 @@ const checkOverlap = () => {
       .some((e) => {
         if (
           selectedStartTime.isBetween(
-            moment(new Date(e.eventStartTime), 'DD-MM-YYYY HH:mm').add(
-              -1,
-              'minutes'
-            ),
-            moment(new Date(e.eventEndTime), 'DD-MM-YYYY HH:mm').add(
-              1,
-              'minutes'
-            )
+            moment(new Date(e.eventStartTime), 'DD-MM-YYYY HH:mm'),
+            moment(new Date(e.eventEndTime), 'DD-MM-YYYY HH:mm')
           ) ||
           moment(new Date(e.eventStartTime), 'DD-MM-YYYY HH:mm').isBetween(
-            selectedStartTime.add(-1, 'minutes'),
-            selectedEndTime.add(1, 'minutes')
+            selectedStartTime,
+            selectedEndTime
           ) ||
           moment(new Date(e.eventEndTime), 'DD-MM-YYYY HH:mm').isBetween(
-            selectedStartTime.add(-1, 'minutes'),
-            selectedEndTime.add(1, 'minutes')
+            selectedStartTime,
+            selectedEndTime
           )
         )
           return true

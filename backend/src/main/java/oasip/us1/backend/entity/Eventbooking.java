@@ -41,10 +41,6 @@ public class Eventbooking {
     @Future(message = "eventStartTime must be future")
     private Instant eventStartTime;
 
-    @Column(name = "eventEndTime")
-    @NotNull(message = "eventEndTime can't be null")
-    @Future(message = "eventEndTime must be future")
-    private Instant eventEndTime;
 
     @Column(name = "eventDuration", nullable = false)
     @NotNull

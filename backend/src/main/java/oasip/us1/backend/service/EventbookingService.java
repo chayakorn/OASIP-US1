@@ -27,6 +27,8 @@ import java.time.Instant;
 import java.time.ZoneId;
 import java.time.ZoneOffset;
 import java.time.format.DateTimeFormatter;
+import java.time.temporal.ChronoUnit;
+import java.time.temporal.TemporalUnit;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Collection;
@@ -69,7 +71,7 @@ public class EventbookingService {
         if (event.getEventCategoryId() == null || (event.getEventCategoryId().getId() == null && fieldError.get("eventCategory") == null)){
             fieldError.put("eventCategory","eventCategoryId can not be null");
         }else
-        if(!repository.findByEventStartTimeBetween(DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm").withZone(ZoneId.from(ZoneOffset.UTC)).format(event.getEventStartTime()),DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm").withZone(ZoneId.from(ZoneOffset.UTC)).format(event.getEventEndTime()),event.getEventCategoryId().getId()).isEmpty() && event.getEventCategoryId() != null) {
+        if(!repository.findByEventStartTimeBetween(DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm").withZone(ZoneId.from(ZoneOffset.UTC)).format(event.getEventStartTime().plus(1,ChronoUnit.SECONDS)),DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm").withZone(ZoneId.from(ZoneOffset.UTC)).format(event.getEventStartTime().plus(event.getEventDuration(),ChronoUnit.MINUTES).minus(1,ChronoUnit.SECONDS)),event.getEventCategoryId().getId()).isEmpty() && event.getEventCategoryId() != null) {
             fieldError.put("TimeOverlap","your selected time is not available");
         }
         if(fieldError.size() == 0){
@@ -88,7 +90,7 @@ public class EventbookingService {
         if(updateEventbooking.getEventStartTime().isBefore(Instant.now())){
             fieldError.put("eventStartTime","eventStartTime can not be past");
         }
-        if(!repository.findByEventStartTimeBetweenForPut(DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm").withZone(ZoneId.from(ZoneOffset.UTC)).format(updateEventbooking.getEventStartTime()),DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm").withZone(ZoneId.from(ZoneOffset.UTC)).format(updateEventbooking.getEventEndTime()),event.getEventCategoryId().getId(),event.getId()).isEmpty()){
+        if(!repository.findByEventStartTimeBetweenForPut(DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm").withZone(ZoneId.from(ZoneOffset.UTC)).format(updateEventbooking.getEventStartTime()),DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm").withZone(ZoneId.from(ZoneOffset.UTC)).format(updateEventbooking.getEventStartTime().plus(event.getEventDuration(),ChronoUnit.MINUTES)),event.getEventCategoryId().getId(),event.getId()).isEmpty()){
             fieldError.put("TimeOverlap","your selected time is not available");
         }
         if (updateEventbooking.getEventNotes().length() > 500){
@@ -103,16 +105,15 @@ public class EventbookingService {
         }
         Error errorBody = new Error(Instant.now().atZone(ZoneId.of("Asia/Bangkok")).toString(), HttpStatus.BAD_REQUEST.value(), ((ServletWebRequest) request).getRequest().getRequestURI(), "Validation failed", fieldError);
         return new ResponseEntity(errorBody, HttpStatus.BAD_REQUEST);
-
     }
     public void delete(int id){
         repository.deleteById(id);
     }
+
     private Eventbooking mapEvent(Eventbooking existingEventbooking, EventbookingPutDto updateEventbooking, int bookingid){
         existingEventbooking.setId(bookingid);
         existingEventbooking.setEventNotes(updateEventbooking.getEventNotes());
         existingEventbooking.setEventStartTime(updateEventbooking.getEventStartTime());
-        existingEventbooking.setEventEndTime(updateEventbooking.getEventEndTime());
         return existingEventbooking;
     }
 }
