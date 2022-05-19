@@ -25,18 +25,34 @@ public interface EventbookingRepository extends JpaRepository<Eventbooking, Inte
                      @Param("eventDuration") int eventDuration ,
                      @Param("eventNotes") String eventNotes ,
                      @Param("name") String name);
-    @Modifying
-    @Transactional
-    @Query(
-            value = "select * from eventbooking where ((:start between eventStartTime and eventEndTime) or ( :end between eventStartTime and eventEndTime )or (eventStartTime between :start and :end) or (eventEndTime between :start and :end))  and eventCategoryId = :catid",
-            nativeQuery = true
-    )
-    Collection<Eventbooking> findByEventStartTimeBetween(@Param("start") String start,@Param("end") String end,@Param("catid") int catid);
+//    @Modifying
+//    @Transactional
+//    @Query(
+//            value = "select * from eventbooking where ((:start between eventStartTime and eventEndTime) or ( :end between eventStartTime and eventEndTime )or (eventStartTime between :start and :end) or (eventEndTime between :start and :end))  and eventCategoryId = :catid",
+//            nativeQuery = true
+//    )
+//    Collection<Eventbooking> findByEventStartTimeBetween(@Param("start") String start,@Param("end") String end,@Param("catid") int catid);
 
     @Modifying
     @Transactional
     @Query(
-            value = "select * from eventbooking where ((:start between eventStartTime and eventEndTime) or ( :end between eventStartTime and eventEndTime )or (eventStartTime between :start and :end) or (eventEndTime between :start and :end)) and eventCategoryId = :catid and bookingId != :bid",
+            value = "select * from eventbooking where ((:start between addtime(eventStartTime,'00:01:00') and addtime(eventStartTime,concat('00:',eventDuration-1,':00'))) or ( :end between addtime(eventStartTime,'00:01:00') and addtime(eventStartTime,concat('00:',eventDuration-1,':00')) )or (addtime(eventStartTime,'00:01:00') between :start and :end) or (addtime(eventStartTime,concat('00:',eventDuration-1,':00')) between :start and :end))  and eventCategoryId = :catid",
+            nativeQuery = true
+    )
+    Collection<Eventbooking> findByEventStartTimeBetween(@Param("start") String start,@Param("end") String end,@Param("catid") int catid);
+
+//    @Modifying
+//    @Transactional
+//    @Query(
+//            value = "select * from eventbooking where ((:start between eventStartTime and eventEndTime) or ( :end between eventStartTime and eventEndTime )or (eventStartTime between :start and :end) or (eventEndTime between :start and :end)) and eventCategoryId = :catid and bookingId != :bid",
+//            nativeQuery = true
+//    )
+//    Collection<Eventbooking> findByEventStartTimeBetweenForPut(@Param("start") String start,@Param("end") String end,@Param("catid") int catid,@Param("bid") int bid);
+
+    @Modifying
+    @Transactional
+    @Query(
+            value = "select * from eventbooking where ((:start between addtime(eventStartTime,'00:01:00') and addtime(eventStartTime,concat('00:',eventDuration-1,':00'))) or ( :end between addtime(eventStartTime,'00:01:00') and addtime(eventStartTime,concat('00:',eventDuration-1,':00')) )or (addtime(eventStartTime,'00:01:00') between :start and :end) or (addtime(eventStartTime,concat('00:',eventDuration-1,':00')) between :start and :end))  and eventCategoryId = :catid and bookingId != :bid",
             nativeQuery = true
     )
     Collection<Eventbooking> findByEventStartTimeBetweenForPut(@Param("start") String start,@Param("end") String end,@Param("catid") int catid,@Param("bid") int bid);

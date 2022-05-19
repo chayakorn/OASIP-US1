@@ -15,8 +15,6 @@ services:
     build: ./backend
     restart: always
     image: backend
-    ports:
-      - "8080:8080"
     links:
       - oasipdb
 
@@ -27,8 +25,6 @@ services:
       context: ./frontend
       dockerfile: Dockerfile
     image: frontend
-    ports:
-      - "3000:3000"
   oasipproxy:
     container_name: oasipproxy
     restart: always

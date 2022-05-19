@@ -30,7 +30,6 @@ CREATE TABLE `eventbooking` (
   `bookingName` varchar(100) NOT NULL,
   `bookingEmail` varchar(100) NOT NULL,
   `eventStartTime` datetime NOT NULL,
-  `eventEndTime` datetime DEFAULT NULL,
   `eventDuration` int NOT NULL,
   `eventNotes` varchar(500) DEFAULT NULL,
   `name` varchar(200) DEFAULT NULL,
@@ -40,7 +39,19 @@ CREATE TABLE `eventbooking` (
 ) ENGINE=InnoDB AUTO_INCREMENT=7 DEFAULT CHARSET=utf8mb3;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
+--
+-- Dumping data for table `eventbooking`
+--
 
+LOCK TABLES `eventbooking` WRITE;
+/*!40000 ALTER TABLE `eventbooking` DISABLE KEYS */;
+INSERT INTO `eventbooking` VALUES (1,2,'The Flash (JT-8)','flash.justice@mail.kmutt.ac.th','2022-05-23 13:30:00',30,'',''),(2,1,'Somsri Rakdee (SJ-3)','somsri.rak@mail.kmutt.ac.th','2022-04-27 09:30:00',30,'ขอปรึกษาปัญหาเพื่อนไม่ช่วยงาน',''),(3,3,'สมเกียรติ ขยันเรียน กลุ่ม TT-4','somkiat.kay@kmutt.ac.th','2022-05-23 16:30:00',15,'',''),(5,2,'The Flash (JT-8)','flash.justice@mail.kmutt.ac.th','2022-05-23 11:30:00',30,'',''),(6,2,'The Flash (JT-8)','flash.justice@mail.kmutt.ac.th','2022-05-23 13:00:00',30,'','');
+/*!40000 ALTER TABLE `eventbooking` ENABLE KEYS */;
+UNLOCK TABLES;
+
+--
+-- Table structure for table `eventcategory`
+--
 
 DROP TABLE IF EXISTS `eventcategory`;
 /*!40101 SET @saved_cs_client     = @@character_set_client */;
@@ -74,6 +85,7 @@ UNLOCK TABLES;
 /*!40101 SET CHARACTER_SET_RESULTS=@OLD_CHARACTER_SET_RESULTS */;
 /*!40101 SET COLLATION_CONNECTION=@OLD_COLLATION_CONNECTION */;
 /*!40111 SET SQL_NOTES=@OLD_SQL_NOTES */;
+
 
 create user 'us1'@'%' identified by 'us-1-t2p';
 grant all on *.* to 'us1'@'%';

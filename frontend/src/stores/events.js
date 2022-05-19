@@ -8,7 +8,8 @@ export const useEvents = defineStore('categories', () => {
   const getAllEvents = async () => {
     const res = await fetch(`${import.meta.env.VITE_BASE_URL}/event`)
     if (res.status === 200) {
-      eventLists.value = await res.json()
+      let result = await res.json()
+      eventLists.value = result.content
     } else console.log('error, cannot get events')
   }
 

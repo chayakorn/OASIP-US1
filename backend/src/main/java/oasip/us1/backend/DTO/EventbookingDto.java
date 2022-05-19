@@ -22,7 +22,6 @@ public class EventbookingDto implements Serializable {
     private String bookingName;
     private String bookingEmail;
     private Instant eventStartTime;
-    private Instant eventEndTime;
     private Integer eventCategoryId;
     private Integer eventDuration;
     private String eventNotes;

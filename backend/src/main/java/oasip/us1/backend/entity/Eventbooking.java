@@ -22,7 +22,7 @@ public class Eventbooking {
 
     @ManyToOne(optional = false)
     @JoinColumn(name = "eventCategoryId", nullable = false)
-    @NotNull
+    @NotNull(message = "eventCategoryId can not be null")
     private Eventcategory eventCategoryId;
 
     @Column(name = "bookingName", nullable = false, length = 100)
@@ -38,14 +38,12 @@ public class Eventbooking {
 
     @Column(name = "eventStartTime", nullable = false)
     @NotNull(message = "eventStartTime can't be null")
+    @Future(message = "eventStartTime must be future")
     private Instant eventStartTime;
 
-    @Column(name = "eventEndTime")
-    @NotNull(message = "eventEndTime can't be null")
-    private Instant eventEndTime;
 
     @Column(name = "eventDuration", nullable = false)
-    @NotNull
+    @NotNull(message = "eventDuration can be null")
     private Integer eventDuration;
 
     @Column(name = "eventNotes", length = 500)
