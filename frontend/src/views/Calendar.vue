@@ -1,7 +1,7 @@
 <script setup></script>
 
 <template>
-  <div>Calendar!</div>
+  <div></div>
 </template>
 
 <style></style>

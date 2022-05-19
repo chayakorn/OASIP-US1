@@ -6,15 +6,23 @@ export const useCategories = defineStore('categories', () => {
 
   //fetch method GET
   const getAllCategories = async () => {
-    const res = await fetch(`${import.meta.env.VITE_BASE_URL}/event`)
+    const res = await fetch(`${import.meta.env.VITE_BASE_URL}/eventcat`)
     if (res.status === 200) {
       categoryLists.value = await res.json()
     } else console.log('error, cannot get category')
   }
 
+  //fetch method GET by id
+  const getCategoryById = async (id) => {
+    const res = await fetch(`${import.meta.env.VITE_BASE_URL}/eventcat/${id}`)
+    if (res.status === 200) {
+      return await res.json()
+    } else console.log('error, cannot get category')
+  }
+
   //fetch method PUT
   const editCategory = async (category, id) => {
-    const res = await fetch(`${import.meta.env.VITE_BASE_URL}/event/${id}`, {
+    const res = await fetch(`${import.meta.env.VITE_BASE_URL}/eventcat/${id}`, {
       method: 'PUT',
       headers: {
         'content-type': 'application/json'
@@ -28,21 +36,18 @@ export const useCategories = defineStore('categories', () => {
   }
 
   // function update event
-  function updateCategory(updatedCategory, id) {
-    categoryLists.value.map((cate) => {
-      if (cate.id === id) {
-        cate.eventStartTime = updatedCategory.eventStartTime
-        cate.eventEndTime = updatedCategory.eventEndTime
-        cate.eventNotes = updatedCategory.eventNotes
-      }
-    })
-  }
+  // function updateCategory(updatedCategory, id) {
+  //   categoryLists.value.map((cate) => {
+
+  //   })
+  // }
 
   return {
     categoryLists,
-    getAllEvents: getAllCategories,
-    editCategory,
-    updateCategory
+    getAllCategories,
+    getCategoryById
+    // editCategory
+    // updateCategory
   }
 })
 

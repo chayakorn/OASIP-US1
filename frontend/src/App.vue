@@ -31,7 +31,7 @@
         ></router-link>
         <!-- Calendar -->
         <router-link
-          v-show="false"
+          v-if="true"
           :to="{ name: 'Calendar' }"
           class="ml-1 hover:scale-110 duration-700"
           ><svg width="2.5em" height="2.5em" viewBox="0 0 512 512">
@@ -42,7 +42,7 @@
         ></router-link>
         <!-- Setting -->
         <router-link
-          v-show="false"
+          v-if="false"
           :to="{ name: 'Setting' }"
           class="hover:scale-110 duration-700"
           ><svg width="3em" height="3em" viewBox="0 0 24 24">
@@ -56,7 +56,7 @@
     <div
       class="absolute w-1/12 bottom-5 -ml-1 mt-5 grid place-content-center hover:scale-110 duration-700"
     >
-      <router-link :to="{ name: 'Developer' }"
+      <router-link :to="{ name: 'DevelopBy' }"
         ><svg width="2.5em" height="2.5em" viewBox="0 0 32 32">
           <path
             fill="currentColor"

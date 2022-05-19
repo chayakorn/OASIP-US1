@@ -4,10 +4,6 @@ defineProps({
     type: String,
     default: 'OK'
   },
-  imagePath: {
-    type: String,
-    default: 'OK'
-  },
   color: {
     type: String,
     default: ''
@@ -53,7 +49,7 @@ defineProps({
 
 <style scoped>
 #notice {
-  animation: sildeFromTop 1s linear;
+  animation: sildeFromTop 2s linear;
 }
 
 @keyframes sildeFromTop {

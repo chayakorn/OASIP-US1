@@ -4,7 +4,7 @@ import EventLists from '../views/EventLists.vue'
 import Calendar from '../views/Calendar.vue'
 import Setting from '../views/Setting.vue'
 import NotFound from '../views/NotFound.vue'
-import Developer from '../views/Developer.vue'
+import DevelopBy from '../views/DevelopBy.vue'
 const history = createWebHistory('/us1')
 const routes = [
   {
@@ -34,8 +34,8 @@ const routes = [
   },
   {
     path: '/develop-by',
-    name: 'Developer',
-    component: Developer
+    name: 'DevelopBy',
+    component: DevelopBy
   }
 ]
 const router = createRouter({ history, routes })

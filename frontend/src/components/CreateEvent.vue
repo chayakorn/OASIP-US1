@@ -15,6 +15,8 @@ const props = defineProps({
 })
 //use state "Events"
 const myEvents = useEvents()
+myEvents.getAllEvents()
+const eventLists = computed(() => myEvents.eventLists)
 
 const creatingEvent = computed(() => ({
   bookingName: bookingName.value,
@@ -75,7 +77,6 @@ const reset = () => {
 
 const error = ref(true)
 const prevent = (event) => {
-  email.value.includes('.') ? (error.value = false) : (error.value = true)
   event.preventDefault()
   checkNull(creatingEvent.value)
 }
@@ -107,15 +108,11 @@ const valid = () => {
 // }
 
 // var timeStops = getTimeStops('00:00', '23:59')
-const eventLists = computed(() => myEvents.eventLists)
-// GET
-myEvents.getAllEvents()
 
 const format = (date) => {
   const day = date.getDate()
   const month = moment(date).format('MMMM')
   const year = date.getFullYear()
-
   return `${day} ${month} ${year}`
 }
 
@@ -160,6 +157,16 @@ const checkOverlap = () => {
     alert('your selected time has been booked, please selete a new time!')
   }
 }
+
+const nullStatus = computed(() =>
+  bookingName.value.length > 0 &&
+  bookingName.value.length <= 100 &&
+  email.value &&
+  date.value &&
+  time.value
+    ? false
+    : true
+)
 </script>
 
 <template>
@@ -192,7 +199,6 @@ const checkOverlap = () => {
                 <input
                   :class="[borderStyle, 'peer']"
                   type="text"
-                  maxlength="100"
                   placeholder="Enter your booking name . . ."
                   v-model="bookingName"
                   required
@@ -203,13 +209,18 @@ const checkOverlap = () => {
                   * Please fill out this field.
                 </p>
                 <div
-                  v-if="bookingName.length == 100"
+                  v-if="bookingName.length >= 100"
                   class="absolute text-xs text-[#F3A72E]"
                 >
                   The number of characters has a limit of 100 characters. If it
                   exceeds 100, it will not be able to continue typing.
                 </div>
-                <div class="absolute right-0 top-4 text-xs text-gray-500">
+                <div
+                  :class="[
+                    'absolute right-0 top-4 text-xs',
+                    bookingName.length <= 100 ? 'text-gray-500' : 'text-red-500'
+                  ]"
+                >
                   {{ bookingName.length }}/100
                 </div>
               </div>
@@ -235,7 +246,6 @@ const checkOverlap = () => {
                 <input
                   :class="[borderStyle, 'peer']"
                   type="email"
-                  maxlength="100"
                   placeholder="username@example.com"
                   v-model="email"
                   @invalid="invalid"
@@ -247,13 +257,18 @@ const checkOverlap = () => {
                   * Please provide a valid email address.
                 </p>
                 <div
-                  v-if="email.length == 100"
+                  v-if="email.length >= 100"
                   class="absolute text-xs text-[#F3A72E]"
                 >
                   The number of characters has a limit of 100 characters. If it
                   exceeds 100, it will not be able to continue typing.
                 </div>
-                <div class="absolute right-0 top-4 text-xs text-gray-500">
+                <div
+                  :class="[
+                    'absolute right-0 top-4 text-xs',
+                    email.length <= 100 ? 'text-gray-500' : 'text-red-500'
+                  ]"
+                >
                   {{ email.length }}/100
                 </div>
               </div>
@@ -344,19 +359,23 @@ const checkOverlap = () => {
             <div class="relative col-span-2">
               <div class="font-medium">Description | Note</div>
               <textarea
-                maxlength="500"
                 class="break-words resize-none rounded-xl w-full h-28 py-2 px-3 mt-2 bg-[#F1F3F4] border border-[#5E6366] focus:outline-none focus:shadow-outline"
                 placeholder="Enter your description . . ."
                 v-model="note"
               />
               <div
-                v-if="note.length == 500"
+                v-if="note.length >= 500"
                 class="absolute text-xs text-[#F3A72E]"
               >
-                The number of characters has a limit of 100 characters. If it
-                exceeds 100, it will not be able to continue typing.
+                The number of characters has a limit of 500 characters. If it
+                exceeds 500, it will not be able to continue typing.
               </div>
-              <div class="absolute right-0 top-4 text-xs text-gray-500">
+              <div
+                :class="[
+                  'absolute right-0 top-4 text-xs',
+                  note.length <= 100 ? 'text-gray-500' : 'text-red-500'
+                ]"
+              >
                 {{ note.length }}/500
               </div>
             </div>
@@ -384,18 +403,20 @@ const checkOverlap = () => {
                     </div>
                   </div>
                 </div>
-                <button type="submit">
-                  <div
-                    class="bg-[#2FA84F] cursor-pointer h-10 drop-shadow-lg rounded-md"
-                  >
+                <button
+                  :disabled="nullStatus"
+                  class="disabled:opacity-25 disabled:cursor-not-allowed"
+                  type="submit"
+                >
+                  <div class="bg-[#2FA84F] h-10 drop-shadow-lg rounded-md">
                     <div class="flex">
                       <div
                         class="bg-white m-1 h-8 w-1/3 rounded grid place-items-center text-[#2FA84F]"
                       >
-                        <svg width="1.5em" height="1.5em" viewBox="0 0 24 24">
+                        <svg width="2em" height="2em" viewBox="0 0 24 24">
                           <path
                             fill="currentColor"
-                            d="M12 1.75a3.25 3.25 0 0 1 3.245 3.066L15.25 5h5.25a.75.75 0 0 1 .102 1.493L20.5 6.5h-.796l-1.28 13.02a2.75 2.75 0 0 1-2.561 2.474l-.176.006H8.313a2.75 2.75 0 0 1-2.714-2.307l-.023-.174L4.295 6.5H3.5a.75.75 0 0 1-.743-.648L2.75 5.75a.75.75 0 0 1 .648-.743L3.5 5h5.25A3.25 3.25 0 0 1 12 1.75Zm6.197 4.75H5.802l1.267 12.872a1.25 1.25 0 0 0 1.117 1.122l.127.006h7.374c.6 0 1.109-.425 1.225-1.002l.02-.126L18.196 6.5ZM13.75 9.25a.75.75 0 0 1 .743.648L14.5 10v7a.75.75 0 0 1-1.493.102L13 17v-7a.75.75 0 0 1 .75-.75Zm-3.5 0a.75.75 0 0 1 .743.648L11 10v7a.75.75 0 0 1-1.493.102L9.5 17v-7a.75.75 0 0 1 .75-.75Zm1.75-6a1.75 1.75 0 0 0-1.744 1.606L10.25 5h3.5A1.75 1.75 0 0 0 12 3.25Z"
+                            d="M18 12.998h-5v5a1 1 0 0 1-2 0v-5H6a1 1 0 0 1 0-2h5v-5a1 1 0 0 1 2 0v5h5a1 1 0 0 1 0 2z"
                           ></path>
                         </svg>
                       </div>

@@ -51,8 +51,7 @@ const checkOverlap = () => {
               1,
               'minutes'
             )
-          ) 
-          ||
+          ) ||
           moment(new Date(e.eventStartTime), 'DD-MM-YYYY HH:mm').isBetween(
             selectedStartTime.add(-1, 'minutes'),
             selectedEndTime.add(1, 'minutes')
@@ -61,17 +60,17 @@ const checkOverlap = () => {
             selectedStartTime.add(-1, 'minutes'),
             selectedEndTime.add(1, 'minutes')
           )
-        //   ||
-        //   selectedEndTime.isBetween(
-        //     moment(new Date(e.eventStartTime), 'DD-MM-YYYY HH:mm').add(
-        //       -1,
-        //       'minutes'
-        //     ),
-        //     moment(new Date(e.eventEndTime), 'DD-MM-YYYY HH:mm').add(
-        //       1,
-        //       'minutes'
-        //     )
-        //   )
+          //   ||
+          //   selectedEndTime.isBetween(
+          //     moment(new Date(e.eventStartTime), 'DD-MM-YYYY HH:mm').add(
+          //       -1,
+          //       'minutes'
+          //     ),
+          //     moment(new Date(e.eventEndTime), 'DD-MM-YYYY HH:mm').add(
+          //       1,
+          //       'minutes'
+          //     )
+          //   )
         )
           return true
         else return false
@@ -81,7 +80,7 @@ const checkOverlap = () => {
   else {
     alert('your selected time has been booked, please choose a new time!')
     time.value = props.item.eventStartTime
-    }
+  }
 }
 
 const showCancel = ref(false)
@@ -120,10 +119,10 @@ const editingEvent = computed(() => ({
 const clearData = () => {
   date.value = editingEvent.value.eventStartTime
   time.value = {
-  hours: moment(props.item.eventStartTime).format('HH'),
-  minutes: moment(props.item.eventStartTime).format('mm'),
-  seconds: 0
-}
+    hours: moment(props.item.eventStartTime).format('HH'),
+    minutes: moment(props.item.eventStartTime).format('mm'),
+    seconds: 0
+  }
   description.value = editingEvent.value.eventNotes
   showCancel.value = false
   emit('existChange')
@@ -140,6 +139,7 @@ const checkNull = (event, id) => {
 const prevent = (event, id) => {
   checkNull(editingEvent.value, id)
 }
+console.log(props.item.id)
 </script>
 
 <template>
@@ -231,7 +231,10 @@ const prevent = (event, id) => {
             />
           </div>
           <!-- <span class="font-semibold py-2 px-2 pr-3.5 text-[#5E6366]">Time</span> -->
-          <div v-show="time" class="flex-none rounded-2xl w-60 py-2 px-4 text-black-700">
+          <div
+            v-show="time"
+            class="flex-none rounded-2xl w-60 py-2 px-4 text-black-700"
+          >
             {{
               `${moment(time).format('HH:mm')} - ${moment(time)
                 .add(item.eventDuration, 'minutes')

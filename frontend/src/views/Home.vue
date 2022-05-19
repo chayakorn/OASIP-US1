@@ -1,6 +1,5 @@
 <script setup>
-import moment from 'moment'
-import { onBeforeMount, ref } from 'vue'
+import { ref } from 'vue'
 import Card from '../components/Card.vue'
 import CreateEvent from '../components/CreateEvent.vue'
 import Notice from '../components/Notice.vue'
@@ -12,10 +11,8 @@ const getCategories = async () => {
     eventCategories.value = await res.json()
   } else console.log('error, cannot get category')
 }
+getCategories()
 
-onBeforeMount(async () => {
-  await getCategories()
-})
 const createModalStatus = ref(false)
 const cateToCreate = ref({})
 const createToggle = (cate) => {
@@ -26,7 +23,7 @@ const noticeCreate = ref(false)
 const closeNotice = () =>
   setTimeout(() => {
     noticeCreate.value = false
-  }, 1000)
+  }, 2000)
 </script>
 
 <template>

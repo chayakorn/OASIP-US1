@@ -12,6 +12,14 @@ export const useEvents = defineStore('categories', () => {
     } else console.log('error, cannot get events')
   }
 
+  //fetch method GET by id
+  const getEventById = async (id) => {
+    const res = await fetch(`${import.meta.env.VITE_BASE_URL}/event/${id}`)
+    if (res.status === 200) {
+      return await res.json()
+    } else console.log('error, cannot get events')
+  }
+
   //fetch method POST
   const createEvent = async (newEvent) => {
     const res = await fetch(`${import.meta.env.VITE_BASE_URL}/event`, {
@@ -49,17 +57,16 @@ export const useEvents = defineStore('categories', () => {
       body: JSON.stringify(event)
     })
     if (res.status === 200) {
-      console.log('edited successfully')
       updateEvent(event, id)
+      console.log('edited successfully')
     } else console.log('error, cannot edit event')
   }
 
   // function update event
   function updateEvent(updatedEvent, id) {
     eventLists.value.map((event) => {
-      if (event.id === id) {
+      if (event.id == id) {
         event.eventStartTime = updatedEvent.eventStartTime
-        event.eventEndTime = updatedEvent.eventEndTime
         event.eventNotes = updatedEvent.eventNotes
       }
     })
@@ -68,6 +75,7 @@ export const useEvents = defineStore('categories', () => {
   return {
     eventLists,
     getAllEvents,
+    getEventById,
     createEvent,
     deleteEvent,
     editEvent,

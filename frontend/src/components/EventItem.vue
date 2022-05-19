@@ -2,6 +2,7 @@
 import moment from 'moment'
 import { ref } from 'vue'
 import EventDetails from './EventDetails.vue'
+defineEmits(['deleteNotice', 'saveNotice'])
 defineProps({
   item: {
     type: Object,
@@ -23,14 +24,12 @@ const categoryBg = (cateId) => {
       return 'bg-[#FB7A8E]'
   }
 }
-const showMore = ref(false)
-
-const closeModal = (status) => {
-  showMore.value = status
-}
-
+const showMoreStatus = ref(false)
 const showDetails = () => {
-  showMore.value = !showMore.value
+  showMoreStatus.value = !showMoreStatus.value
+}
+const closeShowMore = (status) => {
+  showMoreStatus.value = status
 }
 </script>
 
@@ -50,7 +49,7 @@ const showDetails = () => {
     <div class="font-bold text-sm m-2">{{ item.categoryName }}</div>
     <div class="text-sm m-2">
       {{ moment(item.eventStartTime).format('DD MMM YYYY | H:mm') }}
-      <span class="float-right">{{ item.eventDuration }} mins</span>
+      <span class="float-right">{{ item.eventDuration }} min</span>
     </div>
     <div
       class="border-solid border-t border-[#E3E5E5] text-center text-[#367BF5] text-sm p-1 pt-2"
@@ -59,10 +58,12 @@ const showDetails = () => {
     </div>
   </div>
   <EventDetails
-    v-show="showMore"
+    v-if="showMoreStatus"
     :item="item"
     :color="categoryBg(item.eventCategoryId)"
-    @closeModal="closeModal"
+    @closeShowMore="closeShowMore"
+    @deleteSuccess="$emit('deleteNotice')"
+    @saveSuccess="$emit('saveNotice')"
   />
 </template>
 
