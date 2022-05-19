@@ -64,6 +64,11 @@ public class EventbookingService {
                         PageRequest.of(page, pageSize, isAsc ? Sort.by(sortBy).ascending():Sort.by(sortBy).descending())),
                 EventPageDto.class);
     }
+    public EventPageDto getAllEventByCatId(int page, int pageSize, String sortBy, boolean isAsc, Map<String,Collection<String>> catid) {
+        return modelMapper.map(repository.findByCategoryId(catid.get("catid"),
+                        PageRequest.of(page, pageSize, isAsc ? Sort.by(sortBy).ascending():Sort.by(sortBy).descending())),
+                EventPageDto.class);
+    }
     public EventbookingDto getEventById(int id){
         return modelMapper.map(repository.getById(id),EventbookingDto.class) ;
     }
@@ -86,7 +91,6 @@ public class EventbookingService {
             Eventbooking insertevent = mapEventForInsert(event);
             return ResponseEntity.status(201).body(repository.saveAndFlush(insertevent));
         }
-
         Error errorBody = new Error(Instant.now().atZone(ZoneId.of("Asia/Bangkok")).toString(), HttpStatus.BAD_REQUEST.value(), ((ServletWebRequest) request).getRequest().getRequestURI(), "Validation failed", fieldError);
         return new ResponseEntity(errorBody, HttpStatus.BAD_REQUEST);
     }
