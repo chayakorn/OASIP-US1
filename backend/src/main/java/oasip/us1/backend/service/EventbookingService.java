@@ -64,8 +64,9 @@ public class EventbookingService {
                         PageRequest.of(page, pageSize, isAsc ? Sort.by(sortBy).ascending():Sort.by(sortBy).descending())),
                 EventPageDto.class);
     }
-    public EventPageDto getAllEventByCatId(int page, int pageSize, String sortBy, boolean isAsc, Map<String,Collection<String>> catid) {
-        return modelMapper.map(repository.findByCategoryId(catid.get("catid"),
+    public EventPageDto getAllEventByCatId(int page, int pageSize, String sortBy, boolean isAsc, Collection<String> catid) {
+        System.out.println(catid.size());
+        return modelMapper.map(repository.findByCategoryId(catid,
                         PageRequest.of(page, pageSize, isAsc ? Sort.by(sortBy).ascending():Sort.by(sortBy).descending())),
                 EventPageDto.class);
     }

@@ -40,7 +40,7 @@ public class EventbookingController {
 
     @GetMapping("/byCat")
     private EventPageDto getAllEventByCatId(
-            @RequestBody Map<String,Collection<String>> catid, @RequestParam(defaultValue = "0") int page,
+            @RequestParam Collection<String> catid, @RequestParam(defaultValue = "0") int page,
             @RequestParam(defaultValue = "12") int pageSize,
             @RequestParam(defaultValue = "eventStartTime") String sortBy,
             @RequestParam(defaultValue = "true") boolean isAsc) {

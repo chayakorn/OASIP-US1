@@ -62,10 +62,11 @@ public interface EventbookingRepository extends JpaRepository<Eventbooking, Inte
 
     @Transactional
     @Query(
-            value = "select * from eventbooking where (eventCategoryId in :id)",
+            value = "select * from eventbooking where eventCategoryId in :id",
+            countQuery = "select count(*) from eventbooking where eventCategoryId in :id",
             nativeQuery = true
     )
-    Page<Eventbooking> findByCategoryId(@Param("id") Collection<String> id, Pageable pageable);
+    Page<Eventbooking> findByCategoryId(@Param("id") Collection<String> id, @Param("page") Pageable pageable);
 
     @Query(
             value = "select * from eventbooking where eventStartTime like '%'||:date||'%' and eventCategoryId = :catid",

@@ -63,10 +63,10 @@ public class EventcategoryService {
         }
         Eventcategory event = repository.findById(id).get();
         modelMapper.map(updateEventCategory,event);
-        return new ResponseEntity(repository.saveAndFlush(event),HttpStatus.ACCEPTED);
+        return new ResponseEntity(repository.saveAndFlush(event),HttpStatus.OK);
     }
     public ResponseEntity delete(int id){
         repository.deleteById(id);
-        return new ResponseEntity("Deleted id "+id, HttpStatus.ACCEPTED);
+        return new ResponseEntity("Deleted id "+id, HttpStatus.OK);
     }
 }
