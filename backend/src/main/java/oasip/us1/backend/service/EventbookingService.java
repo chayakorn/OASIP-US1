@@ -81,9 +81,9 @@ public class EventbookingService {
             fieldError.put(((FieldError)error).getField(),error.getDefaultMessage());
         });
         if (event.getEventCategoryId() == null){
-            fieldError.put("eventCategory","eventCategoryId can not be null");
+            fieldError.put("eventCategoryId","eventCategoryId can not be null");
         }else
-        if(!repository.findByEventStartTimeBetween(DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm").withZone(ZoneId.from(ZoneOffset.UTC)).format(event.getEventStartTime().plus(1,ChronoUnit.SECONDS)),DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm").withZone(ZoneId.from(ZoneOffset.UTC)).format(event.getEventStartTime().plus(event.getEventDuration(),ChronoUnit.MINUTES).minus(1,ChronoUnit.SECONDS)),event.getEventCategoryId()).isEmpty() && event.getEventCategoryId() != null) {
+        if(!repository.findByEventStartTimeBetween(DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm").withZone(ZoneId.from(ZoneOffset.UTC)).format(event.getEventStartTime().plus(1,ChronoUnit.SECONDS)),DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm").withZone(ZoneId.from(ZoneOffset.UTC)).format(event.getEventStartTime().plus(eventcategoryRepository.findById(event.getEventCategoryId()).get().getEventDuration(),ChronoUnit.MINUTES).minus(1,ChronoUnit.SECONDS)),event.getEventCategoryId()).isEmpty() && event.getEventCategoryId() != null) {
             fieldError.put("TimeOverlap","your selected time is not available");
         }
         if(fieldError.size() == 0){
@@ -131,7 +131,7 @@ public class EventbookingService {
     private Eventbooking mapEventForInsert(EventbookingInsertDto insertDto){
         Eventbooking eventbooking = new Eventbooking();
         eventbooking.setBookingName(insertDto.getBookingName());
-        eventbooking.setEventDuration(insertDto.getEventDuration());
+        eventbooking.setEventDuration(eventcategoryRepository.findById(insertDto.getEventCategoryId()).get().getEventDuration());
         eventbooking.setEventNotes(insertDto.getEventNotes());
         eventbooking.setName(insertDto.getName());
         eventbooking.setEventStartTime(insertDto.getEventStartTime());

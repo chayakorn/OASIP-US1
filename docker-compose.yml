@@ -12,19 +12,15 @@ services:
       - ./data/my.cnf:/etc/mysql/conf.d/custom.cnf
   oasipbackend:
     container_name: oasipbackend
-    build: ./backend
     restart: always
-    image: backend
+    image: rabmeat/oasip-us1-backend
     links:
       - oasipdb
 
   oasipfrontend:
     container_name: oasipfrontend
     restart: always
-    build: 
-      context: ./frontend
-      dockerfile: Dockerfile
-    image: frontend
+    image: rabmeat/oasip-us1-frontend
   oasipproxy:
     container_name: oasipproxy
     restart: always
