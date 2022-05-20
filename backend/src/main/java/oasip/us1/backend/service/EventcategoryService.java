@@ -20,6 +20,7 @@ import java.time.Instant;
 import java.time.ZoneId;
 import java.util.HashMap;
 import java.util.List;
+import java.util.Locale;
 import java.util.Map;
 import java.util.concurrent.atomic.AtomicReference;
 
@@ -52,9 +53,8 @@ public class EventcategoryService {
             fieldError.put(((FieldError) err).getField(),err.getDefaultMessage());
         });
         repository.findAll().forEach((eventcategory)->{
-            if(eventcategory.getEventCategoryName().trim().equals(updateEventCategory.getEventCategoryName().trim()) && eventcategory.getId() != id){
+            if(eventcategory.getEventCategoryName().toLowerCase().trim().equals(updateEventCategory.getEventCategoryName().toLowerCase().trim()) && eventcategory.getId() != id){
                 fieldError.put("eventCategoryName","eventCategoryName must be unique");
-
             }
         });
         if (fieldError.size()> 0){
