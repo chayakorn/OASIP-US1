@@ -66,4 +66,10 @@ public interface EventbookingRepository extends JpaRepository<Eventbooking, Inte
             nativeQuery = true
     )
     Page<Eventbooking> findByCategoryId(@Param("id") Collection<String> id, Pageable pageable);
+
+    @Query(
+            value = "select * from eventbooking where eventStartTime like '%'||:date||'%' and eventCategoryId = :catid",
+            nativeQuery = true
+    )
+    List<Eventbooking> findByEventStartTimeAndEventCategoryId(@Param("catid") int catid,@Param("date") String date);
 }

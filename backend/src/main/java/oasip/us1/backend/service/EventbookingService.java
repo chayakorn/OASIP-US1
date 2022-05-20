@@ -73,7 +73,11 @@ public class EventbookingService {
         return modelMapper.map(repository.getById(id),EventbookingDto.class) ;
     }
 
+    public List<EventbookingDto> getEventByCatAndDate(int catid,String date){
 
+        return listMapper.mapList(repository.findByEventStartTimeAndEventCategoryId(catid,date),EventbookingDto.class,modelMapper);
+
+    }
     public ResponseEntity save(EventbookingInsertDto event, BindingResult bindingResult, WebRequest request){
         Map<String,String> fieldError = new HashMap<>();
 

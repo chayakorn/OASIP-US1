@@ -4,21 +4,13 @@ import oasip.us1.backend.DTO.EventPageDto;
 import oasip.us1.backend.DTO.EventbookingDto;
 import oasip.us1.backend.DTO.EventbookingInsertDto;
 import oasip.us1.backend.DTO.EventbookingPutDto;
-import oasip.us1.backend.entity.Eventbooking;
 import oasip.us1.backend.service.EventbookingService;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.stereotype.Controller;
 import org.springframework.validation.BindingResult;
-import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.context.request.WebRequest;
-
-import javax.servlet.http.HttpServletResponse;
-import javax.validation.ConstraintViolationException;
 import javax.validation.Valid;
-import java.lang.reflect.Array;
 import java.util.Collection;
 import java.util.List;
 import java.util.Map;
@@ -53,6 +45,11 @@ public class EventbookingController {
             @RequestParam(defaultValue = "eventStartTime") String sortBy,
             @RequestParam(defaultValue = "true") boolean isAsc) {
         return service.getAllEventByCatId( page, pageSize, sortBy, isAsc,catid);
+    }
+    @GetMapping("/byDateAndCat")
+    private List<EventbookingDto> getAllEventByCatAndStartTime(@RequestParam(defaultValue = "1") int catid,@RequestParam String date){
+        return service.getEventByCatAndDate(catid,date);
+
     }
 
     @PostMapping("")
