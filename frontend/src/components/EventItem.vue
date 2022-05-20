@@ -2,12 +2,9 @@
 import moment from 'moment'
 import { ref } from 'vue'
 import EventDetails from './EventDetails.vue'
-<<<<<<< HEAD
 import Setting from '../views/Setting.vue';
-=======
 import { useClock } from '../stores/clock.js'
 const myClock = useClock()
->>>>>>> 38db1c6b762175a9296689b4b21639d2f36c16ca
 defineEmits(['deleteNotice', 'saveNotice'])
 defineProps({
   item: {
