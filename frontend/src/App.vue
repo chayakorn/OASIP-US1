@@ -42,7 +42,7 @@
         ></router-link>
         <!-- Setting -->
         <router-link
-          v-if="false"
+          v-if="true"
           :to="{ name: 'Setting' }"
           class="hover:scale-110 duration-700"
           ><svg width="3em" height="3em" viewBox="0 0 24 24">

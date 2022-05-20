@@ -2,6 +2,7 @@
 import moment from 'moment'
 import { ref } from 'vue'
 import EventDetails from './EventDetails.vue'
+import Setting from '../views/Setting.vue';
 defineEmits(['deleteNotice', 'saveNotice'])
 defineProps({
   item: {
@@ -65,6 +66,8 @@ const closeShowMore = (status) => {
     @deleteSuccess="$emit('deleteNotice')"
     @saveSuccess="$emit('saveNotice')"
   />
+  <Setting :colorCode="categoryBg()"/>
 </template>
 
-<style></style>
+<style>
+</style>
