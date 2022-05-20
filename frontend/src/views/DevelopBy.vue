@@ -9,21 +9,21 @@ import Developer from '../components/Developer.vue'
       <Developer
         name="Kanjanaporn Chuenmaneerat"
         id="63130500005"
-        photo="../src/assets/images/yok.jpg"
+        photo="../us1/src/assets/images/yok.jpg"
         git="https://github.com/VioletKan"
         team="kanjanaporn.stan@mail.kmutt.ac.th"
       />
       <Developer
         name="Chayakorn Ngamoranlerd"
         id="63130500017"
-        photo="../src/assets/images/j.jpg"
+        photo="../us1/src/assets/images/j.jpg"
         git="https://github.com/chayakorn"
         team="chayakorn.j@mail.kmutt.ac.th"
       />
       <Developer
         name="Thiti Ouengcharoen"
         id="63130500059"
-        photo="../src/assets/images/ben.jpg"
+        photo="../us1/src/assets/images/ben.jpg"
         git="https://github.com/bbenjmn01"
         team="thiti.ouengcharoen@mail.kmutt.ac.th"
       />
