@@ -29,6 +29,7 @@ jobs:
           docker-compose rm -svf oasipfrontend oasipbackend oasipproxy
           docker rmi backend frontend
       - name: tag and push registry image
+        run: |
           docker build -t backend ./backend
           docker tag backend rabmeat/oasip-us1-backend
           docker push rabmeat/oasipbackend
