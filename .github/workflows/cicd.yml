@@ -30,7 +30,6 @@ jobs:
           docker rmi backend frontend
       - name: tag and push registry image
         run: |
-          cat ./docker_token.txt | docker login -u rabmeat --password-stdin
           docker build -t backend ./backend
           docker tag backend rabmeat/oasip-us1-backend
           docker push rabmeat/oasip-us1-backend
