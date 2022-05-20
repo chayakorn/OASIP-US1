@@ -5,6 +5,7 @@ import Calendar from '../views/Calendar.vue'
 import Setting from '../views/Setting.vue'
 import NotFound from '../views/NotFound.vue'
 import DevelopBy from '../views/DevelopBy.vue'
+import EditSetting from '../views/EditSetting.vue'
 const history = createWebHistory('/us1')
 const routes = [
   {
@@ -31,6 +32,11 @@ const routes = [
     path: '/setting',
     name: 'Setting',
     component: Setting
+  },
+  {
+    path: '/edit-setting/:category',
+    name: 'EditSetting',
+    component: EditSetting,
   },
   {
     path: '/develop-by',

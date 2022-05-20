@@ -1,12 +1,6 @@
 <script setup>
 import { ref, computed } from 'vue'
 import { useCategories } from '../stores/categories.js';
-defineProps({
-  colorCode: {
-    type: String,
-    require: true
-  }
-})
 const myCategory = useCategories()
 myCategory.getAllCategories()
 const categoryLists = computed(() => myCategory.categoryLists)
@@ -25,18 +19,8 @@ const categoryBg = (cateId) => {
       return 'bg-[#FB7A8E]'
   }
 }
-const isEdit = ref(false)
-const editMode = (index) => {
-  isEdit.value = true
-  console.log(index)
-}
-const closeEditMode = ()=>{
-  isEdit.value = false
-}
 
-const saveChange = ()=>{
-  isEdit.value = false
-}
+
 </script>
 
 <template>
@@ -64,7 +48,7 @@ const saveChange = ()=>{
           </tr>
         </thead>
         <tbody class="" v-for="(category, index) in categoryLists" :key="index">
-          <tr class="bg-white border-b  hover:scale-105 duration-500">
+          <tr class="bg-white border-b  hover:scale-[1.02] duration-500 shadow-xl">
             <th scope="row" class="px-6 py-5 font-medium text-gray-900">
               <div :class="[categoryBg(category.id),'text-white text-lg p-4 pl-6 font-semibold rounded-xl']">
                 {{ category.eventCategoryName }}
@@ -80,7 +64,9 @@ const saveChange = ()=>{
               <div>{{ category.eventDuration }} minutes</div>
             </td>
             <td class="px-6 py-4 text-right">
-              <div class="font-medium cursor-pointer text-blue-600 dark:text-blue-500 hover:underline" @click="">Edit</div>
+             
+              <router-link :to="{ name: 'EditSetting' , params: { 'category': category.id } }" > <div class="font-medium cursor-pointer text-blue-600 dark:text-blue-500 hover:underline">Edit</div></router-link>
+              
             </td>
           </tr>
         </tbody>
