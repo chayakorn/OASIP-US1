@@ -27,7 +27,6 @@ jobs:
       - name: compose down delete image
         run: |
           docker-compose rm -svf oasipfrontend oasipbackend oasipproxy
-          docker rmi backend frontend
       - name: tag and push registry image
         run: |
           docker build -t backend ./backend

@@ -80,7 +80,7 @@ const myClock = useClock()
       <router-view
         :class="[
           'font-poppin h-screen overflow-auto',
-          this.$route.name == 'Home' ? '' : 'bg-[#F7F9FA]'
+          $route.name == 'Home' ? '' : 'bg-[#F7F9FA]'
         ]"
       ></router-view>
     </div>
