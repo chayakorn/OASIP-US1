@@ -13,6 +13,21 @@ export const useEvents = defineStore('events', () => {
     } else console.log('error, cannot get events')
   }
 
+  const getEventsByCategories = async (categories) => {
+    if (categories.length == 0) {
+      getAllEvents()
+    } else {
+      let params = 'catid=' + categories.join('&catid=')
+      const res = await fetch(
+        `${import.meta.env.VITE_BASE_URL}/event/byCat?${params}`
+      )
+      if (res.status === 200) {
+        let result = await res.json()
+        eventLists.value = result.content
+      } else console.log('error, cannot get events')
+    }
+  }
+
   //fetch method GET by id
   const getEventById = async (id) => {
     const res = await fetch(`${import.meta.env.VITE_BASE_URL}/event/${id}`)
@@ -76,6 +91,7 @@ export const useEvents = defineStore('events', () => {
   return {
     eventLists,
     getAllEvents,
+    getEventsByCategories,
     getEventById,
     createEvent,
     deleteEvent,

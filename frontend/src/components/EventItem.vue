@@ -82,5 +82,4 @@ const closeShowMore = (status) => {
   />
 </template>
 
-<style>
-</style>
+<style></style>
