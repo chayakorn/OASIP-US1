@@ -2,6 +2,8 @@
 import moment from 'moment'
 import { ref } from 'vue'
 import EventDetails from './EventDetails.vue'
+import { useClock } from '../stores/clock.js'
+const myClock = useClock()
 defineEmits(['deleteNotice', 'saveNotice'])
 defineProps({
   item: {
@@ -9,7 +11,18 @@ defineProps({
     require: true
   }
 })
-
+const checkPeriod = (dateTime) => {
+  if (moment(myClock.date).isBefore(moment(dateTime))) {
+    // future
+    return 'text-green-500'
+  } else if (moment(myClock.date).isAfter(moment(dateTime))) {
+    // past
+    return 'text-red-500'
+  } else {
+    // current
+    return 'text-blue-500'
+  }
+}
 const categoryBg = (cateId) => {
   switch (cateId) {
     case 1:
@@ -36,7 +49,7 @@ const closeShowMore = (status) => {
 <template>
   <div
     @click="showDetails"
-    class="bg-white w-[22.5%] p-2 rounded-lg cursor-pointer"
+    class="bg-white w-[22.5%] p-2 rounded-lg cursor-pointer hover:scale-110 hover:drop-shadow-lg duration-300 "
   >
     <div
       :class="[
@@ -48,7 +61,9 @@ const closeShowMore = (status) => {
     </div>
     <div class="font-bold text-sm m-2">{{ item.categoryName }}</div>
     <div class="text-sm m-2">
-      {{ moment(item.eventStartTime).format('DD MMM YYYY | H:mm') }}
+      <span :class="checkPeriod(item.eventStartTime)">
+        {{ moment(item.eventStartTime).format('DD MMM YYYY | H:mm') }}</span
+      >
       <span class="float-right">{{ item.eventDuration }} min</span>
     </div>
     <div

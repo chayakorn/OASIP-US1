@@ -3,8 +3,9 @@ import { computed, ref } from 'vue'
 import EventItem from '../components/EventItem.vue'
 import { useEvents } from '../stores/events.js'
 import Notice from '../components/Notice.vue'
+import Filter from '../components/Filter.vue'
 
-//use state "Events"
+// use state "Events"
 const myEvents = useEvents()
 //  GET
 myEvents.getAllEvents()
@@ -34,11 +35,19 @@ const toggleSave = () => {
 
 <template>
   <div class="p-10">
-    <div class="text-4xl font-bold">Scheduled Events</div>
-    <div class="my-5">
-      <span class="text-2xl font-bold">All Events</span
-      ><span class="ml-2 text-gray-400">{{ eventLists.length }} events</span>
+    <div class="grid grid-cols-2 mb-5">
+      <div>
+        <div class="text-4xl font-bold">Scheduled Events</div>
+        <div class="">
+          <span class="text-2xl font-bold">All Events</span
+          ><span class="ml-2 text-gray-400"
+            >{{ eventLists.length }} events</span
+          >
+        </div>
+      </div>
+      <Filter />
     </div>
+
     <div v-if="eventLists.length > 0">
       <!-- No Group -->
       <div class="contentSize flex flex-wrap gap-x-10 gap-y-5">

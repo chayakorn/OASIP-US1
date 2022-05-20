@@ -106,7 +106,7 @@ const closeForm = () => (createForm = false)
 
 .box:hover > .test {
   transform: translateY(-20%);
-  transition: all 0.5s linear;
+  transition: all 0.75s;
 }
 
 .box:hover > div .header {
