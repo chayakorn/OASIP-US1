@@ -2,7 +2,6 @@
 import moment from 'moment'
 import { ref } from 'vue'
 import EventDetails from './EventDetails.vue'
-import Setting from '../views/Setting.vue';
 import { useClock } from '../stores/clock.js'
 const myClock = useClock()
 defineEmits(['deleteNotice', 'saveNotice'])
@@ -81,7 +80,7 @@ const closeShowMore = (status) => {
     @deleteSuccess="$emit('deleteNotice')"
     @saveSuccess="$emit('saveNotice')"
   />
-  <Setting :colorCode="categoryBg()"/>
+
 </template>
 
 <style>
