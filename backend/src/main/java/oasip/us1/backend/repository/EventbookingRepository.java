@@ -2,6 +2,9 @@ package oasip.us1.backend.repository;
 
 import oasip.us1.backend.entity.Eventbooking;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Modifying;
 import org.springframework.data.jpa.repository.Query;
@@ -56,4 +59,11 @@ public interface EventbookingRepository extends JpaRepository<Eventbooking, Inte
             nativeQuery = true
     )
     Collection<Eventbooking> findByEventStartTimeBetweenForPut(@Param("start") String start,@Param("end") String end,@Param("catid") int catid,@Param("bid") int bid);
+
+    @Transactional
+    @Query(
+            value = "select * from eventbooking where (eventCategoryId in :id)",
+            nativeQuery = true
+    )
+    Page<Eventbooking> findByCategoryId(@Param("id") Collection<String> id, Pageable pageable);
 }

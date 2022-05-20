@@ -18,7 +18,10 @@ import org.springframework.web.context.request.WebRequest;
 import javax.servlet.http.HttpServletResponse;
 import javax.validation.ConstraintViolationException;
 import javax.validation.Valid;
+import java.lang.reflect.Array;
+import java.util.Collection;
 import java.util.List;
+import java.util.Map;
 
 @RestController
 @CrossOrigin
@@ -39,26 +42,34 @@ public class EventbookingController {
     }
 
     @GetMapping("/{id}")
-    private EventbookingDto getEventById(@PathVariable int id){
+    private EventbookingDto getEventById(@PathVariable int id) {
         return service.getEventById(id);
     }
 
+    @GetMapping("/byCat")
+    private EventPageDto getAllEventByCatId(
+            @RequestBody Map<String,Collection<String>> catid, @RequestParam(defaultValue = "0") int page,
+            @RequestParam(defaultValue = "12") int pageSize,
+            @RequestParam(defaultValue = "eventStartTime") String sortBy,
+            @RequestParam(defaultValue = "true") boolean isAsc) {
+        return service.getAllEventByCatId( page, pageSize, sortBy, isAsc,catid);
+    }
 
     @PostMapping("")
-    private ResponseEntity addEvent(@Valid @RequestBody EventbookingInsertDto newEventBooking, BindingResult result, WebRequest request){
-        return service.save(newEventBooking,result,request);
+    private ResponseEntity addEvent(@Valid @RequestBody EventbookingInsertDto newEventBooking, BindingResult result, WebRequest request) {
+        return service.save(newEventBooking, result, request);
     }
+
     @PutMapping("/{id}")
-    private ResponseEntity update( @RequestBody EventbookingPutDto editEventBooking, @PathVariable int id, BindingResult result, WebRequest request){
+    private ResponseEntity update(@RequestBody EventbookingPutDto editEventBooking, @PathVariable int id, BindingResult result, WebRequest request) {
         System.out.println("what");
 
-        return service.update(editEventBooking,id,result,request);
+        return service.update(editEventBooking, id, result, request);
     }
-
 
 
     @DeleteMapping("/{id}")
-    private void delete(@PathVariable int id){
+    private void delete(@PathVariable int id) {
         service.delete(id);
     }
 }

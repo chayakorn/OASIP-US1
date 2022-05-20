@@ -1,13 +1,20 @@
-<script setup></script>
+<script setup>
+import { useClock } from './stores/clock.js'
+const myClock = useClock()
+</script>
 
 <template>
   <div class="flex">
-    <div class="w-1/12">
-      <div class="absolute w-1/12 mt-5 grid place-content-center">
+    <div class="relative w-1/12">
+      <div class="absolute w-full mt-5 grid justify-items-center">
         <router-link :to="{ name: 'Home' }"
           ><img src="./assets/images/pin.png" width="60"
         /></router-link>
       </div>
+      <div class="absolute top-24 text-center">
+        {{ myClock.clock }}
+      </div>
+
       <div class="h-full grid place-content-center space-y-10">
         <!-- Home -->
         <router-link :to="{ name: 'Home' }" class="hover:scale-110 duration-700"
@@ -17,6 +24,7 @@
               d="M21.606 5.855a3.778 3.778 0 0 1 4.788 0l13.175 10.742A3.91 3.91 0 0 1 41 19.628v19.485C41 41.26 39.288 43 37.175 43h-5.1c-2.113 0-3.825-1.74-3.825-3.887V29.75c0-.715-.57-1.295-1.275-1.295h-5.95c-.704 0-1.275.58-1.275 1.295v9.364c0 2.147-1.712 3.887-3.825 3.887h-5.1C8.713 43 7 41.26 7 39.113V19.628a3.91 3.91 0 0 1 1.431-3.031L21.606 5.855Z"
             ></path></svg
         ></router-link>
+
         <!-- Event Lists -->
         <router-link
           :to="{ name: 'EventLists' }"
@@ -30,7 +38,7 @@
             ></path></svg
         ></router-link>
         <!-- Calendar -->
-        <router-link
+        <!-- <router-link
           v-if="true"
           :to="{ name: 'Calendar' }"
           class="ml-1 hover:scale-110 duration-700"
@@ -39,7 +47,7 @@
               fill="currentColor"
               d="M32 456a24 24 0 0 0 24 24h400a24 24 0 0 0 24-24V176H32Zm320-244a4 4 0 0 1 4-4h40a4 4 0 0 1 4 4v40a4 4 0 0 1-4 4h-40a4 4 0 0 1-4-4Zm0 80a4 4 0 0 1 4-4h40a4 4 0 0 1 4 4v40a4 4 0 0 1-4 4h-40a4 4 0 0 1-4-4Zm-80-80a4 4 0 0 1 4-4h40a4 4 0 0 1 4 4v40a4 4 0 0 1-4 4h-40a4 4 0 0 1-4-4Zm0 80a4 4 0 0 1 4-4h40a4 4 0 0 1 4 4v40a4 4 0 0 1-4 4h-40a4 4 0 0 1-4-4Zm0 80a4 4 0 0 1 4-4h40a4 4 0 0 1 4 4v40a4 4 0 0 1-4 4h-40a4 4 0 0 1-4-4Zm-80-80a4 4 0 0 1 4-4h40a4 4 0 0 1 4 4v40a4 4 0 0 1-4 4h-40a4 4 0 0 1-4-4Zm0 80a4 4 0 0 1 4-4h40a4 4 0 0 1 4 4v40a4 4 0 0 1-4 4h-40a4 4 0 0 1-4-4Zm-80-80a4 4 0 0 1 4-4h40a4 4 0 0 1 4 4v40a4 4 0 0 1-4 4h-40a4 4 0 0 1-4-4Zm0 80a4 4 0 0 1 4-4h40a4 4 0 0 1 4 4v40a4 4 0 0 1-4 4h-40a4 4 0 0 1-4-4ZM456 64h-55.92V32h-48v32H159.92V32h-48v32H56a23.8 23.8 0 0 0-24 23.77V144h448V87.77A23.8 23.8 0 0 0 456 64Z"
             ></path></svg
-        ></router-link>
+        ></router-link> -->
         <!-- Setting -->
         <router-link
           v-if="true"

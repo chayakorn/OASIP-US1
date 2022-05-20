@@ -1,9 +1,11 @@
 <script setup>
 import { ref } from 'vue'
+import moment from 'moment'
 import { useEvents } from '../stores/events.js'
 import Detail from './Detail.vue'
 import Confirm from './Confirm.vue'
-
+import { useClock } from '../stores/clock.js'
+const myClock = useClock()
 const emit = defineEmits(['closeShowMore', 'deleteSuccess', 'saveSuccess'])
 const props = defineProps({
   item: {
@@ -21,7 +23,6 @@ const myEvents = useEvents()
 const isEditMode = ref(false)
 const changeMode = () => (isEditMode.value = !isEditMode.value)
 const checkEditMode = () => {
-  console.log(isEditMode.value)
   isEditMode.value ? (cancelStatus.value = true) : emit('closeShowMore', false)
 }
 const cancelStatus = ref(false)
@@ -51,6 +52,8 @@ const backDrop = (event) => {
     checkEditMode()
   }
 }
+
+const checkPast = () => moment(props.item.eventStartTime).isBefore(myClock.date)
 </script>
 
 <template>
@@ -106,12 +109,16 @@ const backDrop = (event) => {
           </div>
         </button>
         <button
+          :disabled="checkPast()"
           :class="[
             isEditMode ? 'bg-[#2FA84F]' : 'bg-[#367BF5]',
-            'flex place-items-center rounded-[5px] text-white font-semibold w-36 h-12 px-1'
+            'flex place-items-center rounded-[5px] text-white font-semibold w-36 h-12 px-1 disabled:opacity-25 disabled:cursor-not-allowed'
           ]"
         >
-          <div @click="changeMode" class="flex place-items-center">
+          <div
+            @click="checkPast() ? '' : changeMode()"
+            class="flex place-items-center"
+          >
             <span class="p-1 bg-white rounded-[5px]">
               <svg width="2em" height="2em" viewBox="0 0 256 256">
                 <path

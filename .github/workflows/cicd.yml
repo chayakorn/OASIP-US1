@@ -28,6 +28,14 @@ jobs:
         run: |
           docker-compose rm -svf oasipfrontend oasipbackend oasipproxy
           docker rmi backend frontend
+      - name: tag and push registry image
+        run: |
+          docker build -t backend ./backend
+          docker tag backend rabmeat/oasip-us1-backend
+          docker push rabmeat/oasip-us1-backend
+          docker build -t frontend ./frontend
+          docker tag frontend rabmeat/oasip-us1-frontend
+          docker push rabmeat/oasip-us1-frontend
           
       # Runs a set of commands using the runners shell
       - name: build and deploy

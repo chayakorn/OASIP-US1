@@ -22,10 +22,7 @@ const creatingEvent = computed(() => ({
   bookingName: bookingName.value,
   bookingEmail: email.value,
   eventStartTime: dateTime.value.toISOString(),
-  eventEndTime: dateTime.value
-    .add(props.category.eventDuration, 'minutes')
-    .toISOString(),
-  eventCategoryId: { id: props.category.id },
+  eventCategoryId: props.category.id,
   eventDuration: props.category.eventDuration,
   eventNotes: note.value,
   name: name.value

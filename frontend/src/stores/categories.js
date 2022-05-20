@@ -21,33 +21,24 @@ export const useCategories = defineStore('categories', () => {
   }
 
   //fetch method PUT
-  const editCategory = async (category, id) => {
-    const res = await fetch(`${import.meta.env.VITE_BASE_URL}/eventcat/${id}`, {
-      method: 'PUT',
-      headers: {
-        'content-type': 'application/json'
-      },
-      body: JSON.stringify(category)
-    })
-    if (res.status === 200) {
-      console.log('edited successfully')
-      updateCategory(category, id)
-    } else console.log('error, cannot edit category')
-  }
-
-  // function update event
-  // function updateCategory(updatedCategory, id) {
-  //   categoryLists.value.map((cate) => {
-
+  // const editCategory = async (category, id) => {
+  //   const res = await fetch(`${import.meta.env.VITE_BASE_URL}/eventcat/${id}`, {
+  //     method: 'PUT',
+  //     headers: {
+  //       'content-type': 'application/json'
+  //     },
+  //     body: JSON.stringify(category)
   //   })
+  //   if (res.status === 200) {
+  //     console.log('edited successfully')
+  //     updateCategory(category, id)
+  //   } else console.log('error, cannot edit category')
   // }
 
   return {
     categoryLists,
     getAllCategories,
     getCategoryById
-    // editCategory
-    // updateCategory
   }
 })
 
