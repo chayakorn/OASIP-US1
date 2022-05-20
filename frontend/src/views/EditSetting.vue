@@ -53,9 +53,9 @@ const updateCategory = (cate, id) => {
             Editing Event Categories
         </div>
 
-        <div class="bg-yellow-400 h-screen overflow-hidden flex items-center justify-center">
-            <div class="p-8 ">
-                <input type="text" class="border-lg bg-grey-700" v-model="myCategory.eventCategoryName" required
+        <div class="grid place-items-center w-2/4   m-8 shadow-lg bg-slate-200 rounded-xl py-8 gap-4">
+            <div class=" ">
+                <input type="text" class="border-lg bg-grey-700 rounded-md w-64 h-8" v-model="myCategory.eventCategoryName" required
                     maxlength="100" @keypress="checkName" />
                 <div v-if="myCategory.eventCategoryName.length >= 100" class="absolute text-xs text-red-500">
                     The number of characters has a limit of 100 characters. If it
@@ -63,8 +63,8 @@ const updateCategory = (cate, id) => {
                 <div v-if="checkName" class="text-red-500 text-xs">This category name has been used</div>
             </div>
 
-            <div class="p-8">
-                <textarea maxlength='500' class="resize-none border-lg bg-grey-700 w-96 h-36"
+            <div class="">
+                <textarea maxlength='500' class="resize-none border-lg bg-grey-700 w-96 h-36 rounded-lg"
                     v-model="myCategory.eventCategoryDescription" :placeholder="myCategory.eventCategoryDescription" />
                 <div v-if="myCategory.eventCategoryDescription.length >= 500" class="absolute text-xs text-red-500">
                     The number of characters has a limit of 500 characters. If it
@@ -72,23 +72,30 @@ const updateCategory = (cate, id) => {
                 </div>
             </div>
 
-            <div class="p-8">
-                <input type="number" class="border-lg bg-grey-700" v-model="myCategory.eventDuration"
-                    :placeholder="myCategory.eventDuration" min="1" max="480" />
+            <div class="">
+                <input type="number" class="border-lg bg-grey-700 text-center rounded-md"
+                    v-model="myCategory.eventDuration" :placeholder="myCategory.eventDuration" min="1" max="480" />
             </div>
             <div v-if="myCategory.eventDuration >= 480" class="absolute text-xs text-red-500">
                 The range of number must be 1-480
                 The number of characters has a limit of 500 characters. If it
                 exceeds 500, it will not be able to continue typing.
             </div>
+
+            <div>
+                <button :disabled="checkDataBeforeSubmit"
+                    class="text-white bg-blue-700 w-24 rounded-lg text-sm py-2.5 text-center hover:scale-[1.02] duration-500 disabled:opacity-25 disabled:cursor-not-allowed"
+                    @click="checkEditData">
+                    Submit
+                </button>
+            </div>
+
         </div>
-        <button :disabled="checkDataBeforeSubmit"
-            class="text-white bg-blue-700 hover:bg-blue-800  font-medium rounded-lg text-sm w-full sm:w-auto px-5 py-2.5 text-center  dark:hover:bg-blue-700 disabled:opacity-25 disabled:cursor-not-allowed"
-            @click="checkEditData">
-            Submit</button>
+
         <!-- </form> -->
 
     </div>
+
 </template>
  
 <style>
