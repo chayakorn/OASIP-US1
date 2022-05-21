@@ -51,7 +51,7 @@ const myClock = useClock()
         <!-- Setting -->
         <router-link
           :to="{ name: 'Setting' }"
-          :style="$route.path.includes('setting') ? 'color: #031b89;' : '' "
+          :style="$route.path.includes('setting') ? 'color: #031b89;' : ''"
           class="hover:scale-110 duration-700"
           ><svg width="3em" height="3em" viewBox="0 0 24 24">
             <path
@@ -114,5 +114,22 @@ a {
 .detail {
   color: #367bf5;
   text-decoration: none;
+}
+
+/* width */
+::-webkit-scrollbar {
+  width: 10px;
+}
+
+/* Track */
+::-webkit-scrollbar-track {
+  box-shadow: inset 0 0 2px grey;
+  border-radius: 10px;
+}
+
+/* Handle */
+::-webkit-scrollbar-thumb {
+  background: gray;
+  border-radius: 10px;
 }
 </style>

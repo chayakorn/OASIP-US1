@@ -16,7 +16,6 @@ const props = defineProps({
 //use state "Events"
 const myEvents = useEvents()
 myEvents.getAllEvents()
-const eventLists = computed(() => myEvents.eventLists)
 
 const creatingEvent = computed(() => ({
   bookingName: bookingName.value,
@@ -55,19 +54,19 @@ const name = ref('')
 const email = ref('')
 const note = ref('')
 const date = ref('')
-const time = ref('')
+const seletedTime = ref('')
 const dateTime = computed(() =>
   moment(
-    `${moment(date.value).format('YYYY-MM-DD')} ${moment(time.value).format(
-      'HH:mm'
-    )}`
+    `${moment(date.value).format('YYYY-MM-DD')} ${moment(
+      seletedTime.value
+    ).format('HH:mm')}`
   )
 )
 const reset = () => {
   bookingName.value = ''
   email.value = ''
   date.value = ''
-  time.value = ''
+  seletedTime.value = ''
   note.value = ''
   name.value = ''
 }
@@ -83,28 +82,41 @@ const invalid = () => {
 const valid = () => {
   error.value = false
 }
+const timeStops = ref([])
 
-// function getTimeStops(start, end) {
-//   var startTime = moment(start, 'HH:mm')
-//   var endTime = moment(end, 'HH:mm')
+const getTimeStops = (start, end) => {
+  let startTime = moment(start, 'HH:mm')
+  let endTime = moment(end, 'HH:mm')
+  let last = moment(end, 'HH:mm').subtract(
+    props.category.eventDuration - 1,
+    'minutes'
+  )
 
-//   if (endTime.isBefore(startTime)) {
-//     endTime.add(1, 'day')
-//   }
+  if (endTime.isBefore(startTime)) {
+    endTime.add(1, 'day')
+  }
+  let timeStops = []
 
-//   var timeStops = []
+  do {
+    if (startTime <= last) {
+      timeStops.push(moment(startTime).format('HH:mm'))
+    }
+    startTime.add(props.category.eventDuration, 'minutes')
+  } while (startTime <= endTime)
+  // do {
+  //   timeStops.push(moment(startTime).format('HH:mm'))
+  //   startTime.add(props.category.eventDuration, 'minutes')
+  // } while (startTime <= last)
+  // while (startTime <= endTime) {
+  //   if (startTime <= last) {
+  //     timeStops.push(moment(startTime).format('HH:mm'))
+  //     startTime.add(props.category.eventDuration, 'minutes')
+  //   }
+  // }
+  return timeStops
+}
 
-//   while (startTime <= endTime) {
-//     timeStops.push({
-//       date: moment(startTime).format('DD-MM-YYYY HH:mm'),
-//       status: ref(false)
-//     })
-//     startTime.add(30, 'minutes')
-//   }
-//   return timeStops
-// }
-
-// var timeStops = getTimeStops('00:00', '23:59')
+const createSlots = () => (timeStops.value = getTimeStops('00:00', '23:59'))
 
 const format = (date) => {
   const day = date.getDate()
@@ -112,50 +124,81 @@ const format = (date) => {
   const year = date.getFullYear()
   return `${day} ${month} ${year}`
 }
+const list = ref([])
+const getEventByDate = () =>
+  myEvents
+    .getEventByIdDate(
+      props.category.id,
+      moment(date.value).format('YYYY-MM-DD')
+    )
+    .then((result) => {
+      list.value = result
+    })
 
-const checkOverlap = () => {
-  let selectedStartTime = moment(new Date(dateTime.value), 'DD-MM-YYYY HH:mm')
+const checkOverlap = (time) => {
+  // console.log(moment(`${moment(date.value).format('YYYY-MM-DD')} ${time}`))
+  let selectedStartTime = moment(
+    new Date(`${moment(date.value).format('YYYY-MM-DD')} ${time}`),
+    'DD-MM-YYYY HH:mm'
+  )
   let selectedEndTime = moment(
-    new Date(dateTime.value),
+    new Date(`${moment(date.value).format('YYYY-MM-DD')} ${time}`),
     'DD-MM-YYYY HH:mm'
   ).add(props.category.eventDuration, 'minutes')
   if (
-    !eventLists.value
-      .filter((item) => item.eventCategoryId == props.category.id)
-      .some((e) => {
-        if (
-          selectedStartTime.isBetween(
-            moment(new Date(e.eventStartTime), 'DD-MM-YYYY HH:mm'),
-            moment(new Date(e.eventEndTime), 'DD-MM-YYYY HH:mm')
-          ) ||
-          moment(new Date(e.eventStartTime), 'DD-MM-YYYY HH:mm').isBetween(
-            selectedStartTime,
-            selectedEndTime
-          ) ||
-          moment(new Date(e.eventEndTime), 'DD-MM-YYYY HH:mm').isBetween(
-            selectedStartTime,
-            selectedEndTime
-          )
-        )
-          return true
-        else return false
-      })
+    list.value.some(
+      (e) =>
+        moment(new Date(e.eventStartTime), 'DD-MM-YYYY HH:mm').isBefore(
+          selectedEndTime
+        ) &&
+        moment(new Date(e.eventStartTime), 'DD-MM-YYYY HH:mm')
+          .add(e.eventDuration, 'minutes')
+          .isAfter(selectedStartTime)
+    )
   )
-    true
-  else {
-    date.value = ''
-    time.value = ''
-    alert('your selected time has been booked, please selete a new time!')
-  }
+    return true
+  else return false
 }
+// const checkOverlap = () => {
+//   let list = ref([])
+//   myEvents
+//     .getEventByIdDate(
+//       props.category.id,
+//       moment(dateTime.value).format('YYYY-MM-DD')
+//     )
+//     .then((result) => {
+//       list.value = result
+//     })
+//   let selectedStartTime = moment(new Date(dateTime.value), 'DD-MM-YYYY HH:mm')
+//   let selectedEndTime = moment(
+//     new Date(dateTime.value),
+//     'DD-MM-YYYY HH:mm'
+//   ).add(props.category.eventDuration, 'minutes')
+//   if (
+//     !eventLists.value.some(
+//       (e) =>
+//         moment(new Date(e.eventStartTime), 'DD-MM-YYYY HH:mm').isBefore(
+//           selectedEndTime
+//         ) &&
+//         moment(new Date(e.eventStartTime), 'DD-MM-YYYY HH:mm')
+//           .add(e.eventDuration, 'minutes')
+//           .isAfter(selectedStartTime)
+//     )
+//   )
+//     true
+//   else {
+//     time.value = ''
+//     alert('your selected time has been booked, please selete a new time!')
+//   }
+// }
 
 const nullStatus = computed(() =>
   bookingName.value.length > 0 &&
   bookingName.value.length <= 100 &&
   email.value &&
-  date.value &&
-  time.value
-    ? false
+  date.value
+    ? // &&time.value
+      false
     : true
 )
 </script>
@@ -263,44 +306,69 @@ const nullStatus = computed(() =>
                   {{ email.length }}/100
                 </div>
               </div>
+              <div class="relative col-span-2">
+                <div class="font-medium">Description | Note</div>
+                <textarea
+                  class="break-words resize-none rounded-xl w-full h-28 py-2 px-3 mt-2 bg-[#F1F3F4] border border-[#5E6366] focus:outline-none focus:shadow-outline"
+                  placeholder="Enter your description . . ."
+                  v-model="note"
+                />
+                <div
+                  v-if="note.length >= 500"
+                  class="absolute text-xs text-[#F3A72E]"
+                >
+                  The number of characters has a limit of 500 characters. If it
+                  exceeds 500, it will not be able to continue typing.
+                </div>
+                <div
+                  :class="[
+                    'absolute right-0 top-4 text-xs',
+                    note.length <= 100 ? 'text-gray-500' : 'text-red-500'
+                  ]"
+                >
+                  {{ note.length }}/500
+                </div>
+              </div>
             </div>
-            <div class="bg-[#F7F9FA] ml-10 rounded-2xl grid content-center">
-              <div class="grid gap-y-10 ml-10">
-                <div class="flex items-center gap-x-2">
-                  <svg width="1.5em" height="1.5em" viewBox="0 0 512 512">
-                    <path
-                      d="M368.005 272h-96v96h96v-96zm-32-208v32h-160V64h-48v32h-24.01c-22.002 0-40 17.998-40 40v272c0 22.002 17.998 40 40 40h304.01c22.002 0 40-17.998 40-40V136c0-22.002-17.998-40-40-40h-24V64h-48zm72 344h-304.01V196h304.01v212z"
-                      fill="currentColor"
-                    ></path>
-                  </svg>
-                  <Datepicker
-                    v-model="date"
-                    :enableTimePicker="false"
-                    :format="format"
-                    :minDate="new Date()"
-                    placeholder="Select Date"
-                    hideInputIcon
-                    vertical
-                  />
-                </div>
-                <div>
-                  <span class="font-medium">Comfirm date : </span>
-                  <span :class="[date ? '' : 'text-[#F3A72E]']">
-                    {{
-                      date
-                        ? moment(date).format('DD MMMM YYYY')
-                        : 'Please select date !'
-                    }}</span
-                  >
-                </div>
-                <div class="flex items-center gap-x-2">
-                  <svg width="1.5em" height="1.5em" viewBox="0 0 24 24">
+            <div class="relative ml-10">
+              <div class="grid bg-[#F7F9FA] rounded-2xl h-3/4">
+                <div class="grid gap-y-5 p-5">
+                  <div class="flex items-center gap-x-2">
+                    <svg width="1.5em" height="1.5em" viewBox="0 0 512 512">
+                      <path
+                        d="M368.005 272h-96v96h96v-96zm-32-208v32h-160V64h-48v32h-24.01c-22.002 0-40 17.998-40 40v272c0 22.002 17.998 40 40 40h304.01c22.002 0 40-17.998 40-40V136c0-22.002-17.998-40-40-40h-24V64h-48zm72 344h-304.01V196h304.01v212z"
+                        fill="currentColor"
+                      ></path>
+                    </svg>
+                    <Datepicker
+                      v-model="date"
+                      :enableTimePicker="false"
+                      :format="format"
+                      :minDate="new Date()"
+                      placeholder="Select Date"
+                      hideInputIcon
+                      vertical
+                      @closed="getEventByDate(), createSlots()"
+                    />
+                  </div>
+                  <div>
+                    <span class="font-medium">Comfirm date : </span>
+                    <span :class="[date ? '' : 'text-[#F3A72E]']">
+                      {{
+                        date
+                          ? moment(date).format('DD MMMM YYYY')
+                          : 'Please select date !'
+                      }}</span
+                    >
+                  </div>
+                  <!-- <div class="flex items-center gap-x-2"> -->
+                  <!-- <svg width="1.5em" height="1.5em" viewBox="0 0 24 24">
                     <path
                       fill="currentColor"
                       d="M12 20c4.4 0 8-3.6 8-8s-3.6-8-8-8s-8 3.6-8 8s3.6 8 8 8m0-18c5.5 0 10 4.5 10 10s-4.5 10-10 10S2 17.5 2 12S6.5 2 12 2m5 11.9l-.7 1.3l-5.3-2.9V7h1.5v4.4l4.5 2.5Z"
                     ></path>
-                  </svg>
-                  <Datepicker
+                  </svg> -->
+                  <!-- <Datepicker
                     v-model="time"
                     timePicker
                     is24
@@ -317,83 +385,81 @@ const nullStatus = computed(() =>
                     :disabled="date == '' ? true : false"
                     hideInputIcon
                     @closed="checkOverlap"
-                  />
-                </div>
-                <div>
-                  <span class="font-medium">Comfirm time : </span>
-                  <span :class="[time ? '' : 'text-[#F3A72E]']">
-                    {{
-                      time
-                        ? `${moment(time).format('HH:mm')} - ${moment(time)
-                            .add(props.category.eventDuration, 'minutes')
-                            .format('HH:mm')}`
-                        : 'Please select time !'
-                    }}</span
+                  /> -->
+                  <div
+                    class="grid grid-cols-3 gap-4 bg-white rounded-lg border-2 p-3 h-40 overflow-auto"
                   >
-                </div>
-                <div>
-                  <div>
-                    <span class="font-medium">Durations: </span>
-                    <span class="font-base text-red-500">{{
-                      category.eventDuration
-                    }}</span>
-                    minutes
-                  </div>
-                  <div class="text-sm text-gray-400">
-                    * Duration depends on category.
-                  </div>
-                </div>
-              </div>
-            </div>
-          </div>
-          <div class="grid grid-cols-3">
-            <div class="relative col-span-2">
-              <div class="font-medium">Description | Note</div>
-              <textarea
-                class="break-words resize-none rounded-xl w-full h-28 py-2 px-3 mt-2 bg-[#F1F3F4] border border-[#5E6366] focus:outline-none focus:shadow-outline"
-                placeholder="Enter your description . . ."
-                v-model="note"
-              />
-              <div
-                v-if="note.length >= 500"
-                class="absolute text-xs text-[#F3A72E]"
-              >
-                The number of characters has a limit of 500 characters. If it
-                exceeds 500, it will not be able to continue typing.
-              </div>
-              <div
-                :class="[
-                  'absolute right-0 top-4 text-xs',
-                  note.length <= 100 ? 'text-gray-500' : 'text-red-500'
-                ]"
-              >
-                {{ note.length }}/500
-              </div>
-            </div>
-            <div class="ml-10 mb-1 relative">
-              <div
-                class="grid grid-cols-2 gap-x-10 absolute inset-x-0 bottom-0"
-              >
-                <div
-                  class="bg-[#EA3D2F] cursor-pointer h-10 drop-shadow-lg rounded-md"
-                  @click="reset(), emit('closeCreate')"
-                >
-                  <div class="flex">
+                    <div v-if="date" v-for="slot in timeStops">
+                      <button
+                        type="button"
+                        @click="seletedTime = slot"
+                        :disabled="checkOverlap(slot)"
+                        class="cursor-pointer rounded-lg bg-[#DCF7E3] border disabled:bg-[#FEE4E2] disabled:cursor-not-allowed"
+                      >
+                        {{ slot }} -
+                        {{
+                          moment(slot, 'HH:mm')
+                            .add(category.eventDuration, 'minutes')
+                            .format('HH:mm')
+                        }}
+                      </button>
+                    </div>
                     <div
-                      class="bg-white m-1 h-8 w-1/3 rounded grid place-items-center text-[#EA3D2F]"
+                      v-else
+                      class="col-span-3 grid place-content-center text-3xl font-bold text-[#C6CACC]"
                     >
-                      <svg width="1.5em" height="1.5em" viewBox="0 0 24 24">
-                        <path
-                          fill="currentColor"
-                          d="M12 1.75a3.25 3.25 0 0 1 3.245 3.066L15.25 5h5.25a.75.75 0 0 1 .102 1.493L20.5 6.5h-.796l-1.28 13.02a2.75 2.75 0 0 1-2.561 2.474l-.176.006H8.313a2.75 2.75 0 0 1-2.714-2.307l-.023-.174L4.295 6.5H3.5a.75.75 0 0 1-.743-.648L2.75 5.75a.75.75 0 0 1 .648-.743L3.5 5h5.25A3.25 3.25 0 0 1 12 1.75Zm6.197 4.75H5.802l1.267 12.872a1.25 1.25 0 0 0 1.117 1.122l.127.006h7.374c.6 0 1.109-.425 1.225-1.002l.02-.126L18.196 6.5ZM13.75 9.25a.75.75 0 0 1 .743.648L14.5 10v7a.75.75 0 0 1-1.493.102L13 17v-7a.75.75 0 0 1 .75-.75Zm-3.5 0a.75.75 0 0 1 .743.648L11 10v7a.75.75 0 0 1-1.493.102L9.5 17v-7a.75.75 0 0 1 .75-.75Zm1.75-6a1.75 1.75 0 0 0-1.744 1.606L10.25 5h3.5A1.75 1.75 0 0 0 12 3.25Z"
-                        ></path>
-                      </svg>
+                      Time slots
                     </div>
-                    <div class="grid place-items-center w-full text-white">
-                      CANCEL
+                  </div>
+                  <div>
+                    <span class="font-medium">Comfirm time : </span>
+                    <span :class="[seletedTime ? '' : 'text-[#F3A72E]']">
+                      {{
+                        seletedTime
+                          ? seletedTime +
+                            '-' +
+                            moment(seletedTime, 'HH:mm')
+                              .add(props.category.eventDuration, 'minutes')
+                              .format('HH:mm')
+                          : 'Please select time !'
+                      }}</span
+                    >
+                  </div>
+                  <!-- </div> -->
+                  <div>
+                    <div>
+                      <span class="font-medium">Durations: </span>
+                      <span class="font-base text-red-500">{{
+                        category.eventDuration
+                      }}</span>
+                      minutes
+                    </div>
+                    <div class="text-sm text-gray-400">
+                      * Duration depends on category.
                     </div>
                   </div>
                 </div>
+              </div>
+              <div class="grid grid-cols-2 absolute bottom-0 w-full gap-x-10">
+                <button @click="reset(), emit('closeCreate')">
+                  <div class="bg-[#EA3D2F] h-10 drop-shadow-lg rounded-md">
+                    <div class="flex">
+                      <div
+                        class="bg-white m-1 h-8 w-1/3 rounded grid place-items-center text-[#EA3D2F]"
+                      >
+                        <svg width="1.5em" height="1.5em" viewBox="0 0 24 24">
+                          <path
+                            fill="currentColor"
+                            d="M12 1.75a3.25 3.25 0 0 1 3.245 3.066L15.25 5h5.25a.75.75 0 0 1 .102 1.493L20.5 6.5h-.796l-1.28 13.02a2.75 2.75 0 0 1-2.561 2.474l-.176.006H8.313a2.75 2.75 0 0 1-2.714-2.307l-.023-.174L4.295 6.5H3.5a.75.75 0 0 1-.743-.648L2.75 5.75a.75.75 0 0 1 .648-.743L3.5 5h5.25A3.25 3.25 0 0 1 12 1.75Zm6.197 4.75H5.802l1.267 12.872a1.25 1.25 0 0 0 1.117 1.122l.127.006h7.374c.6 0 1.109-.425 1.225-1.002l.02-.126L18.196 6.5ZM13.75 9.25a.75.75 0 0 1 .743.648L14.5 10v7a.75.75 0 0 1-1.493.102L13 17v-7a.75.75 0 0 1 .75-.75Zm-3.5 0a.75.75 0 0 1 .743.648L11 10v7a.75.75 0 0 1-1.493.102L9.5 17v-7a.75.75 0 0 1 .75-.75Zm1.75-6a1.75 1.75 0 0 0-1.744 1.606L10.25 5h3.5A1.75 1.75 0 0 0 12 3.25Z"
+                          ></path>
+                        </svg>
+                      </div>
+                      <div class="grid place-items-center w-full text-white">
+                        CANCEL
+                      </div>
+                    </div>
+                  </div>
+                </button>
                 <button
                   :disabled="nullStatus"
                   class="disabled:opacity-25 disabled:cursor-not-allowed"

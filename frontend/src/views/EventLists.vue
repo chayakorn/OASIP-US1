@@ -170,7 +170,9 @@ const reset = () => {
       v-else
       class="h-3/4 grid place-content-center text-[#C6CACC] font-bold text-4xl"
     >
-      No Scheduled Events.
+      <span v-if="period == 1">No Scheduled Events.</span>
+      <span v-if="period == 2">No On-Going or Upcoming Events.</span>
+      <span v-if="period == 3">No Past Events.</span>
     </div>
     <Notice
       v-if="noticeDelete"

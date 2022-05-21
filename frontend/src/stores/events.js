@@ -36,6 +36,18 @@ export const useEvents = defineStore('events', () => {
     } else console.log('error, cannot get events')
   }
 
+  //fetch method GET by id & date
+  const getEventByIdDate = async (id, date) => {
+    const res = await fetch(
+      `${
+        import.meta.env.VITE_BASE_URL
+      }/event/byDateAndCat?catid=${id}&date=${date}`
+    )
+    if (res.status === 200) {
+      return await res.json()
+    } else console.log('error, cannot get events')
+  }
+
   //fetch method POST
   const createEvent = async (newEvent) => {
     const res = await fetch(`${import.meta.env.VITE_BASE_URL}/event`, {
@@ -93,6 +105,7 @@ export const useEvents = defineStore('events', () => {
     getAllEvents,
     getEventsByCategories,
     getEventById,
+    getEventByIdDate,
     createEvent,
     deleteEvent,
     editEvent,
