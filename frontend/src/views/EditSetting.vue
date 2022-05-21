@@ -2,7 +2,7 @@
 import { ref, computed, onBeforeMount } from 'vue';
 import { useRoute } from 'vue-router'
 import { useCategories } from '../stores/categories.js';
-import Confirm from '../components/Confirm.vue'
+// import Confirm from '../components/Confirm.vue'
 import router from '../router/index.js';
 
 
@@ -11,7 +11,7 @@ const useCategory = useCategories()
 useCategory.getAllCategories()
 const categoryLists = computed(() => useCategory.categoryLists)
 onBeforeMount(useCategories().getCategoryById(useRoute().params.category).then((e) => myCategory.value = e))
-const emit = defineEmits(['save', 'cancelSave'])
+// const emit = defineEmits(['save', 'cancelSave'])
 
 const isDataValid = computed(() => myCategory.value.eventCategoryName.trim().length > 0 && myCategory.value.eventCategoryName.length <= 100 &&
     myCategory.value.eventDuration > 0 && myCategory.value.eventCategoryDescription.length <= 500 && !catNameNotUnique.value)
@@ -28,25 +28,25 @@ const checkName = () => {
 
 
 const updateCategory = () => {
-    // useCategory.editCategory({
-    //     eventCategoryName: myCategory.value.eventCategoryName,
-    //     eventCategoryDescription: myCategory.value.eventCategoryDescription,
-    //     eventDuration: myCategory.value.eventDuration
-    // }, myCategory.value.id)
+    useCategory.editCategory({
+        eventCategoryName: myCategory.value.eventCategoryName,
+        eventCategoryDescription: myCategory.value.eventCategoryDescription,
+        eventDuration: myCategory.value.eventDuration
+    }, myCategory.value.id)
     router.push({ name: 'Setting'})
 }
 
-const saveStatus = ref(false)
-const save = (status) => {
-    saveStatus.value = true
-    emit('save')
-}
+// const saveStatus = ref(false)
+// const save = (status) => {
+//     saveStatus.value = true
+//     emit('save')
+// }
 
-const cancelStatus = ref(false)
-const cancelSave = (status) =>{
-    cancelStatus.value = true
-    emit('cancelSave')
-}
+// const cancelStatus = ref(false)
+// const cancelSave = (status) =>{
+//     cancelStatus.value = true
+//     emit('cancelSave')
+// }
 
 </script>
  
@@ -104,7 +104,7 @@ const cancelSave = (status) =>{
                 <div>
                     <button :disabled="!isDataValid"
                         class="text-white bg-blue-700 w-24 rounded-lg text-sm py-2.5 text-center hover:scale-[1.02] duration-500 disabled:opacity-25 disabled:cursor-not-allowed"
-                        @click="save">
+                        @click="updateCategory">
                         Submit
                     </button>
                 </div>
