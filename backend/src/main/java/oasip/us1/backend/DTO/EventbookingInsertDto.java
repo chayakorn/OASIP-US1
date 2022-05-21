@@ -29,6 +29,8 @@ public class EventbookingInsertDto {
     @NotNull(message = "eventCategoryId can not be null")
     private Integer eventCategoryId;
 
+    @NotNull(message = "eventDuration can not be null")
+    private Integer eventDuration;
 
     @Column(name = "eventNotes", length = 500)
     private String eventNotes;

@@ -28,13 +28,6 @@ public interface EventbookingRepository extends JpaRepository<Eventbooking, Inte
                      @Param("eventDuration") int eventDuration ,
                      @Param("eventNotes") String eventNotes ,
                      @Param("name") String name);
-//    @Modifying
-//    @Transactional
-//    @Query(
-//            value = "select * from eventbooking where ((:start between eventStartTime and eventEndTime) or ( :end between eventStartTime and eventEndTime )or (eventStartTime between :start and :end) or (eventEndTime between :start and :end))  and eventCategoryId = :catid",
-//            nativeQuery = true
-//    )
-//    Collection<Eventbooking> findByEventStartTimeBetween(@Param("start") String start,@Param("end") String end,@Param("catid") int catid);
 
     @Modifying
     @Transactional
@@ -43,14 +36,6 @@ public interface EventbookingRepository extends JpaRepository<Eventbooking, Inte
             nativeQuery = true
     )
     Collection<Eventbooking> findByEventStartTimeBetween(@Param("start") String start,@Param("end") String end,@Param("catid") int catid);
-
-//    @Modifying
-//    @Transactional
-//    @Query(
-//            value = "select * from eventbooking where ((:start between eventStartTime and eventEndTime) or ( :end between eventStartTime and eventEndTime )or (eventStartTime between :start and :end) or (eventEndTime between :start and :end)) and eventCategoryId = :catid and bookingId != :bid",
-//            nativeQuery = true
-//    )
-//    Collection<Eventbooking> findByEventStartTimeBetweenForPut(@Param("start") String start,@Param("end") String end,@Param("catid") int catid,@Param("bid") int bid);
 
     @Modifying
     @Transactional
