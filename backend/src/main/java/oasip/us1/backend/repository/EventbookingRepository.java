@@ -69,7 +69,7 @@ public interface EventbookingRepository extends JpaRepository<Eventbooking, Inte
     Page<Eventbooking> findByCategoryId(@Param("id") Collection<String> id, @Param("page") Pageable pageable);
 
     @Query(
-            value = "select * from eventbooking where eventStartTime like '%'||:date||'%' and eventCategoryId = :catid",
+            value = "select * from eventbooking where (eventStartTime between :date and concat(:date,' 23:59:59')) and eventCategoryId = :catid",
             nativeQuery = true
     )
     List<Eventbooking> findByEventStartTimeAndEventCategoryId(@Param("catid") int catid,@Param("date") String date);
