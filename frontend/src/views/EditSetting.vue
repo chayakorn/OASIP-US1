@@ -2,16 +2,14 @@
 import { ref, computed, onBeforeMount } from 'vue';
 import { useRoute } from 'vue-router'
 import { useCategories } from '../stores/categories.js';
-// import Confirm from '../components/Confirm.vue'
+import Confirm from '../components/Confirm.vue'
 import router from '../router/index.js';
-
 
 const myCategory = ref({ "id": "", "eventCategoryName": "", "eventCategoryDescription": "", "eventDuration": 0 })
 const useCategory = useCategories()
 useCategory.getAllCategories()
 const categoryLists = computed(() => useCategory.categoryLists)
 onBeforeMount(useCategories().getCategoryById(useRoute().params.category).then((e) => myCategory.value = e))
-// const emit = defineEmits(['save', 'cancelSave'])
 
 const isDataValid = computed(() => myCategory.value.eventCategoryName.trim().length > 0 && myCategory.value.eventCategoryName.length <= 100 &&
     myCategory.value.eventDuration > 0 && myCategory.value.eventCategoryDescription.length <= 500 && !catNameNotUnique.value)
@@ -26,27 +24,35 @@ const checkName = () => {
     })
 }
 
-
 const updateCategory = () => {
     useCategory.editCategory({
         eventCategoryName: myCategory.value.eventCategoryName,
         eventCategoryDescription: myCategory.value.eventCategoryDescription,
         eventDuration: myCategory.value.eventDuration
     }, myCategory.value.id)
-    router.push({ name: 'Setting'})
+    router.push({ name: 'Setting' })
 }
 
-// const saveStatus = ref(false)
-// const save = (status) => {
-//     saveStatus.value = true
-//     emit('save')
-// }
+const showConfirmPopup = ref(false)
+const confirmSave = () => {
+    showConfirmPopup.value = false
+    updateCategory()
+}
 
-// const cancelStatus = ref(false)
-// const cancelSave = (status) =>{
-//     cancelStatus.value = true
-//     emit('cancelSave')
-// }
+
+const cancelSave = () => {
+    showConfirmPopup.value = false
+}
+
+const showGoPreviousPopup = ref(false)
+const confirmGoPrevios = ()=>{
+    showGoPreviousPopup.value = false
+    router.push({ name: 'Setting' })
+}
+
+const cancelGoPrevious = ()=>{
+    showGoPreviousPopup.value = false
+}
 
 </script>
  
@@ -85,11 +91,12 @@ const updateCategory = () => {
                     </div>
                 </div>
 
+
                 <div class="flex justify-center">
-                    <div class="pb-1 text-sm font-semibold text-[#5E6366] px-3 py-2">Duration</div>
-                    <div v-if="myCategory.eventDuration.length < 1" class="text-xs text-left text-red-500">*
-                        Please
-                        fill out this field.</div>
+                    <span v-if="myCategory.eventDuration.length < 1" class="text-xs text-left text-red-500">
+                        * Please fill out this field.</span>
+                    <div class="pb-1 text-sm font-semibold text-[#5E6366] px-3 p-2">Duration</div>
+
 
                     <input type="number"
                         class=" text-center rounded-md h-9 w-[9rem] bg-[#F1F3F4] focus:outline-none  focus:border-[#031B89] border-2 border-[#F1F3F4]"
@@ -104,18 +111,19 @@ const updateCategory = () => {
                 <div>
                     <button :disabled="!isDataValid"
                         class="text-white bg-blue-700 w-24 rounded-lg text-sm py-2.5 text-center hover:scale-[1.02] duration-500 disabled:opacity-25 disabled:cursor-not-allowed"
-                        @click="updateCategory">
+                        @click="showConfirmPopup = true">
                         Submit
                     </button>
                 </div>
-                <router-link :to="{ name: 'Setting' }">
-                    <div class="text-sm rounded-lg text-blue-700 cursor-pointer hover:underline duration-500">
-                        Previous Page
-                    </div>
-                </router-link>
+                <div @click="showGoPreviousPopup = true" class="text-sm rounded-lg text-blue-700 cursor-pointer hover:underline duration-500">
+                    Previous Page
+                </div>
             </div>
         </div>
-        <!-- <Confirm v-if="saveStatus" desc="If you <confirm>, this category will be saved." @cancel="cancelPopup" @confirm="savePopup" /> -->
+        <Confirm v-if="showConfirmPopup" desc="If you <confirm>, this category will be saved." @cancel="cancelSave"
+            @confirm="confirmSave" />
+        <Confirm v-if="showGoPreviousPopup" desc="If you <confirm>, your last edit will be discarded." @cancel="cancelGoPrevious"
+            @confirm="confirmGoPrevios" />
     </div>
 
 </template>
@@ -142,6 +150,3 @@ const updateCategory = () => {
     }
 } */
 </style>
- <!-- <button :disabled="checkDataBeforeSubmit"
-            class="text-white bg-blue-700 hover:bg-blue-800 focus:ring-4 focus:outline-none focus:ring-blue-300 font-medium rounded-lg text-sm w-full sm:w-auto px-5 py-2.5 text-center dark:bg-blue-600 dark:hover:bg-blue-700 dark:focus:ring-blue-800"
-            @click="checkEditData">Submit</button> -->
