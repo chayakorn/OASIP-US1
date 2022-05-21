@@ -75,7 +75,6 @@ public class EventbookingService {
     }
 
     public List<EventbookingDto> getEventByCatAndDate(int catid,String date){
-        System.out.println(date);
 
         return listMapper.mapList(repository.findByEventStartTimeAndEventCategoryId(catid,date),EventbookingDto.class,modelMapper);
 
