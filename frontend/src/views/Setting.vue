@@ -3,7 +3,7 @@ import { ref, computed } from 'vue'
 import { useCategories } from '../stores/categories.js';
 const myCategory = useCategories()
 myCategory.getAllCategories()
-const categoryLists = computed(() => myCategory.categoryLists)
+const categoryLists = computed(() => myCategory.categoryLists.reverse())
 
 const categoryBg = (cateId) => {
   switch (cateId) {
