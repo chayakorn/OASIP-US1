@@ -13,7 +13,12 @@ const myEvents = useEvents()
 myEvents.getAllEvents()
 
 const eventLists = computed(() =>
-  myEvents.eventLists.filter((e) => checkPeriod(e.eventStartTime) == true)
+  myEvents.eventLists.filter((e) =>
+    date.value
+      ? checkPeriod(e.eventStartTime) == true &&
+        moment(e.eventStartTime).format('YYYY-MM-DD') == date.value
+      : checkPeriod(e.eventStartTime) == true
+  )
 )
 
 const noticeDelete = ref(false)
@@ -39,20 +44,40 @@ const categoryLists = computed(() => useCategories().categoryLists)
 const period = ref(1)
 const checkPeriod = (dateTime) => {
   switch (period.value) {
-    case 1:
+    case 1: {
       return true
-    case 2:
+    }
+    case 2: {
       return moment(myClock.date).isBefore(moment(dateTime))
-    case 3:
+    }
+    case 3: {
       return moment(myClock.date).isAfter(moment(dateTime))
+    }
   }
 }
+
+const asc = () =>
+  (myEvents.eventLists = myEvents.eventLists.sort(
+    (a, b) => new Date(a.eventStartTime) - new Date(b.eventStartTime)
+  ))
+const desc = () =>
+  (myEvents.eventLists = myEvents.eventLists.sort(
+    (a, b) => new Date(b.eventStartTime) - new Date(a.eventStartTime)
+  ))
+
 const date = ref()
 const selectedCategories = ref([])
 const sendCategory = () =>
   setTimeout(() => {
     myEvents.getEventsByCategories(selectedCategories.value)
   }, 0.01)
+const reset = () => {
+  desc()
+  myEvents.getAllEvents()
+  selectedCategories.value = []
+  period.value = 1
+  date.value = ''
+}
 </script>
 
 <template>
@@ -86,7 +111,7 @@ const sendCategory = () =>
             <div
               @click="sendCategory"
               v-for="(cate, index) in categoryLists"
-              class="rounded-md duration-500"
+              class="rounded-md hover:scale-95 duration-500"
             >
               <input
                 type="checkbox"
@@ -100,12 +125,10 @@ const sendCategory = () =>
               }}</label>
             </div>
             <button
-              @click="
-                myEvents.getAllEvents(), (selectedCategories = []), (date = '')
-              "
-              class="hover:border-b-4 border-red-500"
+              @click="reset"
+              class="text-white p-1 rounded-md bg-red-500 hover:bg-red-600 hover:scale-95 duration-500"
             >
-              Clear all
+              Reset all
             </button>
           </div>
         </div>
@@ -116,8 +139,10 @@ const sendCategory = () =>
       <!-- No Group -->
       <div class="contentSize flex flex-wrap gap-x-10 gap-y-5">
         <EventItem
-          v-for="list in eventLists.sort(
-            (a, b) => new Date(b.eventStartTime) - new Date(a.eventStartTime)
+          v-for="list in eventLists.sort((a, b) =>
+            period == 2
+              ? new Date(a.eventStartTime) - new Date(b.eventStartTime)
+              : new Date(b.eventStartTime) - new Date(a.eventStartTime)
           )"
           :item="list"
           @deleteNotice="toggleDelete"
