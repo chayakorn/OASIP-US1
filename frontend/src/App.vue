@@ -51,6 +51,7 @@ const myClock = useClock()
         <!-- Setting -->
         <router-link
           :to="{ name: 'Setting' }"
+          :style="$route.path.includes('setting') ? 'color: #031b89;' : '' "
           class="hover:scale-110 duration-700"
           ><svg width="3em" height="3em" viewBox="0 0 24 24">
             <path
