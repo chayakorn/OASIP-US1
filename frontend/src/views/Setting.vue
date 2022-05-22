@@ -1,5 +1,5 @@
 <script setup>
-import { ref, computed } from 'vue'
+import { computed } from 'vue'
 import { useCategories } from '../stores/categories.js';
 const myCategory = useCategories()
 myCategory.getAllCategories()

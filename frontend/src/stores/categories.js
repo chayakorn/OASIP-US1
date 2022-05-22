@@ -32,7 +32,6 @@ export const useCategories = defineStore('categories', () => {
     })
     if (res.status === 200) {
       console.log('edited successfully')
-      // updateCategory(category, id)
     } else console.log('error, cannot edit category')
   }
 
