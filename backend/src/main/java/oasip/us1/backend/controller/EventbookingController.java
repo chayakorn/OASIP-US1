@@ -47,8 +47,8 @@ public class EventbookingController {
         return service.getAllEventByCatId( page, pageSize, sortBy, isAsc,catid);
     }
     @GetMapping("/byDateAndCat")
-    private List<EventbookingDto> getAllEventByCatAndStartTime(@RequestParam(defaultValue = "1") int catid,@RequestParam String date){
-        return service.getEventByCatAndDate(catid,date);
+    private List<EventbookingDto> getAllEventByCatAndStartTime(@RequestParam(defaultValue = "1") int catid,@RequestParam String date,@RequestParam String offSet,@RequestParam boolean negative){
+        return service.getEventByCatAndDate(catid,date,offSet,negative);
 
     }
 

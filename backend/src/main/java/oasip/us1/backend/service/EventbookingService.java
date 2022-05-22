@@ -74,9 +74,12 @@ public class EventbookingService {
         return modelMapper.map(repository.getById(id),EventbookingDto.class) ;
     }
 
-    public List<EventbookingDto> getEventByCatAndDate(int catid,String date){
+    public List<EventbookingDto> getEventByCatAndDate(int catid,String date,String offSet,boolean negative){
 
-        return listMapper.mapList(repository.findByEventStartTimeAndEventCategoryId(catid,date),EventbookingDto.class,modelMapper);
+        if(negative){
+            return listMapper.mapList(repository.findByEventStartTimeAndEventCategoryIdForMinus(catid,date,offSet),EventbookingDto.class,modelMapper);
+        }
+        return listMapper.mapList(repository.findByEventStartTimeAndEventCategoryIdForPlus(catid,date,offSet),EventbookingDto.class,modelMapper);
 
     }
     public ResponseEntity save(EventbookingInsertDto event, BindingResult bindingResult, WebRequest request){
