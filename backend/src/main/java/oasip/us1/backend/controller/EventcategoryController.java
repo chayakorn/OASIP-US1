@@ -14,7 +14,7 @@ import javax.validation.Valid;
 import java.util.List;
 
 @RestController
-@RequestMapping("/api/event-catagories")
+@RequestMapping("/api/event-categories")
 @CrossOrigin
 public class EventcategoryController {
     @Autowired
