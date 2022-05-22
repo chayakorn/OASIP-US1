@@ -57,19 +57,21 @@ public class EventbookingService {
         private final String path;
         private final String message;
         private final Map<String,String> fieldErrors;
-
     }
+
     public EventPageDto getAllProduct(int page, int pageSize, String sortBy, boolean isAsc) {
         return modelMapper.map(repository.findAll(
                         PageRequest.of(page, pageSize, isAsc ? Sort.by(sortBy).ascending():Sort.by(sortBy).descending())),
                 EventPageDto.class);
     }
+
     public EventPageDto getAllEventByCatId(int page, int pageSize, String sortBy, boolean isAsc, Collection<String> catid) {
         System.out.println(catid.size());
         return modelMapper.map(repository.findByCategoryId(catid,
                         PageRequest.of(page, pageSize, isAsc ? Sort.by(sortBy).ascending():Sort.by(sortBy).descending())),
                 EventPageDto.class);
     }
+
     public EventbookingDto getEventById(int id){
         return modelMapper.map(repository.getById(id),EventbookingDto.class) ;
     }
@@ -80,8 +82,15 @@ public class EventbookingService {
             return listMapper.mapList(repository.findByEventStartTimeAndEventCategoryIdForMinus(catid,date,offSet),EventbookingDto.class,modelMapper);
         }
         return listMapper.mapList(repository.findByEventStartTimeAndEventCategoryIdForPlus(catid,date,offSet),EventbookingDto.class,modelMapper);
-
     }
+
+    public EventPageDto getEventByDate(String date,String offSet,boolean negative,int page, int pageSize, String sortBy, boolean isAsc){
+        if(negative){
+            return modelMapper.map(repository.findByDateForMinus(date,offSet,PageRequest.of(page, pageSize, isAsc ? Sort.by(sortBy).ascending():Sort.by(sortBy).descending())),EventPageDto.class);
+        }
+        return modelMapper.map(repository.findByDateForPlus(date,offSet,PageRequest.of(page, pageSize, isAsc ? Sort.by(sortBy).ascending():Sort.by(sortBy).descending())),EventPageDto.class);
+    }
+
     public ResponseEntity save(EventbookingInsertDto event, BindingResult bindingResult, WebRequest request){
         Map<String,String> fieldError = new HashMap<>();
 
@@ -104,6 +113,7 @@ public class EventbookingService {
         Error errorBody = new Error(Instant.now().atZone(ZoneId.of("Asia/Bangkok")).toString(), HttpStatus.BAD_REQUEST.value(), ((ServletWebRequest) request).getRequest().getRequestURI(), "Validation failed", fieldError);
         return new ResponseEntity(errorBody, HttpStatus.BAD_REQUEST);
     }
+
     public ResponseEntity update(EventbookingPutDto updateEventbooking , int bookingid, BindingResult bindingResult, WebRequest request ){
 
         Eventbooking event = repository.findById(bookingid).get();
@@ -128,6 +138,7 @@ public class EventbookingService {
         Error errorBody = new Error(Instant.now().atZone(ZoneId.of("Asia/Bangkok")).toString(), HttpStatus.BAD_REQUEST.value(), ((ServletWebRequest) request).getRequest().getRequestURI(), "Validation failed", fieldError);
         return new ResponseEntity(errorBody, HttpStatus.BAD_REQUEST);
     }
+
     public void delete(int id){
         repository.deleteById(id);
     }
@@ -138,6 +149,7 @@ public class EventbookingService {
         existingEventbooking.setEventStartTime(updateEventbooking.getEventStartTime());
         return existingEventbooking;
     }
+
     private Eventbooking mapEventForInsert(EventbookingInsertDto insertDto){
         Eventbooking eventbooking = new Eventbooking();
         eventbooking.setBookingName(insertDto.getBookingName());

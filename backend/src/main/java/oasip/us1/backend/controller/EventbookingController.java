@@ -49,9 +49,15 @@ public class EventbookingController {
     @GetMapping("/byDateAndCat")
     private List<EventbookingDto> getAllEventByCatAndStartTime(@RequestParam(defaultValue = "1") int catid,@RequestParam String date,@RequestParam String offSet,@RequestParam boolean negative){
         return service.getEventByCatAndDate(catid,date,offSet,negative);
-
     }
-
+    @GetMapping("/byDate")
+    private EventPageDto getAllByDate(@RequestParam String date,@RequestParam String offSet,@RequestParam boolean negative,
+                                      @RequestParam(defaultValue = "0") int page,
+                                      @RequestParam(defaultValue = "12") int pageSize,
+                                      @RequestParam(defaultValue = "eventStartTime") String sortBy,
+                                      @RequestParam(defaultValue = "true") boolean isAsc){
+        return service.getEventByDate(date,offSet,negative,page,pageSize,sortBy,isAsc);
+    }
     @PostMapping("")
     private ResponseEntity addEvent(@Valid @RequestBody EventbookingInsertDto newEventBooking, BindingResult result, WebRequest request) {
         return service.save(newEventBooking, result, request);
