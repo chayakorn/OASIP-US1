@@ -23,7 +23,7 @@ const noticeCreate = ref(false)
 const closeNotice = () =>
   setTimeout(() => {
     noticeCreate.value = false
-  }, 2000)
+  }, 1500)
 </script>
 
 <template>

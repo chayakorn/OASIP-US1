@@ -49,7 +49,7 @@ const closeShowMore = (status) => {
 <template>
   <div
     @click="showDetails"
-    class="bg-white w-[22.5%] p-2 rounded-lg cursor-pointer hover:scale-110 hover:drop-shadow-lg duration-300"
+    class="bg-white h-max w-[22.5%] p-2 rounded-lg cursor-pointer hover:scale-105 hover:drop-shadow-xl duration-300"
   >
     <div
       :class="[
