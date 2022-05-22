@@ -59,12 +59,6 @@ public class EventbookingService {
         private final Map<String,String> fieldErrors;
     }
 
-    public EventPageDto getAllProduct(int page, int pageSize, String sortBy, boolean isAsc) {
-        return modelMapper.map(repository.findAll(
-                        PageRequest.of(page, pageSize, isAsc ? Sort.by(sortBy).ascending():Sort.by(sortBy).descending())),
-                EventPageDto.class);
-    }
-
     public EventPageDto getAllEventByCatId(int page, int pageSize, String sortBy, boolean isAsc, Collection<String> catid, String uap) {
         System.out.println(catid.size());
         if(uap.equals("p")){

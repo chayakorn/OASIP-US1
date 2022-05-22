@@ -17,28 +17,20 @@ import java.util.Map;
 
 @RestController
 @CrossOrigin
-@RequestMapping("/api/event")
+@RequestMapping("/api/events")
 
 public class EventbookingController {
 
     @Autowired
     private EventbookingService service;
 
-    @GetMapping("")
-    public EventPageDto getAllProducts(
-            @RequestParam(defaultValue = "0") int page,
-            @RequestParam(defaultValue = "12") int pageSize,
-            @RequestParam(defaultValue = "eventStartTime") String sortBy,
-            @RequestParam(defaultValue = "true") boolean isAsc) {
-        return service.getAllProduct(page, pageSize, sortBy,isAsc);
-    }
 
     @GetMapping("/{id}")
     private EventbookingDto getEventById(@PathVariable int id) {
         return service.getEventById(id);
     }
 
-    @GetMapping("/byCat")
+    @GetMapping("")
     private EventPageDto getAllEventByCatId(@RequestParam(defaultValue = "a") String uap,
             @RequestParam(defaultValue = "[1,2,3,4,5]") Collection<String> catid, @RequestParam(defaultValue = "0") int page,
             @RequestParam(defaultValue = "12") int pageSize,
