@@ -65,4 +65,18 @@ public interface EventbookingRepository extends JpaRepository<Eventbooking, Inte
             nativeQuery = true)
     Page<Eventbooking> findByDateForMinus(@Param("date") String date,@Param("offSet") String offSet,Pageable pageable);
 
+    @Query(
+            value = "select * from eventbooking where eventCategoryId in :id and eventStartTime < :now",
+            countQuery = "select count(*) from eventbooking where eventCategoryId in :id and eventStartTime < :now",
+            nativeQuery = true
+    )
+    Page<Eventbooking> findByCategoryIdPast(@Param("id") Collection<String> id, @Param("page") Pageable pageable, @Param("now") String now);
+
+    @Query(
+            value = "select * from eventbooking where eventCategoryId in :id and eventStartTime > :now",
+            countQuery = "select count(*) from eventbooking where eventCategoryId in :id and eventStartTime > :now",
+            nativeQuery = true
+    )
+    Page<Eventbooking> findByCategoryIdUpcomming(@Param("id") Collection<String> id, @Param("page") Pageable pageable, @Param("now") String now);
+
 }

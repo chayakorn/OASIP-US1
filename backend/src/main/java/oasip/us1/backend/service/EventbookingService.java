@@ -65,11 +65,23 @@ public class EventbookingService {
                 EventPageDto.class);
     }
 
-    public EventPageDto getAllEventByCatId(int page, int pageSize, String sortBy, boolean isAsc, Collection<String> catid) {
+    public EventPageDto getAllEventByCatId(int page, int pageSize, String sortBy, boolean isAsc, Collection<String> catid, String uap) {
         System.out.println(catid.size());
-        return modelMapper.map(repository.findByCategoryId(catid,
-                        PageRequest.of(page, pageSize, isAsc ? Sort.by(sortBy).ascending():Sort.by(sortBy).descending())),
-                EventPageDto.class);
+        if(uap.equals("p")){
+            return modelMapper.map(repository.findByCategoryIdPast(catid,
+                            PageRequest.of(page, pageSize, isAsc ? Sort.by(sortBy).ascending():Sort.by(sortBy).descending()),DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm").withZone(ZoneId.from(ZoneOffset.UTC)).format(Instant.now())),
+                    EventPageDto.class);
+        }
+        if(uap.equals("u")){
+            return modelMapper.map(repository.findByCategoryIdUpcomming(catid,
+                            PageRequest.of(page, pageSize, isAsc ? Sort.by(sortBy).ascending():Sort.by(sortBy).descending()),DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm").withZone(ZoneId.from(ZoneOffset.UTC)).format(Instant.now())),
+                    EventPageDto.class);
+        }
+            return modelMapper.map(repository.findByCategoryId(catid,
+                            PageRequest.of(page, pageSize, isAsc ? Sort.by(sortBy).ascending():Sort.by(sortBy).descending())),
+                    EventPageDto.class);
+
+
     }
 
     public EventbookingDto getEventById(int id){
