@@ -85,16 +85,18 @@ public class EventbookingService {
         bindingResult.getAllErrors().forEach((error)->{
             fieldError.put(((FieldError)error).getField(),error.getDefaultMessage());
         });
+        if(fieldError.size() == 0){
         if (event.getEventCategoryId() == null){
             fieldError.put("eventCategoryId","eventCategoryId can not be null");
         }else
         if(!repository.findByEventStartTimeBetween(DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm").withZone(ZoneId.from(ZoneOffset.UTC)).format(event.getEventStartTime().plus(1,ChronoUnit.SECONDS)),DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm").withZone(ZoneId.from(ZoneOffset.UTC)).format(event.getEventStartTime().plus(event.getEventDuration(),ChronoUnit.MINUTES).minus(1,ChronoUnit.SECONDS)),event.getEventCategoryId()).isEmpty() && event.getEventCategoryId() != null) {
             fieldError.put("TimeOverlap","your selected time is not available");
         }
-        if(fieldError.size() == 0){
-            System.out.println("Insert!");
-            Eventbooking insertevent = mapEventForInsert(event);
-            return ResponseEntity.status(201).body(repository.saveAndFlush(insertevent));
+            if (fieldError.size() == 0) {
+                System.out.println("Insert!");
+                Eventbooking insertevent = mapEventForInsert(event);
+                return ResponseEntity.status(201).body(repository.saveAndFlush(insertevent));
+            }
         }
         Error errorBody = new Error(Instant.now().atZone(ZoneId.of("Asia/Bangkok")).toString(), HttpStatus.BAD_REQUEST.value(), ((ServletWebRequest) request).getRequest().getRequestURI(), "Validation failed", fieldError);
         return new ResponseEntity(errorBody, HttpStatus.BAD_REQUEST);
