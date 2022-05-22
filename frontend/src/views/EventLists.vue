@@ -1,32 +1,103 @@
 <script setup>
-import { computed, ref } from 'vue'
-import EventItem from '../components/EventItem.vue'
-import { useEvents } from '../stores/events.js'
-import Notice from '../components/Notice.vue'
-import { useCategories } from '../stores/categories.js'
 import moment from 'moment'
+import EventItem from '../components/EventItem.vue'
+import Notice from '../components/Notice.vue'
+import { computed, ref } from 'vue'
+import { useEvents } from '../stores/events.js'
+import { useCategories } from '../stores/categories.js'
 import { useClock } from '../stores/clock.js'
+
+// State of clock
 const myClock = useClock()
-// use state "Events"
+
+// State of categories
+const myCategory = useCategories()
+myCategory.getAllCategories()
+const categoryLists = computed(() => useCategories().categoryLists)
+
+// State of events
 const myEvents = useEvents()
-//  GET
-myEvents.getAllEvents()
+myEvents.getEventsPage()
+const eventLists = computed(() => myEvents.eventLists)
 
-const eventLists = computed(() =>
-  myEvents.eventLists.filter((e) =>
-    date.value
-      ? checkPeriod(e.eventStartTime) == true &&
-        moment(e.eventStartTime).format('YYYY-MM-DD') == date.value
-      : checkPeriod(e.eventStartTime) == true
+// Event list filter by All, Upcoming, Past
+const period = ref('a')
+const filterPeriod = () =>
+  myEvents.getEventsPage(
+    period.value,
+    selectedCategories.value.length > 0
+      ? selectedCategories.value
+      : [1, 2, 3, 4, 5],
+    0,
+    page.value.pageSize,
+    period.value == 'u' ? true : false
   )
-)
 
+// Filter by toggle, categories or date
+const filterBy = ref(false)
+
+// Event list filter by categories
+const selectedCategories = ref([])
+const checkSelected = () =>
+  selectedCategories.value.length > 0
+    ? selectedCategories.value
+    : [1, 2, 3, 4, 5]
+const filterCategories = () =>
+  setTimeout(() => {
+    myEvents.getEventsPage(
+      period.value,
+      checkSelected(),
+      0,
+      page.value.pageSize,
+      period.value == 'u' ? true : false
+    )
+  }, 1)
+
+// Event list filter by date
+const date = ref()
+const filterDate = () =>
+  myEvents.getEventByDate(
+    date.value,
+    moment().format().split('+')[1],
+    moment().format().split('T')[1].includes('-'),
+    page.value++,
+    12
+  )
+
+// Pagination
+const page = computed(() => {
+  return {
+    pageNumber: myEvents.listDetails.number,
+    pageSize: myEvents.listDetails.size
+  }
+})
+const loadMore = () =>
+  myEvents.getEventsPage(
+    period.value,
+    selectedCategories.value.length > 0
+      ? selectedCategories.value
+      : [1, 2, 3, 4, 5],
+    ++page.value.pageNumber,
+    page.value.pageSize,
+    period.value == 'u' ? true : false
+  )
+
+// Reset
+const reset = () => {
+  myEvents.getEventsPage()
+  selectedCategories.value = []
+  period.value = 'a'
+  date.value = ''
+  filterBy.value = false
+}
+
+// Notice
 const noticeDelete = ref(false)
 const toggleDelete = () => {
   noticeDelete.value = true
   setTimeout(() => {
     noticeDelete.value = false
-  }, 2000)
+  }, 1500)
 }
 
 const noticeSaved = ref(false)
@@ -34,99 +105,84 @@ const toggleSave = () => {
   noticeSaved.value = true
   setTimeout(() => {
     noticeSaved.value = false
-  }, 2000)
-}
-
-const myCategory = useCategories()
-myCategory.getAllCategories()
-const categoryLists = computed(() => useCategories().categoryLists)
-
-const period = ref(1)
-const checkPeriod = (dateTime) => {
-  switch (period.value) {
-    case 1: {
-      return true
-    }
-    case 2: {
-      return moment(myClock.date).isBefore(moment(dateTime))
-    }
-    case 3: {
-      return moment(myClock.date).isAfter(moment(dateTime))
-    }
-  }
-}
-
-const asc = () =>
-  (myEvents.eventLists = myEvents.eventLists.sort(
-    (a, b) => new Date(a.eventStartTime) - new Date(b.eventStartTime)
-  ))
-const desc = () =>
-  (myEvents.eventLists = myEvents.eventLists.sort(
-    (a, b) => new Date(b.eventStartTime) - new Date(a.eventStartTime)
-  ))
-
-const date = ref()
-const selectedCategories = ref([])
-const sendCategory = () =>
-  setTimeout(() => {
-    myEvents.getEventsByCategories(selectedCategories.value)
-  }, 0.01)
-const reset = () => {
-  desc()
-  myEvents.getAllEvents()
-  selectedCategories.value = []
-  period.value = 1
-  date.value = ''
+  }, 1500)
 }
 </script>
 
 <template>
-  <div class="p-10">
-    <div class="grid mb-5">
+  <div>
+    <div class="grid p-10 pb-0">
       <div class="grid grid-cols-5">
         <div class="col-span-2">
           <div class="text-4xl font-bold mb-5">Scheduled Events</div>
           <div>
-            <select class="rounded-lg p-1" v-model="period">
-              <option :value="1">All Events</option>
-              <option :value="2">Upcoming</option>
-              <option :value="3">Past</option>
+            <select
+              class="rounded-lg p-1 focus:outline-none"
+              v-model="period"
+              @change="filterPeriod"
+            >
+              <option value="a">All Events</option>
+              <option value="u">Upcoming Events</option>
+              <option value="p">Past Events</option>
             </select>
             <span class="ml-2 text-gray-400"
-              >{{ eventLists.length }} events</span
+              >{{ myEvents.listDetails.totalElements }} events</span
             >
           </div>
         </div>
-        <div class="col-span-3 grid grid-rows-3 gap-y-1 px-5">
-          <div class="flex items-center justify-end">Filter by</div>
-          <div class="flex items-center justify-end gap-x-2">
-            <span>Date</span>:<input
-              type="date"
-              v-model="date"
-              class="px-1 rounded-xl"
-              @change="filterDate"
-            />
-          </div>
-          <div class="flex items-center justify-end gap-x-5 text-sm">
+        <div class="col-span-3 grid grid-rows-2 gap-y-5">
+          <div class="flex items-center justify-end gap-x-5">
+            Filter by
             <div
-              @click="sendCategory"
-              v-for="(cate, index) in categoryLists"
-              class="rounded-md hover:scale-95 duration-500"
+              class="grid grid-cols-2 w-1/4 h-10 p-1 font-light gap-x-1 bg-white rounded-lg border-2"
             >
-              <input
-                type="checkbox"
-                :id="index + 1"
-                :value="index + 1"
-                v-model="selectedCategories"
-                class="chk-btn"
+              <button
+                type="button"
+                @click=";(filterBy = !filterBy), (date = '')"
+                :disabled="!filterBy"
+                class="w-full rounded-md disabled:bg-[#919699] disabled:text-white"
+              >
+                Category
+              </button>
+              <button
+                type="button"
+                @click=";(filterBy = !filterBy), (selectedCategories = [])"
+                :disabled="filterBy"
+                class="w-full rounded-md disabled:bg-[#919699] disabled:text-white"
+              >
+                Date
+              </button>
+            </div>
+          </div>
+          <div class="flex items-center justify-end gap-x-5">
+            <div v-if="filterBy" class="flex items-center justify-end gap-x-2">
+              <span>Date</span>:<input
+                type="date"
+                v-model="date"
+                class="px-1 rounded-xl"
+                @change="filterDate"
               />
-              <label :for="index + 1">{{
-                cate.eventCategoryName.split('Clinic')[0]
-              }}</label>
+            </div>
+            <div v-else class="flex items-center justify-end gap-x-5 text-sm">
+              <div
+                v-for="(cate, index) in categoryLists"
+                class="rounded-md hover:scale-95 duration-500"
+              >
+                <input
+                  type="checkbox"
+                  :id="index + 1"
+                  :value="index + 1"
+                  v-model="selectedCategories"
+                  class="chk-btn"
+                />
+                <label :for="index + 1" @click="filterCategories">{{
+                  cate.eventCategoryName.split('Clinic')[0]
+                }}</label>
+              </div>
             </div>
             <button
               @click="reset"
-              class="text-white p-1 rounded-md bg-red-500 hover:bg-red-600 hover:scale-95 duration-500"
+              class="text-white px-3 rounded-full bg-red-500 hover:bg-red-600 hover:scale-95 duration-500"
             >
               Reset all
             </button>
@@ -136,44 +192,30 @@ const reset = () => {
     </div>
 
     <div v-if="eventLists.length > 0">
-      <!-- No Group -->
-      <div class="contentSize flex flex-wrap gap-x-10 gap-y-5">
+      <div
+        style="height: 75vh"
+        class="flex flex-wrap gap-x-10 gap-y-5 py-2 pl-5 pr-3 ml-5 mr-10 mt-5 overflow-y-auto rounded-lg"
+      >
         <EventItem
-          v-for="list in eventLists.sort((a, b) =>
-            period == 2
-              ? new Date(a.eventStartTime) - new Date(b.eventStartTime)
-              : new Date(b.eventStartTime) - new Date(a.eventStartTime)
-          )"
+          v-for="list in eventLists"
           :item="list"
           @deleteNotice="toggleDelete"
           @saveNotice="toggleSave"
         />
+        <div v-if="!myEvents.listDetails.last" class="w-full text-center">
+          <button @click="loadMore">Load more . . .</button>
+        </div>
       </div>
-      <!-- GroupBy Day -->
-      <!-- <Lists
-        :lists="
-          result
-            .sort(
-              (a, b) =>
-                new Date(b[0].eventStartTime) - new Date(a[0].eventStartTime)
-            )
-            .map((a) =>
-              a.sort(
-                (a, b) =>
-                  new Date(b.eventStartTime) - new Date(a.eventStartTime)
-              )
-            )
-        "
-      /> -->
     </div>
     <div
       v-else
       class="h-3/4 grid place-content-center text-[#C6CACC] font-bold text-4xl"
     >
-      <span v-if="period == 1">No Scheduled Events.</span>
-      <span v-if="period == 2">No On-Going or Upcoming Events.</span>
-      <span v-if="period == 3">No Past Events.</span>
+      <span v-if="period == 'a'">No Scheduled Events.</span>
+      <span v-if="period == 'u'">No On-Going or Upcoming Events.</span>
+      <span v-if="period == 'p'">No Past Events.</span>
     </div>
+
     <Notice
       v-if="noticeDelete"
       text="Successfully deleted the schedule !"

@@ -3,29 +3,32 @@ import { ref } from 'vue'
 export const useEvents = defineStore('events', () => {
   // Array (ref) for stores all events
   const eventLists = ref([])
-
+  const listDetails = ref([])
+  const omit = (prop, { [prop]: _, ...rest }) => rest
   //fetch method GET
-  const getAllEvents = async () => {
-    const res = await fetch(`${import.meta.env.VITE_BASE_URL}/event`)
+  const checkPage = (page, result) =>
+    page == 0
+      ? (eventLists.value = result.content)
+      : eventLists.value.push(...result.content)
+
+  const getEventsPage = async (
+    uap = 'a',
+    categories = [1, 2, 3, 4, 5],
+    page = 0,
+    pageSize = 12,
+    orderBy = false
+  ) => {
+    let params = categories.join('&catid=')
+    const res = await fetch(
+      `${
+        import.meta.env.VITE_BASE_URL
+      }/events?uap=${uap}&catid=${params}&page=${page}&pageSize=${pageSize}&sortBy=eventStartTime&isAsc=${orderBy}`
+    )
     if (res.status === 200) {
       let result = await res.json()
-      eventLists.value = result.content
+      checkPage(page, result)
+      listDetails.value = omit('content', result)
     } else console.log('error, cannot get events')
-  }
-
-  const getEventsByCategories = async (categories) => {
-    if (categories.length == 0) {
-      getAllEvents()
-    } else {
-      let params = 'catid=' + categories.join('&catid=')
-      const res = await fetch(
-        `${import.meta.env.VITE_BASE_URL}/event/byCat?${params}`
-      )
-      if (res.status === 200) {
-        let result = await res.json()
-        eventLists.value = result.content
-      } else console.log('error, cannot get events')
-    }
   }
 
   //fetch method GET by id
@@ -36,12 +39,33 @@ export const useEvents = defineStore('events', () => {
     } else console.log('error, cannot get events')
   }
 
-  //fetch method GET by id & date
-  const getEventByIdDate = async (id, date) => {
+  //fetch method GET by date
+  const getEventByDate = async (
+    date,
+    offSet,
+    isNegative,
+    page = 0,
+    pageSize = 12,
+    orderBy = true
+  ) => {
     const res = await fetch(
       `${
         import.meta.env.VITE_BASE_URL
-      }/event/byDateAndCat?catid=${id}&date=${date}`
+      }/event/byDate?date=${date}&offSet=${offSet}&negative=${isNegative}&page=${page}&pageSize=${pageSize}&sortBy=eventStartTime&isAsc=${orderBy}`
+    )
+    if (res.status === 200) {
+      let result = await res.json()
+      checkPage(page, result)
+      listDetails.value = omit('content', result)
+    } else console.log('error, cannot get events')
+  }
+
+  //fetch method GET by id & date
+  const getEventByIdDate = async (id, date, offSet, isNegative) => {
+    const res = await fetch(
+      `${
+        import.meta.env.VITE_BASE_URL
+      }/event/byDateAndCat?catid=${id}&date=${date}&offSet=${offSet}&negative=${isNegative}`
     )
     if (res.status === 200) {
       return await res.json()
@@ -57,7 +81,7 @@ export const useEvents = defineStore('events', () => {
     })
     if (res.status === 201) {
       console.log('created successfully')
-      getAllEvents()
+      getEventsPage()
     } else console.log('error, cannot create event')
   }
 
@@ -102,14 +126,15 @@ export const useEvents = defineStore('events', () => {
 
   return {
     eventLists,
-    getAllEvents,
-    getEventsByCategories,
+    getEventsPage,
     getEventById,
+    getEventByDate,
     getEventByIdDate,
     createEvent,
     deleteEvent,
     editEvent,
-    updateEvent
+    updateEvent,
+    listDetails
   }
 })
 

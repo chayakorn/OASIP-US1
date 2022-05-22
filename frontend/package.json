@@ -8,6 +8,7 @@
         "preview": "vite preview --port 3000"
     },
     "dependencies": {
+        "@hennge/vue3-pagination": "^1.0.17",
         "@vuepic/vue-datepicker": "^3.2.0",
         "moment": "^2.29.3",
         "pinia": "^2.0.14",

@@ -1,10 +1,11 @@
 <script setup>
 import moment from 'moment'
-import { computed, onUpdated, ref } from 'vue'
-
+import { computed, ref } from 'vue'
 import Datepicker from '@vuepic/vue-datepicker'
 import '@vuepic/vue-datepicker/dist/main.css'
 import { useEvents } from '../stores/events.js'
+import { useClock } from '../stores/clock.js'
+const myClock = useClock()
 
 const emit = defineEmits(['closeCreate', 'notice'])
 const props = defineProps({
@@ -15,7 +16,6 @@ const props = defineProps({
 })
 //use state "Events"
 const myEvents = useEvents()
-myEvents.getAllEvents()
 
 const creatingEvent = computed(() => ({
   bookingName: bookingName.value,
@@ -33,6 +33,7 @@ const checkNull = (newEvent) => {
     date.value.length != 0 &&
     !error.value
   ) {
+    console.log(newEvent)
     myEvents.createEvent(newEvent)
     reset()
     emit('closeCreate')
@@ -56,11 +57,7 @@ const note = ref('')
 const date = ref('')
 const seletedTime = ref('')
 const dateTime = computed(() =>
-  moment(
-    `${moment(date.value).format('YYYY-MM-DD')} ${moment(
-      seletedTime.value
-    ).format('HH:mm')}`
-  )
+  moment(`${moment(date.value).format('YYYY-MM-DD')} ${seletedTime.value}`)
 )
 const reset = () => {
   bookingName.value = ''
@@ -98,21 +95,9 @@ const getTimeStops = (start, end) => {
   let timeStops = []
 
   do {
-    if (startTime <= last) {
-      timeStops.push(moment(startTime).format('HH:mm'))
-    }
+    timeStops.push(moment(startTime).format('HH:mm'))
     startTime.add(props.category.eventDuration, 'minutes')
-  } while (startTime <= endTime)
-  // do {
-  //   timeStops.push(moment(startTime).format('HH:mm'))
-  //   startTime.add(props.category.eventDuration, 'minutes')
-  // } while (startTime <= last)
-  // while (startTime <= endTime) {
-  //   if (startTime <= last) {
-  //     timeStops.push(moment(startTime).format('HH:mm'))
-  //     startTime.add(props.category.eventDuration, 'minutes')
-  //   }
-  // }
+  } while (startTime <= last)
   return timeStops
 }
 
@@ -125,15 +110,18 @@ const format = (date) => {
   return `${day} ${month} ${year}`
 }
 const list = ref([])
-const getEventByDate = () =>
+const getEventByDate = () => {
   myEvents
     .getEventByIdDate(
       props.category.id,
-      moment(date.value).format('YYYY-MM-DD')
+      moment(date.value).format('YYYY-MM-DD'),
+      moment().format().split('+')[1],
+      moment().format().split('T')[1].includes('-')
     )
     .then((result) => {
       list.value = result
     })
+}
 
 const checkOverlap = (time) => {
   // console.log(moment(`${moment(date.value).format('YYYY-MM-DD')} ${time}`))
@@ -159,46 +147,14 @@ const checkOverlap = (time) => {
     return true
   else return false
 }
-// const checkOverlap = () => {
-//   let list = ref([])
-//   myEvents
-//     .getEventByIdDate(
-//       props.category.id,
-//       moment(dateTime.value).format('YYYY-MM-DD')
-//     )
-//     .then((result) => {
-//       list.value = result
-//     })
-//   let selectedStartTime = moment(new Date(dateTime.value), 'DD-MM-YYYY HH:mm')
-//   let selectedEndTime = moment(
-//     new Date(dateTime.value),
-//     'DD-MM-YYYY HH:mm'
-//   ).add(props.category.eventDuration, 'minutes')
-//   if (
-//     !eventLists.value.some(
-//       (e) =>
-//         moment(new Date(e.eventStartTime), 'DD-MM-YYYY HH:mm').isBefore(
-//           selectedEndTime
-//         ) &&
-//         moment(new Date(e.eventStartTime), 'DD-MM-YYYY HH:mm')
-//           .add(e.eventDuration, 'minutes')
-//           .isAfter(selectedStartTime)
-//     )
-//   )
-//     true
-//   else {
-//     time.value = ''
-//     alert('your selected time has been booked, please selete a new time!')
-//   }
-// }
 
 const nullStatus = computed(() =>
   bookingName.value.length > 0 &&
   bookingName.value.length <= 100 &&
   email.value &&
-  date.value
-    ? // &&time.value
-      false
+  date.value &&
+  seletedTime.value
+    ? false
     : true
 )
 </script>
@@ -349,6 +305,7 @@ const nullStatus = computed(() =>
                       hideInputIcon
                       vertical
                       @closed="getEventByDate(), createSlots()"
+                      @cleared="seletedTime = ''"
                     />
                   </div>
                   <div>
@@ -361,7 +318,6 @@ const nullStatus = computed(() =>
                       }}</span
                     >
                   </div>
-                  <!-- <div class="flex items-center gap-x-2"> -->
                   <!-- <svg width="1.5em" height="1.5em" viewBox="0 0 24 24">
                     <path
                       fill="currentColor"
@@ -393,8 +349,13 @@ const nullStatus = computed(() =>
                       <button
                         type="button"
                         @click="seletedTime = slot"
-                        :disabled="checkOverlap(slot)"
-                        class="cursor-pointer rounded-lg bg-[#DCF7E3] border disabled:bg-[#FEE4E2] disabled:cursor-not-allowed"
+                        :disabled="
+                          checkOverlap(slot) ||
+                          (slot < moment(myClock.clock).format('HH:mm') &&
+                            moment(date).format('YYYY-MM-DD') ==
+                              moment(myClock.clock).format('YYYY-MM-DD'))
+                        "
+                        class="cursor-pointer rounded-lg bg-[#DCF7E3] border disabled:opacity-25 disabled:bg-[#E3E5E5] disabled:cursor-not-allowed"
                       >
                         {{ slot }} -
                         {{
@@ -425,7 +386,6 @@ const nullStatus = computed(() =>
                       }}</span
                     >
                   </div>
-                  <!-- </div> -->
                   <div>
                     <div>
                       <span class="font-medium">Durations: </span>

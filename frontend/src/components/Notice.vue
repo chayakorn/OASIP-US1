@@ -49,7 +49,7 @@ defineProps({
 
 <style scoped>
 #notice {
-  animation: sildeFromTop 2s linear;
+  animation: sildeFromTop 1.5s linear;
 }
 
 @keyframes sildeFromTop {
