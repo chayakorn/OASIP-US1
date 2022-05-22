@@ -79,28 +79,29 @@ const invalid = () => {
 const valid = () => {
   error.value = false
 }
+// Generate time slots
 const timeStops = ref([])
 
 const getTimeStops = (start, end) => {
+  // intitial data
   let startTime = moment(start, 'HH:mm')
   let endTime = moment(end, 'HH:mm')
   let last = moment(end, 'HH:mm').subtract(
     props.category.eventDuration - 1,
     'minutes'
   )
-
+  // validate startTime, endTime
   if (endTime.isBefore(startTime)) {
     endTime.add(1, 'day')
   }
+  // create time slots
   let timeStops = []
-
   do {
     timeStops.push(moment(startTime).format('HH:mm'))
     startTime.add(props.category.eventDuration, 'minutes')
   } while (startTime <= last)
   return timeStops
 }
-
 const createSlots = () => (timeStops.value = getTimeStops('00:00', '23:59'))
 
 const format = (date) => {

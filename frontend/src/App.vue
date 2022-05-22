@@ -6,9 +6,9 @@ const myClock = useClock()
 <template>
   <div class="flex">
     <div class="relative w-1/12">
-      <div class="absolute w-full mt-5 grid justify-items-center">
+      <div class="absolute w-full mt-5 pr-2 grid justify-items-center">
         <router-link :to="{ name: 'Home' }"
-          ><img src="./assets/images/pin.png" width="60"
+          ><img src="./assets/images/icon.png" width="90"
         /></router-link>
       </div>
       <div class="absolute top-24 text-center">

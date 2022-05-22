@@ -5,10 +5,6 @@ import Notice from '../components/Notice.vue'
 import { computed, ref } from 'vue'
 import { useEvents } from '../stores/events.js'
 import { useCategories } from '../stores/categories.js'
-import { useClock } from '../stores/clock.js'
-
-// State of clock
-const myClock = useClock()
 
 // State of categories
 const myCategory = useCategories()
@@ -22,7 +18,7 @@ const eventLists = computed(() => myEvents.eventLists)
 
 // Event list filter by All, Upcoming, Past
 const period = ref('a')
-const filterPeriod = () =>
+const filterPeriod = () => {
   myEvents.getEventsPage(
     period.value,
     selectedCategories.value.length > 0
@@ -32,9 +28,23 @@ const filterPeriod = () =>
     page.value.pageSize,
     period.value == 'u' ? true : false
   )
+  date.value = ''
+  filterBy.value = false
+}
 
 // Filter by toggle, categories or date
 const filterBy = ref(false)
+const chooseCategory = () => {
+  filterBy.value = !filterBy.value
+  date.value = ''
+  myEvents.getEventsPage()
+}
+const chooseDate = () => {
+  filterBy.value = !filterBy.value
+  selectedCategories.value = []
+  period.value = 'a'
+  myEvents.getEventsPage()
+}
 
 // Event list filter by categories
 const selectedCategories = ref([])
@@ -51,7 +61,7 @@ const filterCategories = () =>
       page.value.pageSize,
       period.value == 'u' ? true : false
     )
-  }, 1)
+  }, 0.001)
 
 // Event list filter by date
 const date = ref()
@@ -60,8 +70,9 @@ const filterDate = () =>
     date.value,
     moment().format().split('+')[1],
     moment().format().split('T')[1].includes('-'),
-    page.value++,
-    12
+    0,
+    page.value.pageSize,
+    true
   )
 
 // Pagination
@@ -138,17 +149,17 @@ const toggleSave = () => {
             >
               <button
                 type="button"
-                @click=";(filterBy = !filterBy), (date = '')"
+                @click="chooseCategory"
                 :disabled="!filterBy"
-                class="w-full rounded-md disabled:bg-[#919699] disabled:text-white"
+                class="w-full rounded-md disabled:bg-[#919699] disabled:text-white disabled:shadow-inner"
               >
                 Category
               </button>
               <button
                 type="button"
-                @click=";(filterBy = !filterBy), (selectedCategories = [])"
+                @click="chooseDate"
                 :disabled="filterBy"
-                class="w-full rounded-md disabled:bg-[#919699] disabled:text-white"
+                class="w-full rounded-md disabled:bg-[#919699] disabled:text-white disabled:shadow-inner"
               >
                 Date
               </button>

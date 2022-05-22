@@ -5,12 +5,15 @@ export const useEvents = defineStore('events', () => {
   const eventLists = ref([])
   const listDetails = ref([])
   const omit = (prop, { [prop]: _, ...rest }) => rest
-  //fetch method GET
+
+  //GET
+  // check for intitial page
   const checkPage = (page, result) =>
     page == 0
       ? (eventLists.value = result.content)
       : eventLists.value.push(...result.content)
 
+  //fetch method GET page
   const getEventsPage = async (
     uap = 'a',
     categories = [1, 2, 3, 4, 5],
@@ -51,7 +54,7 @@ export const useEvents = defineStore('events', () => {
     const res = await fetch(
       `${
         import.meta.env.VITE_BASE_URL
-      }/event/byDate?date=${date}&offSet=${offSet}&negative=${isNegative}&page=${page}&pageSize=${pageSize}&sortBy=eventStartTime&isAsc=${orderBy}`
+      }/events/byDate?date=${date}&offSet=${offSet}&negative=${isNegative}&page=${page}&pageSize=${pageSize}&sortBy=eventStartTime&isAsc=${orderBy}`
     )
     if (res.status === 200) {
       let result = await res.json()
@@ -60,21 +63,21 @@ export const useEvents = defineStore('events', () => {
     } else console.log('error, cannot get events')
   }
 
-  //fetch method GET by id & date
+  //fetch method GET by id & date for check overlap frontend
   const getEventByIdDate = async (id, date, offSet, isNegative) => {
     const res = await fetch(
       `${
         import.meta.env.VITE_BASE_URL
-      }/event/byDateAndCat?catid=${id}&date=${date}&offSet=${offSet}&negative=${isNegative}`
+      }/events/byDateAndCat?catid=${id}&date=${date}&offSet=${offSet}&negative=${isNegative}`
     )
     if (res.status === 200) {
       return await res.json()
     } else console.log('error, cannot get events')
   }
 
-  //fetch method POST
+  //POST
   const createEvent = async (newEvent) => {
-    const res = await fetch(`${import.meta.env.VITE_BASE_URL}/event`, {
+    const res = await fetch(`${import.meta.env.VITE_BASE_URL}/events`, {
       method: 'POST',
       headers: { 'content-type': 'application/json' },
       body: JSON.stringify(newEvent)
@@ -85,10 +88,10 @@ export const useEvents = defineStore('events', () => {
     } else console.log('error, cannot create event')
   }
 
-  //fetch method DELETE
+  //DELETE
   const deleteEvent = async (eventId) => {
     const res = await fetch(
-      `${import.meta.env.VITE_BASE_URL}/event/${eventId}`,
+      `${import.meta.env.VITE_BASE_URL}/events/${eventId}`,
       {
         method: 'DELETE'
       }
@@ -99,9 +102,9 @@ export const useEvents = defineStore('events', () => {
     } else console.log('error, cannot delete event')
   }
 
-  //fetch method PUT
+  //PUT
   const editEvent = async (event, id) => {
-    const res = await fetch(`${import.meta.env.VITE_BASE_URL}/event/${id}`, {
+    const res = await fetch(`${import.meta.env.VITE_BASE_URL}/events/${id}`, {
       method: 'PUT',
       headers: {
         'content-type': 'application/json'

@@ -6,7 +6,7 @@ export const useCategories = defineStore('categories', () => {
 
   //fetch method GET
   const getAllCategories = async () => {
-    const res = await fetch(`${import.meta.env.VITE_BASE_URL}/eventcat`)
+    const res = await fetch(`${import.meta.env.VITE_BASE_URL}/event-categories`)
     if (res.status === 200) {
       categoryLists.value = await res.json()
     } else console.log('error, cannot get category')
@@ -14,7 +14,9 @@ export const useCategories = defineStore('categories', () => {
 
   //fetch method GET by id
   const getCategoryById = async (id) => {
-    const res = await fetch(`${import.meta.env.VITE_BASE_URL}/eventcat/${id}`)
+    const res = await fetch(
+      `${import.meta.env.VITE_BASE_URL}/event-categories/${id}`
+    )
     if (res.status === 200) {
       let results = await res.json()
       return results
@@ -23,13 +25,16 @@ export const useCategories = defineStore('categories', () => {
 
   //fetch method PUT
   const editCategory = async (category, id) => {
-    const res = await fetch(`${import.meta.env.VITE_BASE_URL}/eventcat/${id}`, {
-      method: 'PUT',
-      headers: {
-        'content-type': 'application/json'
-      },
-      body: JSON.stringify(category)
-    })
+    const res = await fetch(
+      `${import.meta.env.VITE_BASE_URL}/event-categories/${id}`,
+      {
+        method: 'PUT',
+        headers: {
+          'content-type': 'application/json'
+        },
+        body: JSON.stringify(category)
+      }
+    )
     if (res.status === 200) {
       console.log('edited successfully')
     } else console.log('error, cannot edit category')

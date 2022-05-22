@@ -1,17 +1,13 @@
 <script setup>
-import { ref } from 'vue'
+import { computed, ref } from 'vue'
 import Card from '../components/Card.vue'
 import CreateEvent from '../components/CreateEvent.vue'
 import Notice from '../components/Notice.vue'
+import { useCategories } from '../stores/categories.js'
 
-const eventCategories = ref([])
-const getCategories = async () => {
-  const res = await fetch(`${import.meta.env.VITE_BASE_URL}/eventcat`)
-  if (res.status === 200) {
-    eventCategories.value = await res.json()
-  } else console.log('error, cannot get category')
-}
-getCategories()
+const myCategory = useCategories()
+myCategory.getAllCategories()
+const eventCategories = computed(() => useCategories().categoryLists)
 
 const createModalStatus = ref(false)
 const cateToCreate = ref({})
@@ -23,7 +19,7 @@ const noticeCreate = ref(false)
 const closeNotice = () =>
   setTimeout(() => {
     noticeCreate.value = false
-  }, 1500)
+  }, 15)
 </script>
 
 <template>
