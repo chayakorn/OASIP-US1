@@ -3,6 +3,7 @@ import { ref, computed, onBeforeMount } from 'vue';
 import { useRoute } from 'vue-router'
 import { useCategories } from '../stores/categories.js';
 import Confirm from '../components/Confirm.vue'
+import Notice from '../components/Notice.vue'
 import router from '../router/index.js';
 
 const myCategory = ref({ "id": "", "eventCategoryName": "", "eventCategoryDescription": "", "eventDuration": 0 })
@@ -31,27 +32,39 @@ const updateCategory = () => {
         eventDuration: myCategory.value.eventDuration
     }, myCategory.value.id)
     router.push({ name: 'Setting' })
+    useCategory.getAllCategories()
 }
 
 const showConfirmPopup = ref(false)
 const confirmSave = () => {
     showConfirmPopup.value = false
-    updateCategory()
-}
+    noticeEdited()
+    setTimeout(() => {
+        updateCategory()
+    }, 2001)
 
+}
 
 const cancelSave = () => {
     showConfirmPopup.value = false
 }
 
 const showGoPreviousPopup = ref(false)
-const confirmGoPrevios = ()=>{
+const confirmGoPrevios = () => {
     showGoPreviousPopup.value = false
     router.push({ name: 'Setting' })
 }
 
-const cancelGoPrevious = ()=>{
+const cancelGoPrevious = () => {
     showGoPreviousPopup.value = false
+}
+
+const noticeEditedStatus = ref(false)
+const noticeEdited = () => {
+    noticeEditedStatus.value = true
+    setTimeout(() => {
+        noticeEditedStatus.value = false
+    }, 2000)
 }
 
 </script>
@@ -63,7 +76,7 @@ const cancelGoPrevious = ()=>{
         </div>
         <div class="flex justify-center my-3">
 
-            <div class="grid place-items-center w-3/5 m-8 shadow-xl bg-white rounded-2xl py-8 gap-5">
+            <div class="grid place-items-center relative w-3/5 m-8 pb-11 shadow-2xl bg-white rounded-2xl pt-6 gap-5">
                 <div class="pt-4">
                     <div class="pb-1 text-sm font-semibold text-[#5E6366] flex">Category Name</div>
                     <div v-if="myCategory.eventCategoryName.trim().length < 1" class="text-xs text-left text-red-500">*
@@ -91,12 +104,10 @@ const cancelGoPrevious = ()=>{
                     </div>
                 </div>
 
-
                 <div class="flex justify-center">
                     <span v-if="myCategory.eventDuration.length < 1" class="text-xs text-left text-red-500">
                         * Please fill out this field.</span>
                     <div class="pb-1 text-sm font-semibold text-[#5E6366] px-3 p-2">Duration</div>
-
 
                     <input type="number"
                         class=" text-center rounded-md h-9 w-[9rem] bg-[#F1F3F4] focus:outline-none  focus:border-[#031B89] border-2 border-[#F1F3F4]"
@@ -107,7 +118,6 @@ const cancelGoPrevious = ()=>{
                     </div>
                 </div>
 
-
                 <div>
                     <button :disabled="!isDataValid"
                         class="text-white bg-blue-700 w-24 rounded-lg text-sm py-2.5 text-center hover:scale-[1.02] duration-500 disabled:opacity-25 disabled:cursor-not-allowed"
@@ -115,38 +125,24 @@ const cancelGoPrevious = ()=>{
                         Submit
                     </button>
                 </div>
-                <div @click="showGoPreviousPopup = true" class="text-sm rounded-lg text-blue-700 cursor-pointer hover:underline duration-500">
-                    Previous Page
+                <div @click="showGoPreviousPopup = true"
+                    class="absolute pl-[1.5rem] pt-[29rem] flex justify-self-start text-sm rounded-lg text-blue-700 cursor-pointer hover:underline duration-500">
+                    <span class="pt-1 pr-1">
+                        <svg width="1em" height="1em" viewBox="0 0 20 20">
+                            <path fill="currentColor" d="m5.83 9l5.58-5.58L10 2l-8 8l8 8l1.41-1.41L5.83 11H18V9z">
+                            </path>
+                        </svg></span> Previous Page
                 </div>
             </div>
         </div>
         <Confirm v-if="showConfirmPopup" desc="If you <confirm>, this category will be saved." @cancel="cancelSave"
             @confirm="confirmSave" />
-        <Confirm v-if="showGoPreviousPopup" desc="If you <confirm>, your last edit will be discarded." @cancel="cancelGoPrevious"
-            @confirm="confirmGoPrevios" />
+        <Confirm v-if="showGoPreviousPopup" desc="If you <confirm>, your last edit will be discarded."
+            @cancel="cancelGoPrevious" @confirm="confirmGoPrevios" />
+        <Notice v-if="noticeEditedStatus" text="Successfully edited the schedule !" color="#367BF5" />
     </div>
 
 </template>
  
 <style scoped>
-/* #background {
-    background: linear-gradient(-45deg, #031B89,  #A9B5FF, #FAA7B7,#6196FF, #FB7A8E);
-    background-size: 400% 400%;
-    animation: gradient 15s ease infinite;
-    height: 100vh;
-}
-
-@keyframes gradient {
-    0% {
-        background-position: 0% 50%;
-    }
-
-    50% {
-        background-position: 100% 50%;
-    }
-
-    100% {
-        background-position: 0% 50%;
-    }
-} */
 </style>
