@@ -53,15 +53,16 @@ public interface EventbookingRepository extends JpaRepository<Eventbooking, Inte
     List<Eventbooking> findByEventStartTimeAndEventCategoryIdForMinus(@Param("catid") int catid,@Param("date") String date,@Param("offSet") String offset);
 
     @Query(
-            value = "select * from eventbooking where (addtime(eventStartTime, concat(:offSet,':00') between :date and concat(:date,' 23:59:59'))",
-            countQuery = "select count(*) from eventbooking where (addtime(eventStartTime, concat(:offSet,':00') between :date and concat(:date,' 23:59:59'))",
+            value = "select * from eventbooking where addtime(eventStartTime, concat(:offSet,':00')) between :date and concat(:date,' 23:59:59')",
+            countQuery = "select count(*) from eventbooking where addtime(eventStartTime, concat(:offSet,':00')) between :date and concat(:date,' 23:59:59')",
             nativeQuery = true)
     Page<Eventbooking> findByDateForPlus(@Param("date") String date,@Param("offSet") String offSet, Pageable pageable);
 
+
     @Query(
-            value = "select * from eventbooking where (subtime(eventStartTime, concat(:offSet,':00') between :date and concat(:date,' 23:59:59'))",
-            countQuery = "select count(*) from eventbooking where (subtime(eventStartTime, concat(:offSet,':00') between :date and concat(:date,' 23:59:59'))",
+            value = "select * from eventbooking where subtimeeventStartTime, concat(:offSet,':00')) between :date and concat(:date,' 23:59:59')",
+            countQuery = "select count(*) from eventbooking where subtime(eventStartTime, concat(:offSet,':00')) between :date and concat(:date,' 23:59:59')",
             nativeQuery = true)
-    Page<Eventbooking> findByDateForMinus(@Param("date") String date,@Param("offSet") String offSet, Pageable pageable);
+    Page<Eventbooking> findByDateForMinus(@Param("date") String date,@Param("offSet") String offSet,Pageable pageable);
 
 }
