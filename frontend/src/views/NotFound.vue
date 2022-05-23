@@ -5,16 +5,27 @@ const closeModal = () => myRouter.push({ name: 'Home' })
 </script>
 
 <template>
-  <div class="modal-mask">
-    <div class="modal-wrapper">
-      <div class="modal-container">
-        <div class="modal-header"><h3>Page Not Found</h3></div>
-        <div class="modal-body">Please try again!</div>
-        <div class="modal-button">
-          <button @click="closeModal">Close</button>
-        </div>
+  <div class="modal-mask grid place-content-center ">
+    <div class="flex items-center bg-white gap-x-5 shadow-lg rounded-sm">
+      <img src="../assets/images/icon.png" width="200" class="pt-7"/>
+      <div class="pr-6 grid gap-y-2 ">
+        <div class="text-6xl font-bold">404</div>
+        <div class="font-semibold">Page Not Found</div>
+        <div class="text-sm font-light">Woops. Looks like this page doesn't exist.</div>
       </div>
+
+
+
     </div>
+    <div @click="closeModal"
+      class="mt-10 animate-bounce flex gap-x-2 text-sm font-semibold text-blue-700 cursor-pointer hover:underline justify-self-center ">
+      <svg width="1.5em" height="1.5em" viewBox="0 0 24 24">
+        <path fill="currentColor" d="M20 11H7.83l5.59-5.59L12 4l-8 8l8 8l1.41-1.41L7.83 13H20v-2z"></path>
+      </svg>
+      <div>Back to homepage</div>
+    </div>
+
+
   </div>
 </template>
 
@@ -25,35 +36,8 @@ const closeModal = () => myRouter.push({ name: 'Home' })
   top: 0;
   left: 0;
   width: 100%;
-  /* height: 100%; */
-  background-color: white;
-  display: table;
-  transition: opacity 0.3s ease;
-}
+  height: 100%;
+  background-color: #f7f9fa;
 
-.modal-wrapper {
-  display: table-cell;
-  vertical-align: middle;
-}
-.modal-container {
-  width: 300px;
-  margin: 0px auto;
-  padding: 20px 30px;
-  background-color: #fff;
-  border-radius: 2px;
-  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.33);
-}
-
-.modal-header h3 {
-  margin-top: 0;
-  color: red;
-}
-
-.modal-body {
-  margin: 20px 0;
-}
-.modal-button {
-  display: flex;
-  justify-content: end;
 }
 </style>
