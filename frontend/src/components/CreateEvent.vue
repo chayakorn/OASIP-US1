@@ -187,6 +187,7 @@ const createPopup = (status) => {
   if ((createStatus.value = status)) {
     myEvents.createEvent(creatingEvent.value)
     reset()
+    createStatus.value = false
     emit('closeCreate')
     emit('notice', true)
   }

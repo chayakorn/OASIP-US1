@@ -204,8 +204,10 @@ const toggleSave = () => {
 
     <div v-if="eventLists.length > 0">
       <div
-        style="height: 75vh"
-        class="flex flex-wrap gap-x-10 gap-y-5 py-2 pl-5 pr-3 ml-5 mr-10 mt-5 overflow-y-auto rounded-lg"
+        :class="[
+          'flex flex-wrap gap-x-10 gap-y-5 py-2 pl-5 pr-3 ml-5 mr-10 mt-5 overflow-y-auto rounded-lg',
+          myEvents.listDetails.totalElements < 12 ? 'h-min' : 'h-[75vh]'
+        ]"
       >
         <EventItem
           v-for="list in eventLists"
@@ -214,7 +216,9 @@ const toggleSave = () => {
           @saveNotice="toggleSave"
         />
         <div v-if="!myEvents.listDetails.last" class="w-full text-center">
-          <button @click="loadMore">Load more . . .</button>
+          <button @click="loadMore" class="font-semibold text-[#367BF5]">
+            Load more . . .
+          </button>
         </div>
       </div>
     </div>

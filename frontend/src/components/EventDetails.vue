@@ -1,5 +1,5 @@
 <script setup>
-import { ref } from 'vue'
+import { computed, ref } from 'vue'
 import moment from 'moment'
 import { useEvents } from '../stores/events.js'
 import Detail from './Detail.vue'
@@ -21,20 +21,16 @@ const props = defineProps({
 const myEvents = useEvents()
 
 const isEditMode = ref(false)
-const changeMode = () => (isEditMode.value = !isEditMode.value)
+const changeMode = () => (
+  (isEditMode.value = !isEditMode.value), (cancelStatus.value = false)
+)
 const checkEditMode = () => {
   isEditMode.value ? (cancelStatus.value = true) : emit('closeShowMore', false)
 }
 const cancelStatus = ref(false)
 const cancelPopup = (status) => {
-  cancelStatus.value = status
-  if (status) {
-    cancelStatus.value = false
+  if ((cancelStatus.value = status)) {
     changeMode()
-    props.item.eventStartTime = props.item.eventStartTime
-      ? props.item.eventStartTime
-      : ''
-    props.item.eventNotes = props.item.eventNotes ? props.item.eventNotes : ''
   }
 }
 const deleteStatus = ref(false)
@@ -88,6 +84,7 @@ const checkPast = () => moment(props.item.eventStartTime).isBefore(myClock.date)
         :item="item"
         :color="color"
         :isEditMode="isEditMode"
+        :cancelModal="cancelStatus"
         @cancel="changeMode"
         @save="$emit('saveSuccess')"
         @closeModal="emit('closeShowMore', false)"
