@@ -28,17 +28,11 @@ const checkEditMode = () => {
   isEditMode.value ? (cancelStatus.value = true) : emit('closeShowMore', false)
 }
 const cancelStatus = ref(false)
-// const cancelPopup = (status) => {
-//   cancelStatus.value = status
-//   if (status) {
-//     cancelStatus.value = false
-//     changeMode()
-//     props.item.eventStartTime = props.item.eventStartTime
-//       ? props.item.eventStartTime
-//       : ''
-//     props.item.eventNotes = props.item.eventNotes ? props.item.eventNotes : ''
-//   }
-// }
+const cancelPopup = (status) => {
+  if ((cancelStatus.value = status)) {
+    changeMode()
+  }
+}
 const deleteStatus = ref(false)
 const deletePopup = (status) => {
   deleteStatus.value = status
@@ -138,14 +132,14 @@ const checkPast = () => moment(props.item.eventStartTime).isBefore(myClock.date)
         </button>
       </div>
 
-      <!-- <Confirm
+      <Confirm
         v-if="cancelStatus"
         underline="cancel"
         color="EA3D2F"
         desc="If you <confirm>, your last edit will be discarded."
         @cancel="cancelPopup"
         @confirm="cancelPopup"
-      /> -->
+      />
       <Confirm
         v-if="deleteStatus"
         underline="delete"

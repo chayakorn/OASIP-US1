@@ -98,7 +98,8 @@ export const useEvents = defineStore('events', () => {
     )
     if (res.status === 200) {
       console.log('deleted successfully')
-      eventLists.value = eventLists.value.filter((event) => event.id != eventId)
+      getEventsPage()
+      // eventLists.value = eventLists.value.filter((event) => event.id != eventId)
     } else console.log('error, cannot delete event')
   }
 

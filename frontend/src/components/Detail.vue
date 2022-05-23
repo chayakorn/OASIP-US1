@@ -19,10 +19,6 @@ const props = defineProps({
   isEditMode: {
     type: Boolean,
     require: true
-  },
-  cancelModal: {
-    type: Boolean,
-    require: true
   }
 })
 const myClock = useClock()
@@ -36,48 +32,6 @@ const format = (date) => {
   const year = date.getFullYear()
   return `${day} ${month} ${year}`
 }
-
-// const checkOverlap = () => {
-//   let selectedStartTime = moment(new Date(dateTime.value), 'DD-MM-YYYY HH:mm')
-//   let selectedEndTime = moment(
-//     new Date(dateTime.value),
-//     'DD-MM-YYYY HH:mm'
-//   ).add(category.value.eventDuration, 'minutes')
-//   if (
-//     !myEvents.eventLists
-//       .filter((item) => item.eventCategoryId == category.id)
-//       .some((e) => {
-//         if (
-//           selectedStartTime.isBetween(
-//             moment(new Date(e.eventStartTime), 'DD-MM-YYYY HH:mm').add(
-//               -1,
-//               'minutes'
-//             ),
-//             moment(new Date(e.eventEndTime), 'DD-MM-YYYY HH:mm').add(
-//               1,
-//               'minutes'
-//             )
-//           ) ||
-//           moment(new Date(e.eventStartTime), 'DD-MM-YYYY HH:mm').isBetween(
-//             selectedStartTime.add(-1, 'minutes'),
-//             selectedEndTime.add(1, 'minutes')
-//           ) ||
-//           moment(new Date(e.eventEndTime), 'DD-MM-YYYY HH:mm').isBetween(
-//             selectedStartTime.add(-1, 'minutes'),
-//             selectedEndTime.add(1, 'minutes')
-//           )
-//         )
-//           return true
-//         else return false
-//       })
-//   )
-//     editingEvent.value.eventStartTime = dateTime.value
-//   else {
-//     date.value = ''
-//     time.value = ''
-//     alert('your selected time has been booked, please selete a new time!')
-//   }
-// }
 
 // non-overlap
 // list for store events to check non-overlap
@@ -160,11 +114,7 @@ const time = ref(
   )
     .add(props.item.eventDuration, 'minutes')
     .format('HH:mm')}`
-) //   {
-//   hours: moment(editingEvent.value.eventStartTime).format('HH'),
-//   minutes: moment(editingEvent.value.eventStartTime).format('mm'),
-//   seconds: 0
-// }
+)
 const newTime = ref('')
 const note = ref(editingEvent.value.eventNotes)
 
@@ -175,10 +125,10 @@ const dateTime = computed(() =>
     }`
   ).toISOString()
 )
+
 const cancelStatus = ref(false)
 const cancelPopup = (status) => {
-  cancelStatus.value = status
-  if (status || props.cancelModal) {
+  if ((cancelStatus.value = status)) {
     cancelStatus.value = false
     emit('cancel')
     date.value = editingEvent.value.eventStartTime
@@ -461,7 +411,7 @@ const checkNull = () => {
       </button>
     </div>
     <Confirm
-      v-if="cancelStatus || cancelModal"
+      v-if="cancelStatus"
       underline="cancel"
       color="EA3D2F"
       desc="If you <confirm>, your last edit will be discarded."
