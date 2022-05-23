@@ -19,6 +19,10 @@ const props = defineProps({
   isEditMode: {
     type: Boolean,
     require: true
+  },
+  cancelModal: {
+    type: Boolean,
+    require: true
   }
 })
 const myClock = useClock()
@@ -104,6 +108,7 @@ const checkOverlap = (time) => {
   if (
     list.value.some(
       (e) =>
+        props.item.id != e.id &&
         moment(new Date(e.eventStartTime), 'DD-MM-YYYY HH:mm').isBefore(
           selectedEndTime
         ) &&
@@ -149,11 +154,17 @@ const editingEvent = computed(() => {
   }
 })
 const date = ref(editingEvent.value.eventStartTime)
-const time = ref({
-  hours: moment(editingEvent.value.eventStartTime).format('HH'),
-  minutes: moment(editingEvent.value.eventStartTime).format('mm'),
-  seconds: 0
-})
+const time = ref(
+  `${moment(editingEvent.value.eventStartTime).format('HH:mm')} - ${moment(
+    editingEvent.value.eventStartTime
+  )
+    .add(props.item.eventDuration, 'minutes')
+    .format('HH:mm')}`
+) //   {
+//   hours: moment(editingEvent.value.eventStartTime).format('HH'),
+//   minutes: moment(editingEvent.value.eventStartTime).format('mm'),
+//   seconds: 0
+// }
 const newTime = ref('')
 const note = ref(editingEvent.value.eventNotes)
 
@@ -167,15 +178,15 @@ const dateTime = computed(() =>
 const cancelStatus = ref(false)
 const cancelPopup = (status) => {
   cancelStatus.value = status
-  if (status) {
+  if (status || props.cancelModal) {
     cancelStatus.value = false
     emit('cancel')
     date.value = editingEvent.value.eventStartTime
-    time.value = {
-      hours: moment(editingEvent.value.eventStartTime).format('HH'),
-      minutes: moment(editingEvent.value.eventStartTime).format('mm'),
-      seconds: 0
-    }
+    time.value = `${moment(editingEvent.value.eventStartTime).format(
+      'HH:mm'
+    )} - ${moment(editingEvent.value.eventStartTime)
+      .add(props.item.eventDuration, 'minutes')
+      .format('HH:mm')}`
     newTime.value = ''
     note.value = editingEvent.value.eventNotes
   }
@@ -198,7 +209,7 @@ const save = (status) => {
   }
 }
 const checkNull = () => {
-  if (date.value && time.value) {
+  if (date.value && newTime.value) {
     saveStatus.value = true
   } else alert('Please selected date that you want to change.')
 }
@@ -297,7 +308,7 @@ const checkNull = () => {
                 /> -->
 
                 <div v-else class="relative w-5/6">
-                  <Datepicker
+                  <!-- <Datepicker
                     v-if="time"
                     v-model="time"
                     timePicker
@@ -320,16 +331,17 @@ const checkNull = () => {
                     hideInputIcon
                     class="grid content-center"
                     @cleared="getEventByDate(), createSlots()"
-                  />
+                  /> -->
                   <select
-                    v-if="!time"
                     v-model="newTime"
                     :class="[
-                      'rounded-xl h-10 px-2 bg-[#F1F3F4] border-2 border-gray-400',
+                      'rounded-xl h-10 px-2 border-2 border-gray-400',
                       newTime ? 'w-11/12' : 'w-full'
                     ]"
+                    @click="getEventByDate(), createSlots()"
+                    @change="time = ''"
                   >
-                    <option value="" disabled hidden>select new time</option>
+                    <option value="" disabled hidden>{{ time }}</option>
                     <option
                       :disabled="
                         checkOverlap(slot) ||
@@ -449,9 +461,9 @@ const checkNull = () => {
       </button>
     </div>
     <Confirm
-      v-if="cancelStatus"
+      v-if="cancelStatus || cancelModal"
       underline="cancel"
-      color="s"
+      color="EA3D2F"
       desc="If you <confirm>, your last edit will be discarded."
       @cancel="cancelPopup"
       @confirm="cancelPopup"
