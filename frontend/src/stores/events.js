@@ -54,7 +54,7 @@ export const useEvents = defineStore('events', () => {
     const res = await fetch(
       `${
         import.meta.env.VITE_BASE_URL
-      }/events/byDate?date=${date}&offSet=${offSet}&negative=${isNegative}&page=${page}&pageSize=${pageSize}&sortBy=eventStartTime&isAsc=${orderBy}`
+      }/events/by-date?date=${date}&offSet=${offSet}&negative=${isNegative}&page=${page}&pageSize=${pageSize}&sortBy=eventStartTime&isAsc=${orderBy}`
     )
     if (res.status === 200) {
       let result = await res.json()
@@ -68,7 +68,7 @@ export const useEvents = defineStore('events', () => {
     const res = await fetch(
       `${
         import.meta.env.VITE_BASE_URL
-      }/events/byDateAndCat?catid=${id}&date=${date}&offSet=${offSet}&negative=${isNegative}`
+      }/events/by-date-and-cat?catid=${id}&date=${date}&offSet=${offSet}&negative=${isNegative}`
     )
     if (res.status === 200) {
       return await res.json()

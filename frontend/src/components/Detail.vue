@@ -5,6 +5,7 @@ import '@vuepic/vue-datepicker/dist/main.css'
 import { computed, ref } from 'vue'
 import { useEvents } from '../stores/events.js'
 import Confirm from './Confirm.vue'
+import { useClock } from '../stores/clock.js'
 const emit = defineEmits(['cancel', 'save', 'closeModal'])
 const props = defineProps({
   item: {
@@ -20,14 +21,8 @@ const props = defineProps({
     require: true
   }
 })
+const myClock = useClock()
 const myEvents = useEvents()
-const getCategoryById = async (id) => {
-  const res = await fetch(`${import.meta.env.VITE_BASE_URL}/eventcat/${id}`)
-  if (res.status === 200) {
-    return await res.json()
-  } else console.log('error, cannot get category')
-}
-const category = ref(getCategoryById(props.item.eventCategoryId))
 
 const isEditMode = computed(() => props.isEditMode)
 
@@ -38,64 +33,135 @@ const format = (date) => {
   return `${day} ${month} ${year}`
 }
 
-const checkOverlap = () => {
-  let selectedStartTime = moment(new Date(dateTime.value), 'DD-MM-YYYY HH:mm')
-  let selectedEndTime = moment(
-    new Date(dateTime.value),
-    'DD-MM-YYYY HH:mm'
-  ).add(category.value.eventDuration, 'minutes')
-  if (
-    !myEvents.eventLists
-      .filter((item) => item.eventCategoryId == category.id)
-      .some((e) => {
-        if (
-          selectedStartTime.isBetween(
-            moment(new Date(e.eventStartTime), 'DD-MM-YYYY HH:mm').add(
-              -1,
-              'minutes'
-            ),
-            moment(new Date(e.eventEndTime), 'DD-MM-YYYY HH:mm').add(
-              1,
-              'minutes'
-            )
-          ) ||
-          moment(new Date(e.eventStartTime), 'DD-MM-YYYY HH:mm').isBetween(
-            selectedStartTime.add(-1, 'minutes'),
-            selectedEndTime.add(1, 'minutes')
-          ) ||
-          moment(new Date(e.eventEndTime), 'DD-MM-YYYY HH:mm').isBetween(
-            selectedStartTime.add(-1, 'minutes'),
-            selectedEndTime.add(1, 'minutes')
-          )
-        )
-          return true
-        else return false
-      })
-  )
-    editingEvent.value.eventStartTime = dateTime.value
-  else {
-    date.value = ''
-    time.value = ''
-    alert('your selected time has been booked, please selete a new time!')
-  }
+// const checkOverlap = () => {
+//   let selectedStartTime = moment(new Date(dateTime.value), 'DD-MM-YYYY HH:mm')
+//   let selectedEndTime = moment(
+//     new Date(dateTime.value),
+//     'DD-MM-YYYY HH:mm'
+//   ).add(category.value.eventDuration, 'minutes')
+//   if (
+//     !myEvents.eventLists
+//       .filter((item) => item.eventCategoryId == category.id)
+//       .some((e) => {
+//         if (
+//           selectedStartTime.isBetween(
+//             moment(new Date(e.eventStartTime), 'DD-MM-YYYY HH:mm').add(
+//               -1,
+//               'minutes'
+//             ),
+//             moment(new Date(e.eventEndTime), 'DD-MM-YYYY HH:mm').add(
+//               1,
+//               'minutes'
+//             )
+//           ) ||
+//           moment(new Date(e.eventStartTime), 'DD-MM-YYYY HH:mm').isBetween(
+//             selectedStartTime.add(-1, 'minutes'),
+//             selectedEndTime.add(1, 'minutes')
+//           ) ||
+//           moment(new Date(e.eventEndTime), 'DD-MM-YYYY HH:mm').isBetween(
+//             selectedStartTime.add(-1, 'minutes'),
+//             selectedEndTime.add(1, 'minutes')
+//           )
+//         )
+//           return true
+//         else return false
+//       })
+//   )
+//     editingEvent.value.eventStartTime = dateTime.value
+//   else {
+//     date.value = ''
+//     time.value = ''
+//     alert('your selected time has been booked, please selete a new time!')
+//   }
+// }
+
+// non-overlap
+// list for store events to check non-overlap
+const list = ref([])
+// fetch get events for non-overlap
+const getEventByDate = () => {
+  myEvents
+    .getEventByIdDate(
+      props.item.eventCategoryId,
+      moment(date.value).format('YYYY-MM-DD'),
+      moment().format().split('+')[1],
+      moment().format().split('T')[1].includes('-')
+    )
+    .then((result) => {
+      list.value = result
+    })
 }
-const editingEvent = computed(() => ({
-  eventStartTime: props.item.eventStartTime,
-  eventNotes: props.item.eventNotes
-}))
+// function for checking overlap
+const checkOverlap = (time) => {
+  let selectedStartTime = moment(
+    new Date(`${moment(date.value).format('YYYY-MM-DD')} ${time}`),
+    'DD-MM-YYYY HH:mm'
+  )
+  let selectedEndTime = moment(
+    new Date(`${moment(date.value).format('YYYY-MM-DD')} ${time}`),
+    'DD-MM-YYYY HH:mm'
+  ).add(props.item.eventDuration, 'minutes')
+  if (
+    list.value.some(
+      (e) =>
+        moment(new Date(e.eventStartTime), 'DD-MM-YYYY HH:mm').isBefore(
+          selectedEndTime
+        ) &&
+        moment(new Date(e.eventStartTime), 'DD-MM-YYYY HH:mm')
+          .add(e.eventDuration, 'minutes')
+          .isAfter(selectedStartTime)
+    )
+  )
+    return true
+  else return false
+}
+
+// generate time slots
+const timeStops = ref([])
+// function for generation time slots
+const getTimeStops = (start, end) => {
+  // intitial data
+  let startTime = moment(start, 'HH:mm')
+  let endTime = moment(end, 'HH:mm')
+  let last = moment(end, 'HH:mm').subtract(
+    props.item.eventDuration - 1,
+    'minutes'
+  )
+  // validate startTime, endTime
+  if (endTime.isBefore(startTime)) {
+    endTime.add(1, 'day')
+  }
+  // create time slots
+  let timeStops = []
+  do {
+    timeStops.push(moment(startTime).format('HH:mm'))
+    startTime.add(props.item.eventDuration, 'minutes')
+  } while (startTime <= last)
+  return timeStops
+}
+// create time slots
+const createSlots = () => (timeStops.value = getTimeStops('00:00', '23:59'))
+
+const editingEvent = computed(() => {
+  return {
+    eventStartTime: props.item.eventStartTime,
+    eventNotes: props.item.eventNotes
+  }
+})
 const date = ref(editingEvent.value.eventStartTime)
 const time = ref({
   hours: moment(editingEvent.value.eventStartTime).format('HH'),
   minutes: moment(editingEvent.value.eventStartTime).format('mm'),
   seconds: 0
 })
+const newTime = ref('')
 const note = ref(editingEvent.value.eventNotes)
 
 const dateTime = computed(() =>
   moment(
-    `${moment(date.value).format('YYYY-MM-DD')} ${moment(time.value).format(
-      'HH:mm'
-    )}`
+    `${moment(date.value).format('YYYY-MM-DD')} ${
+      time.value ? moment(time.value).format('HH:mm') : newTime.value
+    }`
   ).toISOString()
 )
 const cancelStatus = ref(false)
@@ -104,10 +170,14 @@ const cancelPopup = (status) => {
   if (status) {
     cancelStatus.value = false
     emit('cancel')
-    props.item.eventStartTime = props.item.eventStartTime
-      ? props.item.eventStartTime
-      : ''
-    props.item.eventNotes = props.item.eventNotes ? props.item.eventNotes : ''
+    date.value = editingEvent.value.eventStartTime
+    time.value = {
+      hours: moment(editingEvent.value.eventStartTime).format('HH'),
+      minutes: moment(editingEvent.value.eventStartTime).format('mm'),
+      seconds: 0
+    }
+    newTime.value = ''
+    note.value = editingEvent.value.eventNotes
   }
 }
 const saveStatus = ref(false)
@@ -145,26 +215,35 @@ const checkNull = () => {
       >
         {{ item.bookingName }}
       </div>
-      <div class="grid grid-rows-2 gap-y-5">
-        <div class="grid grid-cols-2 divide-x">
-          <div class="grid grid-rows-3 gap-y-3 mr-5">
+      <div class="grid grid-rows-5 gap-y-5">
+        <div class="row-span-2 grid grid-cols-2 divide-x">
+          <div class="grid grid-rows-2 gap-y-3 mr-5">
             <div class="flex items-center">
               <span class="p-2 font-semibold text-[#5E6366] w-28">Clinic</span>
               <div
-                class="grid content-center bg-[#F1F3F4] rounded-2xl px-4 w-full h-full"
+                class="grid content-center bg-[#F1F3F4] rounded-2xl px-4 w-full h-10"
               >
                 {{ item.categoryName }}
               </div>
             </div>
+            <div class="row-start-2 flex items-center">
+              <span class="p-2 font-semibold text-[#5E6366] w-28">Email</span>
+              <div
+                class="grid content-center bg-[#F1F3F4] rounded-2xl w-full h-10 px-4"
+              >
+                <span class="overflow-x-auto"> {{ item.bookingEmail }}</span>
+              </div>
+            </div>
+          </div>
+          <div class="grid grid-rows-2 gap-y-3 pl-5">
             <div class="flex items-center">
               <span class="p-2 font-semibold text-[#5E6366] w-28">Date</span>
               <div
                 v-if="!isEditMode"
-                class="grid content-center bg-[#F1F3F4] rounded-2xl px-4 w-full h-full"
+                class="grid content-center bg-[#F1F3F4] rounded-2xl px-4 w-full h-10"
               >
                 {{ moment(item.eventStartTime).format('DD MMMM YYYY') }}
               </div>
-
               <Datepicker
                 v-else
                 v-model="date"
@@ -175,6 +254,7 @@ const checkNull = () => {
                 hideInputIcon
                 vertical
                 class="grid content-center w-full h-full"
+                @closed="getEventByDate(), createSlots()"
               />
             </div>
             <div class="grid grid-cols-5">
@@ -182,7 +262,7 @@ const checkNull = () => {
                 <span class="p-2 font-semibold text-[#5E6366] w-28">Time</span>
                 <div
                   v-if="!isEditMode"
-                  class="grid content-center bg-[#F1F3F4] rounded-2xl px-4 w-5/6 h-full"
+                  class="grid content-center bg-[#F1F3F4] rounded-2xl px-4 w-5/6 h-10"
                 >
                   {{ moment(editingEvent.eventStartTime).format('HH:mm') }} -
                   {{
@@ -191,7 +271,7 @@ const checkNull = () => {
                       .format('HH:mm')
                   }}
                 </div>
-                <Datepicker
+                <!-- <Datepicker
                   v-else
                   v-model="time"
                   timePicker
@@ -214,7 +294,74 @@ const checkNull = () => {
                   hideInputIcon
                   @closed="checkOverlap"
                   class="grid content-center w-5/6 h-full"
-                />
+                /> -->
+
+                <div v-else class="relative w-5/6">
+                  <Datepicker
+                    v-if="time"
+                    v-model="time"
+                    timePicker
+                    is24
+                    :minDate="new Date()"
+                    :minTime="{
+                      hours: moment(editingEvent.eventStartTime).isAfter(
+                        moment(new Date())
+                      )
+                        ? null
+                        : new Date().getHours(),
+                      minutes: moment(editingEvent.eventStartTime).isAfter(
+                        moment(new Date())
+                      )
+                        ? null
+                        : new Date().getMinutes()
+                    }"
+                    placeholder="Select Time"
+                    :disabled="date == '' ? true : false"
+                    hideInputIcon
+                    class="grid content-center"
+                    @cleared="getEventByDate(), createSlots()"
+                  />
+                  <select
+                    v-if="!time"
+                    v-model="newTime"
+                    :class="[
+                      'rounded-xl h-10 px-2 bg-[#F1F3F4] border-2 border-gray-400',
+                      newTime ? 'w-11/12' : 'w-full'
+                    ]"
+                  >
+                    <option value="" disabled hidden>select new time</option>
+                    <option
+                      :disabled="
+                        checkOverlap(slot) ||
+                        (slot < moment(myClock.clock).format('HH:mm') &&
+                          moment(date).format('YYYY-MM-DD') ==
+                            moment(myClock.clock).format('YYYY-MM-DD'))
+                      "
+                      v-for="slot in timeStops"
+                      :value="slot"
+                    >
+                      {{ slot }} -
+                      {{
+                        moment(slot, 'HH:mm')
+                          .add(props.item.eventDuration, 'minutes')
+                          .format('HH:mm')
+                      }}
+                    </option>
+                  </select>
+                  <button
+                    type="button"
+                    v-if="newTime"
+                    @click="newTime = ''"
+                    class="absolute -right-3 top-2"
+                  >
+                    <svg width="1.5em" height="1.5em" viewBox="0 0 24 24">
+                      <path
+                        fill="#919699"
+                        d="M18.3 5.71a.996.996 0 0 0-1.41 0L12 10.59L7.11 5.7A.996.996 0 1 0 5.7 7.11L10.59 12L5.7 16.89a.996.996 0 1 0 1.41 1.41L12 13.41l4.89 4.89a.996.996 0 1 0 1.41-1.41L13.41 12l4.89-4.89c.38-.38.38-1.02 0-1.4z"
+                      ></path>
+                    </svg>
+                  </button>
+                </div>
               </div>
               <div class="col-span-2 flex items-center">
                 <span class="font-semibold text-[#5E6366] ml-5 mr-2">
@@ -230,39 +377,22 @@ const checkNull = () => {
                     ></path></svg
                 ></span>
                 <div
-                  class="grid content-center bg-[#F1F3F4] rounded-2xl px-4 w-full h-full"
+                  class="grid content-center bg-[#F1F3F4] rounded-2xl px-4 w-full h-10"
                 >
                   {{ item.eventDuration }} min
                 </div>
               </div>
             </div>
           </div>
-          <div class="grid grid-rows-3 gap-y-3 pl-5">
-            <div class="flex items-center">
-              <span class="p-2 font-semibold text-[#5E6366] w-28">Name</span>
-              <div
-                class="grid content-center bg-[#F1F3F4] rounded-2xl px-4 w-full h-full"
-              >
-                {{ item.name ? item.name : '-' }}
-              </div>
-            </div>
-            <div class="row-start-2 flex items-center">
-              <span class="p-2 font-semibold text-[#5E6366] w-28">Email</span>
-              <div
-                class="grid content-center bg-[#F1F3F4] rounded-2xl w-full h-full px-4"
-              >
-                <span class="overflow-x-auto"> {{ item.bookingEmail }}</span>
-              </div>
-            </div>
-          </div>
         </div>
-        <div class="relative">
+        <div class="row-span-3 relative">
           <div class="p-2">
             <span class="text-[#5E6366] font-semibold">Description | Note</span>
           </div>
           <div
             v-if="!isEditMode"
-            class="resize-none rounded-2xl w-full h-28 bg-[#F1F3F4] p-3 overflow-auto"
+            style="width: 70vw"
+            class="break-words rounded-xl h-40 bg-[#F1F3F4] overflow-auto p-3 border border-gray-400"
           >
             <span v-if="item.eventNotes"> {{ item.eventNotes }}</span>
             <span v-if="!item.eventNotes" class="text-gray-400">
@@ -271,25 +401,25 @@ const checkNull = () => {
           </div>
           <div v-if="isEditMode">
             <textarea
-              maxlength="500"
-              class="break-words resize-none rounded-xl w-full h-28 p-3 bg-white border border-[#5E6366] focus:outline-none focus:shadow-outline"
+              style="width: 70vw"
+              class="break-words resize-none rounded-xl h-40 p-3 bg-white border border-gray-400"
               placeholder="Enter your description . . ."
               v-model="note"
             />
             <div
-              v-if="item.eventNotes.length == 500"
+              v-if="note.length >= 500"
               class="absolute text-xs text-[#F3A72E]"
             >
-              The number of characters has a limit of 500 characters. If it
-              exceeds 500, it will not be able to continue typing.
+              The number of characters has a limit of 500 characters.
             </div>
             <div class="absolute right-0 top-4 text-xs text-gray-500">
-              {{ item.eventNotes.length }}/500
+              {{ note.length }}/500
             </div>
           </div>
         </div>
       </div>
     </div>
+
     <div v-if="isEditMode" class="flex justify-center gap-x-10">
       <button
         class="bg-[#EA3D2F] rounded-[5px] text-white font-semibold w-36 h-12 px-1"

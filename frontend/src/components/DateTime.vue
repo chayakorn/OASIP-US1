@@ -1,4 +1,4 @@
-<script setup>
+<!-- <script setup>
 import { computed, ref } from 'vue'
 import moment from 'moment'
 import Datepicker from '@vuepic/vue-datepicker'
@@ -185,6 +185,4 @@ const checkOverlap = () => {
 </template>
 
 <style></style>
-<!-- moment(new Date(list)).isAfter(
-              moment().format('DD-MM-YYYY HH:mm')
-            ) &&  -->
+ -->

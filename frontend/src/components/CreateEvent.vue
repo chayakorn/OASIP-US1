@@ -28,7 +28,6 @@ const currentCategory = computed(() => {
     cateId: ref(props.category.id)
   }
 })
-const name = ref('')
 const email = ref('')
 const note = ref('')
 const date = ref('')
@@ -55,13 +54,12 @@ const creatingEvent = computed(() => ({
   eventStartTime: dateTime.value.toISOString(),
   eventCategoryId: currentCategory.value.cateId.value,
   eventDuration: currentDuration.value.cateDuration.value,
-  eventNotes: note.value,
-  name: name.value
+  eventNotes: note.value
 }))
 
 // text field style
 const borderStyle =
-  'rounded-xl w-full py-2 px-3 pr-8 mt-2 bg-[#F1F3F4] border border-[#5E6366] focus:outline-none focus:shadow-outline'
+  'rounded-xl w-full py-2 px-3 pr-8 mt-2 bg-[#F1F3F4] border-2 border-gray-400'
 
 // date formatting
 const format = (date) => {
@@ -146,8 +144,7 @@ const canCreateStatus = computed(() =>
   email.value.length <= 100 &&
   date.value &&
   seletedTime.value.length != 0 &&
-  note.value.length <= 500 &&
-  name.value.length <= 200
+  note.value.length <= 500
     ? false
     : true
 )
@@ -177,11 +174,11 @@ const valid = () => {
 // reset
 const reset = () => {
   bookingName.value = ''
+  currentCategory.value.cateId.value = props.category.id
   email.value = ''
   date.value = ''
   seletedTime.value = ''
   note.value = ''
-  name.value = ''
 }
 
 // confirm create
@@ -211,7 +208,6 @@ const isEmpty = () =>
   email.value.length != 0 ||
   date.value ||
   seletedTime.value.length != 0 ||
-  name.value.length != 0 ||
   note.value.length != 0
     ? false
     : true
@@ -230,10 +226,10 @@ const backdrop = (event) => {
     @click="backdrop"
     class="bg-black/25 overflow-x-hidden overflow-y-auto absolute inset-0 z-40 outline-none focus:outline-none justify-center items-center flex"
   >
-    <div class="relative bg-white w-10/12 h-4/5 rounded-3xl">
+    <div class="relative bg-white w-10/12 h-3/4 rounded-3xl">
       <div
         @click="reset()"
-        class="cursor-pointer absolute left-0 hover:bg-[#F1F3F4] p-1 rounded-lg m-4"
+        class="cursor-pointer absolute border-2 left-0 hover:bg-[#F1F3F4] p-1 rounded-full m-4"
       >
         Clear all
       </div>
@@ -298,14 +294,7 @@ const backdrop = (event) => {
                 </div>
               </div>
               <div class="mb-5">
-                <div class="font-medium">
-                  Category{{ category.id }}{{ currentCategory.cateId }}
-                </div>
-                <!-- <div
-                  class="rounded-xl w-full py-2 px-3 mt-2 bg-[#F1F3F4] focus:outline-none focus:shadow-outline"
-                >
-                   {{ category.eventCategoryName }} 
-                </div> -->
+                <div class="font-medium">Category</div>
                 <select
                   :class="borderStyle"
                   v-model="currentCategory.cateId.value"
@@ -318,42 +307,6 @@ const backdrop = (event) => {
                     {{ cate.eventCategoryName }}
                   </option>
                 </select>
-              </div>
-              <div class="relative mb-5">
-                <div class="font-medium">Name</div>
-                <input
-                  :class="borderStyle"
-                  type="text"
-                  placeholder="Firstname Lastname"
-                  v-model="name"
-                />
-                <button
-                  type="button"
-                  v-if="name"
-                  @click="name = ''"
-                  class="absolute top-10 right-2 ml-2"
-                >
-                  <svg width="1.5em" height="1.5em" viewBox="0 0 24 24">
-                    <path
-                      fill="#919699"
-                      d="M18.3 5.71a.996.996 0 0 0-1.41 0L12 10.59L7.11 5.7A.996.996 0 1 0 5.7 7.11L10.59 12L5.7 16.89a.996.996 0 1 0 1.41 1.41L12 13.41l4.89 4.89a.996.996 0 1 0 1.41-1.41L13.41 12l4.89-4.89c.38-.38.38-1.02 0-1.4z"
-                    ></path>
-                  </svg>
-                </button>
-                <div
-                  v-if="name.length >= 200"
-                  class="absolute text-xs text-[#F3A72E]"
-                >
-                  The number of characters has a limit of 200 characters.
-                </div>
-                <div
-                  :class="[
-                    'absolute right-0 top-4 text-xs',
-                    bookingName.length <= 100 ? 'text-gray-500' : 'text-red-500'
-                  ]"
-                >
-                  {{ name.length }}/200
-                </div>
               </div>
               <div class="relative mb-5">
                 <div class="font-medium">Email</div>
@@ -407,7 +360,7 @@ const backdrop = (event) => {
               <div class="relative col-span-2">
                 <div class="font-medium">Description | Note</div>
                 <textarea
-                  class="container break-words resize-none rounded-xl w-full h-28 py-2 px-3 pr-8 mt-2 bg-[#F1F3F4] border border-[#5E6366] focus:outline-none focus:shadow-outline"
+                  class="container break-words resize-none rounded-xl w-full h-44 py-2 px-3 pr-8 mt-2 bg-[#F1F3F4] border border-gray-400"
                   placeholder="Enter your description . . ."
                   v-model="note"
                 />
@@ -441,148 +394,122 @@ const backdrop = (event) => {
               </div>
             </div>
             <div class="relative ml-10">
-              <div class="grid bg-[#F7F9FA] rounded-2xl h-max">
-                <div class="grid gap-y-5 p-5">
-                  <div class="flex items-center gap-x-2">
-                    <svg width="1.5em" height="1.5em" viewBox="0 0 512 512">
-                      <path
-                        d="M368.005 272h-96v96h96v-96zm-32-208v32h-160V64h-48v32h-24.01c-22.002 0-40 17.998-40 40v272c0 22.002 17.998 40 40 40h304.01c22.002 0 40-17.998 40-40V136c0-22.002-17.998-40-40-40h-24V64h-48zm72 344h-304.01V196h304.01v212z"
-                        fill="currentColor"
-                      ></path>
-                    </svg>
-                    <Datepicker
-                      v-model="date"
-                      :enableTimePicker="false"
-                      :format="format"
-                      :minDate="new Date()"
-                      placeholder="Select Date"
-                      hideInputIcon
-                      vertical
-                      @closed="getEventByDate(), createSlots()"
-                      @cleared="seletedTime = ''"
-                    />
-                  </div>
-                  <div class="flex items-center gap-x-1 h-9">
-                    <span class="font-medium">Comfirm date : </span>
-                    <span
-                      :class="[
-                        date
-                          ? 'bg-white p-1 px-2 border-2 rounded-lg font-semibold'
-                          : 'text-[#F3A72E]'
-                      ]"
-                    >
-                      {{
-                        date
-                          ? moment(date).format('DD MMMM YYYY')
-                          : 'Please select date !'
-                      }}</span
-                    >
+              <div class="grid bg-[#F7F9FA] rounded-2xl h-max gap-y-4 p-5">
+                <div class="flex items-center gap-x-2">
+                  <svg width="1.5em" height="1.5em" viewBox="0 0 512 512">
+                    <path
+                      d="M368.005 272h-96v96h96v-96zm-32-208v32h-160V64h-48v32h-24.01c-22.002 0-40 17.998-40 40v272c0 22.002 17.998 40 40 40h304.01c22.002 0 40-17.998 40-40V136c0-22.002-17.998-40-40-40h-24V64h-48zm72 344h-304.01V196h304.01v212z"
+                      fill="currentColor"
+                    ></path>
+                  </svg>
+                  <Datepicker
+                    v-model="date"
+                    :enableTimePicker="false"
+                    :format="format"
+                    :minDate="new Date()"
+                    placeholder="Select Date"
+                    hideInputIcon
+                    vertical
+                    @closed="getEventByDate(), createSlots()"
+                    @cleared="seletedTime = ''"
+                  />
+                </div>
+                <div class="flex items-center gap-x-1 h-9">
+                  <span class="font-medium">Comfirm date : </span>
+                  <span
+                    :class="[
+                      date
+                        ? 'bg-white p-1 px-2 border-2 rounded-lg font-semibold'
+                        : 'text-[#F3A72E]'
+                    ]"
+                  >
+                    {{
+                      date
+                        ? moment(date).format('DD MMMM YYYY')
+                        : 'Please select date !'
+                    }}</span
+                  >
+                  <button
+                    type="button"
+                    v-if="date"
+                    @click=";(date = ''), (seletedTime = '')"
+                    class="text-xs font-semibold text-[#367BF5] hover:underline"
+                  >
+                    change
+                  </button>
+                </div>
+                <div
+                  class="grid grid-cols-2 w-full gap-4 bg-white rounded-lg border-2 p-3 h-40 overflow-auto"
+                >
+                  <div v-if="date" v-for="slot in timeStops">
                     <button
                       type="button"
-                      v-if="date"
-                      @click="date = ''"
-                      class="text-xs font-semibold text-[#367BF5] hover:underline"
+                      @click="seletedTime = slot"
+                      :disabled="
+                        checkOverlap(slot) ||
+                        (slot < moment(myClock.clock).format('HH:mm') &&
+                          moment(date).format('YYYY-MM-DD') ==
+                            moment(myClock.clock).format('YYYY-MM-DD'))
+                      "
+                      class="w-full cursor-pointer rounded-lg bg-[#DCF7E3] border disabled:opacity-25 disabled:bg-[#E3E5E5] disabled:cursor-not-allowed"
                     >
-                      change
-                    </button>
-                  </div>
-                  <!-- <svg width="1.5em" height="1.5em" viewBox="0 0 24 24">
-                    <path
-                      fill="currentColor"
-                      d="M12 20c4.4 0 8-3.6 8-8s-3.6-8-8-8s-8 3.6-8 8s3.6 8 8 8m0-18c5.5 0 10 4.5 10 10s-4.5 10-10 10S2 17.5 2 12S6.5 2 12 2m5 11.9l-.7 1.3l-5.3-2.9V7h1.5v4.4l4.5 2.5Z"
-                    ></path>
-                  </svg> -->
-                  <!-- <Datepicker
-                    v-model="time"
-                    timePicker
-                    is24
-                    :minDate="new Date()"
-                    :minTime="{
-                      hours: moment(date).isAfter(moment(new Date()))
-                        ? null
-                        : new Date().getHours(),
-                      minutes: moment(date).isAfter(moment(new Date()))
-                        ? null
-                        : new Date().getMinutes()
-                    }"
-                    placeholder="Select Time"
-                    :disabled="date == '' ? true : false"
-                    hideInputIcon
-                    @closed="checkOverlap"
-                  /> -->
-                  <div
-                    class="grid grid-cols-3 gap-4 bg-white rounded-lg border-2 p-3 h-40 overflow-auto"
-                  >
-                    <div v-if="date" v-for="slot in timeStops">
-                      <button
-                        type="button"
-                        @click="seletedTime = slot"
-                        :disabled="
-                          checkOverlap(slot) ||
-                          (slot < moment(myClock.clock).format('HH:mm') &&
-                            moment(date).format('YYYY-MM-DD') ==
-                              moment(myClock.clock).format('YYYY-MM-DD'))
-                        "
-                        class="cursor-pointer rounded-lg bg-[#DCF7E3] border disabled:opacity-25 disabled:bg-[#E3E5E5] disabled:cursor-not-allowed"
-                      >
-                        {{ slot }} -
-                        {{
-                          moment(slot, 'HH:mm')
-                            .add(currentDuration.cateDuration.value, 'minutes')
-                            .format('HH:mm')
-                        }}
-                      </button>
-                    </div>
-                    <div
-                      v-else
-                      class="col-span-3 grid place-content-center text-3xl font-bold text-[#C6CACC]"
-                    >
-                      Time slots
-                    </div>
-                  </div>
-                  <div class="flex items-center gap-x-1 h-9">
-                    <span class="font-medium">Comfirm time : </span>
-                    <span
-                      :class="[
-                        seletedTime
-                          ? 'bg-white p-1 px-2 border-2 rounded-lg font-semibold'
-                          : 'text-[#F3A72E]'
-                      ]"
-                    >
+                      {{ slot }} -
                       {{
-                        seletedTime
-                          ? seletedTime +
-                            '-' +
-                            moment(seletedTime, 'HH:mm')
-                              .add(props.category.eventDuration, 'minutes')
-                              .format('HH:mm')
-                          : 'Please select time !'
-                      }}</span
-                    ><button
-                      type="button"
-                      v-if="seletedTime"
-                      @click="seletedTime = ''"
-                      class="text-xs font-semibold text-[#367BF5] hover:underline"
-                    >
-                      change
+                        moment(slot, 'HH:mm')
+                          .add(currentDuration.cateDuration.value, 'minutes')
+                          .format('HH:mm')
+                      }}
                     </button>
                   </div>
+                  <div
+                    v-else
+                    class="col-span-3 grid place-content-center text-3xl font-bold text-[#C6CACC]"
+                  >
+                    Time slots
+                  </div>
+                </div>
+                <div class="flex items-center gap-x-1 h-9">
+                  <span class="font-medium">Comfirm time : </span>
+                  <span
+                    :class="[
+                      seletedTime
+                        ? 'bg-white p-1 px-2 border-2 rounded-lg font-semibold'
+                        : 'text-[#F3A72E]'
+                    ]"
+                  >
+                    {{
+                      seletedTime
+                        ? seletedTime +
+                          '-' +
+                          moment(seletedTime, 'HH:mm')
+                            .add(props.category.eventDuration, 'minutes')
+                            .format('HH:mm')
+                        : 'Please select time !'
+                    }}</span
+                  ><button
+                    type="button"
+                    v-if="seletedTime"
+                    @click="seletedTime = ''"
+                    class="text-xs font-semibold text-[#367BF5] hover:underline"
+                  >
+                    change
+                  </button>
+                </div>
+                <div>
                   <div>
-                    <div>
-                      <span class="font-medium">Durations: </span>
-                      <span
-                        class="font-semibold text-red-500 h-9 bg-white p-1 px-2 border-2 rounded-md"
-                        >{{ currentDuration.cateDuration.value }}</span
-                      >
-                      minutes
-                    </div>
-                    <div class="text-sm mt-2 text-gray-400">
-                      * Duration depends on category.
-                    </div>
+                    <span class="font-medium">Durations: </span>
+                    <span
+                      class="font-semibold text-red-500 h-9 bg-white p-1 px-2 border-2 rounded-md"
+                      >{{ currentDuration.cateDuration.value }}</span
+                    >
+                    minutes
+                  </div>
+                  <div class="text-sm mt-2 text-gray-400">
+                    * Duration depends on category.
                   </div>
                 </div>
               </div>
-              <div class="grid grid-cols-2 absolute bottom-0 w-full gap-x-10">
+              <div class="grid grid-cols-2 absolute bottom-2 w-full gap-x-10">
                 <button
                   type="button"
                   @click="
