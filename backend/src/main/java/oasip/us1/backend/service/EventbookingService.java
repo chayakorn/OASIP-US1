@@ -61,8 +61,6 @@ public class EventbookingService {
         return modelMapper.map(repository.findByCategoryId(catid,
                         PageRequest.of(page, pageSize, isAsc ? Sort.by(sortBy).ascending() : Sort.by(sortBy).descending())),
                 EventPageDto.class);
-
-
     }
 
     public ResponseEntity getEventById(int id, WebRequest request) {
@@ -140,9 +138,6 @@ public class EventbookingService {
         Map<String, String> fieldError = new HashMap<>();
         if (updateEventbooking.getEventStartTime()== null) {
             fieldError.put("eventStartTime", "eventStartTime can not be null");
-        }
-        if (updateEventbooking.getEventDuration()>480||updateEventbooking.getEventDuration()<1){
-            fieldError.put("eventDuration", "eventDuration must be between 1-480");
         }
         if (fieldError.isEmpty()) {
             if (updateEventbooking.getEventStartTime().isBefore(Instant.now())) {

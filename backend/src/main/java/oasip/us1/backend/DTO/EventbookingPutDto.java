@@ -26,7 +26,6 @@ public class EventbookingPutDto implements Serializable {
     @Size(max = 500,message = "eventNotes must be between 0-500 characters")
     private String eventNotes;
 
-    private int eventDuration;
 
 
 }
