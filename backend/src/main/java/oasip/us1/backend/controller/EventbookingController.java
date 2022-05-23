@@ -41,12 +41,12 @@ public class EventbookingController {
     }
 
     @GetMapping("/by-date-and-cat")
-    private ResponseEntity getAllEventByCatAndStartTime(@RequestParam(defaultValue = "1") int catid,@RequestParam String date,@RequestParam("07:00") String offSet,@RequestParam("false") boolean negative,WebRequest request){
+    private ResponseEntity getAllEventByCatAndStartTime(@RequestParam(defaultValue = "1") int catid,@RequestParam String date,@RequestParam(defaultValue = "07:00") String offSet,@RequestParam(defaultValue = "false") boolean negative,WebRequest request){
         return service.getEventByCatAndDate(catid,date,offSet,negative,request);
     }
 
     @GetMapping("/by-date")
-    private ResponseEntity getAllByDate(@RequestParam String date,@RequestParam("07:00") String offSet,@RequestParam("false") boolean negative,
+    private ResponseEntity getAllByDate(@RequestParam String date,@RequestParam(defaultValue = "07:00") String offSet,@RequestParam(defaultValue = "false") boolean negative,
                                       @RequestParam(defaultValue = "0") int page,
                                       @RequestParam(defaultValue = "12") int pageSize,
                                       @RequestParam(defaultValue = "eventStartTime") String sortBy,
