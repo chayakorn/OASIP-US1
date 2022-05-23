@@ -137,12 +137,16 @@ const checkPast = () => moment(props.item.eventStartTime).isBefore(myClock.date)
 
       <Confirm
         v-if="cancelStatus"
+        underline="cancel"
+        color="EA3D2F"
         desc="If you <confirm>, your last edit will be discarded."
         @cancel="cancelPopup"
         @confirm="cancelPopup"
       />
       <Confirm
         v-if="deleteStatus"
+        underline="delete"
+        color="EA3D2F"
         desc="If you <confirm>, this schedule will be deleted."
         @cancel="deletePopup"
         @confirm="deletePopup"

@@ -5,7 +5,7 @@ import '@vuepic/vue-datepicker/dist/main.css'
 import { computed, ref } from 'vue'
 import { useEvents } from '../stores/events.js'
 import Confirm from './Confirm.vue'
-const emit = defineEmits(['cancel', 'save','closeModal'])
+const emit = defineEmits(['cancel', 'save', 'closeModal'])
 const props = defineProps({
   item: {
     type: Object,
@@ -320,12 +320,16 @@ const checkNull = () => {
     </div>
     <Confirm
       v-if="cancelStatus"
+      underline="cancel"
+      color="s"
       desc="If you <confirm>, your last edit will be discarded."
       @cancel="cancelPopup"
       @confirm="cancelPopup"
     />
     <Confirm
       v-if="saveStatus"
+      underline="save"
+      color="2FA84F"
       desc="If you <confirm>, this schedule will be saved."
       @cancel="cancelSave"
       @confirm="save"

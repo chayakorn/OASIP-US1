@@ -35,7 +35,6 @@ const categoryBg = (cateId) => {
       }
   }
 }
-const closeForm = () => (createForm = false)
 </script>
 
 <template>

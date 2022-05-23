@@ -11,7 +11,8 @@ const myClock = useClock()
           ><img src="./assets/images/icon.png" width="90"
         /></router-link>
       </div>
-      <div class="absolute top-24 text-center">
+      <!-- clock -->
+      <div class="font-plus-jarkata absolute top-24 text-center">
         {{ myClock.clock }}
       </div>
 
@@ -88,12 +89,16 @@ a {
 @import url('https://fonts.googleapis.com/css2?family=Poppins:ital,wght@0,100;0,200;0,300;0,400;0,500;0,600;0,700;0,800;0,900;1,100;1,200;1,300;1,400;1,500;1,600;1,700;1,800;1,900&display=swap');
 @import url('https://fonts.googleapis.com/css2?family=Prompt:ital,wght@0,200;0,300;0,400;0,500;0,600;0,700;0,800;0,900;1,100;1,200;1,300;1,400;1,500;1,600;1,700;1,800;1,900&display=swap');
 @import url('https://fonts.googleapis.com/css2?family=Pragati+Narrow:wght@400;700&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:ital,wght@0,200;0,300;0,400;0,500;0,600;0,700;0,800;1,200;1,300;1,400;1,500;1,600;1,700;1,800&display=swap');
 
 .font-poppin {
   font-family: 'Poppins', 'Prompt', sans-serif;
 }
 .font-pragati {
   font-family: 'Pragati Narrow', sans-serif;
+}
+.font-plus-jarkata {
+  font-family: 'Plus Jakarta Sans', sans-serif;
 }
 
 .bg-home {

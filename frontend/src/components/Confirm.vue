@@ -3,11 +3,19 @@ defineEmits(['cancel', 'confirm'])
 defineProps({
   question: {
     type: String,
-    default: 'Are you sure?'
+    default: 'Are you sure'
+  },
+  underline: {
+    type: String,
+    default: ''
+  },
+  color: {
+    type: String,
+    default: '000000'
   },
   desc: {
     type: String,
-    default: 'If you "confirm", this process going to centinue.'
+    default: 'If you "confirm", this process will centinue.'
   }
 })
 </script>
@@ -23,9 +31,11 @@ defineProps({
         class="w-[30%] h-[27.5%] p-[1%] bg-white grid place-items-center grid-rows-3 rounded-2xl gap-y-5"
       >
         <div
-          class="grid content-center w-full h-full text-center border-b font-bold text-xl"
+          class="flex justify-center w-full h-full border-b font-bold text-xl"
         >
-          {{ question }}
+          {{ question }}&nbsp;
+          <span :class="`underline text-[#${color}]`">{{ underline }}</span
+          >&nbsp;?
         </div>
         <div
           class="grid content-center w-full h-full text-center text-gray-500"
@@ -35,13 +45,13 @@ defineProps({
         <div class="grid grid-cols-2 w-full h-full gap-x-[5%]">
           <button
             @click="$emit('cancel', false)"
-            class="bg-[#FEE4E2] font-semibold text-lg text-[#EA3D2F] rounded-[20px]"
+            class="bg-[#FEE4E2] font-semibold text-lg text-[#EA3D2F] rounded-[20px] hover:scale-95 hover:shadow-inner"
           >
             CANCEL
           </button>
           <button
             @click="$emit('confirm', true)"
-            class="bg-[#DCF7E3] font-semibold text-lg text-[#2FA84F] rounded-[20px]"
+            class="bg-[#DCF7E3] font-semibold text-lg text-[#2FA84F] rounded-[20px] hover:scale-95 hover:shadow-inner"
           >
             CONFIRM
           </button>
