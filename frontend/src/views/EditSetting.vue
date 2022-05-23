@@ -53,17 +53,16 @@ const updateCategory = () => {
     },
     myCategory.value.id
   )
-  router.push({ name: 'Setting' })
+  
   useCategory.getAllCategories()
 }
 
 const showConfirmPopup = ref(false)
 const confirmSave = () => {
   showConfirmPopup.value = false
+  updateCategory()
   noticeEdited()
-  setTimeout(() => {
-    updateCategory()
-  }, 1500)
+  
 }
 
 const cancelSave = () => {
@@ -85,7 +84,9 @@ const noticeEdited = () => {
   noticeEditedStatus.value = true
   setTimeout(() => {
     noticeEditedStatus.value = false
-  }, 2000)
+    router.push({ name: 'Setting' })
+  }, 1500)
+  
 }
 </script>
 
