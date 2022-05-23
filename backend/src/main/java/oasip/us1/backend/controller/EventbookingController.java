@@ -9,8 +9,6 @@ import org.springframework.web.bind.annotation.*;
 import org.springframework.web.context.request.WebRequest;
 import javax.validation.Valid;
 import java.util.Collection;
-import java.util.List;
-import java.util.Map;
 
 @RestController
 @CrossOrigin

@@ -2,17 +2,13 @@ package oasip.us1.backend.repository;
 
 import oasip.us1.backend.entity.Eventbooking;
 import oasip.us1.backend.entity.Eventcategory;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
-import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Modifying;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
-
 import javax.transaction.Transactional;
-import java.time.Instant;
 import java.util.Collection;
 import java.util.List;
 

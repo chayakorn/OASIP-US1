@@ -1,7 +1,6 @@
 package oasip.us1.backend.controller;
 
 import oasip.us1.backend.DTO.EventCategoryPutDto;
-import oasip.us1.backend.DTO.EventbookingDto;
 import oasip.us1.backend.entity.Eventcategory;
 import oasip.us1.backend.service.EventcategoryService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -9,8 +8,6 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.context.request.WebRequest;
-
-import javax.servlet.http.HttpServletResponse;
 import javax.validation.Valid;
 import java.util.List;
 

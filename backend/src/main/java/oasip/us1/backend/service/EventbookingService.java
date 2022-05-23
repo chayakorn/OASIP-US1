@@ -1,11 +1,7 @@
 package oasip.us1.backend.service;
 
-import lombok.Data;
-import lombok.NoArgsConstructor;
-import lombok.RequiredArgsConstructor;
 import oasip.us1.backend.DTO.*;
 import oasip.us1.backend.entity.Eventbooking;
-import oasip.us1.backend.entity.Eventcategory;
 import oasip.us1.backend.repository.EventbookingRepository;
 import oasip.us1.backend.repository.EventcategoryRepository;
 import oasip.us1.backend.utils.ListMapper;
@@ -18,20 +14,14 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 import org.springframework.validation.BindingResult;
 import org.springframework.validation.FieldError;
-import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.context.request.ServletWebRequest;
 import org.springframework.web.context.request.WebRequest;
-
-import javax.servlet.http.HttpServletResponse;
-import java.sql.Timestamp;
 import java.time.Instant;
 import java.time.ZoneId;
 import java.time.ZoneOffset;
 import java.time.format.DateTimeFormatter;
 import java.time.temporal.ChronoUnit;
-import java.time.temporal.TemporalUnit;
 import java.util.HashMap;
-import java.util.List;
 import java.util.Collection;
 import java.util.Map;
 

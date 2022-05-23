@@ -1,7 +1,5 @@
 package oasip.us1.backend.service;
 
-import lombok.Data;
-import lombok.RequiredArgsConstructor;
 import oasip.us1.backend.DTO.ErrorDTO;
 import oasip.us1.backend.DTO.EventCategoryDto;
 import oasip.us1.backend.DTO.EventCategoryPutDto;
@@ -19,15 +17,12 @@ import org.springframework.validation.BindingResult;
 import org.springframework.validation.FieldError;
 import org.springframework.web.context.request.ServletWebRequest;
 import org.springframework.web.context.request.WebRequest;
-
-import javax.servlet.http.HttpServletRequest;
 import java.time.Instant;
 import java.time.ZoneId;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Locale;
 import java.util.Map;
-import java.util.concurrent.atomic.AtomicReference;
 
 @Service
 public class EventcategoryService {
