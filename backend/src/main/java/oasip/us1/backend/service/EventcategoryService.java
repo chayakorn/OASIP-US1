@@ -2,9 +2,14 @@ package oasip.us1.backend.service;
 
 import lombok.Data;
 import lombok.RequiredArgsConstructor;
+import oasip.us1.backend.DTO.ErrorDTO;
+import oasip.us1.backend.DTO.EventCategoryDto;
 import oasip.us1.backend.DTO.EventCategoryPutDto;
+import oasip.us1.backend.DTO.EventbookingDto;
 import oasip.us1.backend.entity.Eventcategory;
+import oasip.us1.backend.repository.EventbookingRepository;
 import oasip.us1.backend.repository.EventcategoryRepository;
+import oasip.us1.backend.utils.ListMapper;
 import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
@@ -30,22 +35,34 @@ public class EventcategoryService {
     private EventcategoryRepository repository;
     @Autowired
     private ModelMapper modelMapper;
+    @Autowired
+    private EventbookingRepository eventbookingRepository;
+    @Autowired
+    private ListMapper listMapper;
 
-    @Data
-    @RequiredArgsConstructor
-    private static class Error{
-        private final String timestamp;
-        private final int status;
-        private final String path;
-        private final String message;
-        private final Map<String,String> fieldErrors;
 
-    }
     public List<Eventcategory> getAllEventCategory(){
         return repository.findAll();
     }
-    public Eventcategory getEventCategoryById(int id){
-        return repository.findById(id).get();
+    public ResponseEntity getEventCategoryById(int id,WebRequest request){
+        Map<String,String> fieldError = new HashMap<>();
+        if (repository.findById(id).isEmpty()){
+            fieldError.put("categoryId","categoryNotfound");
+            ErrorDTO errorDTO = new ErrorDTO(Instant.now().atZone(ZoneId.of("Asia/Bangkok")).toString(), HttpStatus.NOT_FOUND.value(), ((ServletWebRequest) request).getRequest().getRequestURI(), "Validation failed", fieldError);
+            return new ResponseEntity(errorDTO,HttpStatus.NOT_FOUND);
+        }
+
+        return new ResponseEntity(modelMapper.map(repository.findById(id).get(), EventCategoryDto.class),HttpStatus.OK);
+    }
+    public ResponseEntity getEventByCategoryId(int id,WebRequest request){
+        Map<String,String> fieldError = new HashMap<>();
+        if (repository.findById(id).isEmpty()){
+            fieldError.put("categoryId","categoryNotfound");
+            ErrorDTO errorDTO = new ErrorDTO(Instant.now().atZone(ZoneId.of("Asia/Bangkok")).toString(), HttpStatus.NOT_FOUND.value(), ((ServletWebRequest) request).getRequest().getRequestURI(), "Validation failed", fieldError);
+            return new ResponseEntity(errorDTO,HttpStatus.NOT_FOUND);
+        }
+
+        return new ResponseEntity(listMapper.mapList(eventbookingRepository.findEventbookingByEventCategoryId(repository.getById(id)),EventbookingDto.class,modelMapper),HttpStatus.OK);
     }
     public ResponseEntity update(EventCategoryPutDto updateEventCategory, BindingResult result, int id , WebRequest request){
         Map<String,String> fieldError = new HashMap<>();
@@ -58,14 +75,20 @@ public class EventcategoryService {
             }
         });
         if (fieldError.size()> 0){
-            Error errorBody = new Error(Instant.now().atZone(ZoneId.of("Asia/Bangkok")).toString(), HttpStatus.BAD_REQUEST.value(), ((ServletWebRequest) request).getRequest().getRequestURI(), "Validation failed", fieldError);
+            ErrorDTO errorBody = new ErrorDTO(Instant.now().atZone(ZoneId.of("Asia/Bangkok")).toString(), HttpStatus.BAD_REQUEST.value(), ((ServletWebRequest) request).getRequest().getRequestURI(), "Validation failed", fieldError);
             return new ResponseEntity(errorBody,HttpStatus.BAD_REQUEST);
         }
         Eventcategory event = repository.findById(id).get();
         modelMapper.map(updateEventCategory,event);
         return new ResponseEntity(repository.saveAndFlush(event),HttpStatus.OK);
     }
-    public ResponseEntity delete(int id){
+    public ResponseEntity delete(int id,WebRequest request){
+        Map<String,String> fieldError = new HashMap<>();
+        if (repository.findById(id).isEmpty()){
+            fieldError.put("categoryId","categoryNotfound");
+            ErrorDTO errorDTO = new ErrorDTO(Instant.now().atZone(ZoneId.of("Asia/Bangkok")).toString(), HttpStatus.NOT_FOUND.value(), ((ServletWebRequest) request).getRequest().getRequestURI(), "Validation failed", fieldError);
+            return new ResponseEntity(errorDTO,HttpStatus.NOT_FOUND);
+        }
         repository.deleteById(id);
         return new ResponseEntity("Deleted id "+id, HttpStatus.OK);
     }

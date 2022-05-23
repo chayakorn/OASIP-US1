@@ -41,7 +41,6 @@ public class Eventbooking {
     @Future(message = "eventStartTime must be future")
     private Instant eventStartTime;
 
-
     @Column(name = "eventDuration", nullable = false)
     @NotNull(message = "eventDuration can be null")
     private Integer eventDuration;
@@ -50,7 +49,5 @@ public class Eventbooking {
     @Size(max = 500, message = "eventNotes must be between 0-500 characters")
     private String eventNotes;
 
-    @Column(name = "name", length = 200)
-    private String name;
 
 }

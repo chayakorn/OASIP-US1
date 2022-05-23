@@ -34,5 +34,4 @@ public class EventbookingInsertDto {
 
     @Column(name = "eventNotes", length = 500)
     private String eventNotes;
-    private String name;
 }

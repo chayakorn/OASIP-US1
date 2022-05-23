@@ -1,9 +1,6 @@
 package oasip.us1.backend.controller;
 
-import oasip.us1.backend.DTO.EventPageDto;
-import oasip.us1.backend.DTO.EventbookingDto;
-import oasip.us1.backend.DTO.EventbookingInsertDto;
-import oasip.us1.backend.DTO.EventbookingPutDto;
+import oasip.us1.backend.DTO.*;
 import oasip.us1.backend.service.EventbookingService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
@@ -24,31 +21,38 @@ public class EventbookingController {
     @Autowired
     private EventbookingService service;
 
-
-    @GetMapping("/{id}")
-    private EventbookingDto getEventById(@PathVariable int id) {
-        return service.getEventById(id);
-    }
-
     @GetMapping("")
     private EventPageDto getAllEventByCatId(@RequestParam(defaultValue = "a") String uap,
-            @RequestParam(defaultValue = "[1,2,3,4,5]") Collection<String> catid, @RequestParam(defaultValue = "0") int page,
-            @RequestParam(defaultValue = "12") int pageSize,
-            @RequestParam(defaultValue = "eventStartTime") String sortBy,
-            @RequestParam(defaultValue = "true") boolean isAsc) {
+                                            @RequestParam(defaultValue = "[1,2,3,4,5]") Collection<String> catid, @RequestParam(defaultValue = "0") int page,
+                                            @RequestParam(defaultValue = "12") int pageSize,
+                                            @RequestParam(defaultValue = "eventStartTime") String sortBy,
+                                            @RequestParam(defaultValue = "true") boolean isAsc) {
         return service.getAllEventByCatId( page, pageSize, sortBy, isAsc,catid,uap);
     }
-    @GetMapping("/byDateAndCat")
-    private List<EventbookingDto> getAllEventByCatAndStartTime(@RequestParam(defaultValue = "1") int catid,@RequestParam String date,@RequestParam String offSet,@RequestParam boolean negative){
-        return service.getEventByCatAndDate(catid,date,offSet,negative);
+
+    @GetMapping("/{id}")
+    private ResponseEntity getEventById(@PathVariable int id, WebRequest request) {
+        return service.getEventById(id,request);
     }
-    @GetMapping("/byDate")
-    private EventPageDto getAllByDate(@RequestParam String date,@RequestParam String offSet,@RequestParam boolean negative,
+
+    @GetMapping("/{id}/categories")
+    private ResponseEntity getCategoryByEventId(@PathVariable int id, WebRequest request) {
+        return service.getCategoryByEventId(id,request);
+    }
+
+    @GetMapping("/by-date-and-cat")
+    private ResponseEntity getAllEventByCatAndStartTime(@RequestParam(defaultValue = "1") int catid,@RequestParam String date,@RequestParam("07:00") String offSet,@RequestParam("false") boolean negative,WebRequest request){
+        return service.getEventByCatAndDate(catid,date,offSet,negative,request);
+    }
+
+    @GetMapping("/by-date")
+    private ResponseEntity getAllByDate(@RequestParam String date,@RequestParam("07:00") String offSet,@RequestParam("false") boolean negative,
                                       @RequestParam(defaultValue = "0") int page,
                                       @RequestParam(defaultValue = "12") int pageSize,
                                       @RequestParam(defaultValue = "eventStartTime") String sortBy,
-                                      @RequestParam(defaultValue = "true") boolean isAsc){
-        return service.getEventByDate(date,offSet,negative,page,pageSize,sortBy,isAsc);
+                                      @RequestParam(defaultValue = "true") boolean isAsc,
+                                      WebRequest request){
+        return service.getEventByDate(date,offSet,negative,page,pageSize,sortBy,isAsc,request);
     }
     @PostMapping("")
     private ResponseEntity addEvent(@Valid @RequestBody EventbookingInsertDto newEventBooking, BindingResult result, WebRequest request) {
@@ -56,15 +60,12 @@ public class EventbookingController {
     }
 
     @PutMapping("/{id}")
-    private ResponseEntity update(@RequestBody EventbookingPutDto editEventBooking, @PathVariable int id, BindingResult result, WebRequest request) {
-        System.out.println("what");
-
-        return service.update(editEventBooking, id, result, request);
+    private ResponseEntity update( @RequestBody EventbookingPutDto editEventBooking, @PathVariable int id, WebRequest request) {
+        return service.update(editEventBooking, id, request);
     }
 
-
     @DeleteMapping("/{id}")
-    private void delete(@PathVariable int id) {
-        service.delete(id);
+    private ResponseEntity delete(@PathVariable int id, WebRequest request) {
+       return service.delete(id,request);
     }
 }

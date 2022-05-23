@@ -1,6 +1,7 @@
 package oasip.us1.backend.repository;
 
 import oasip.us1.backend.entity.Eventbooking;
+import oasip.us1.backend.entity.Eventcategory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
@@ -78,5 +79,7 @@ public interface EventbookingRepository extends JpaRepository<Eventbooking, Inte
             nativeQuery = true
     )
     Page<Eventbooking> findByCategoryIdUpcomming(@Param("id") Collection<String> id, @Param("page") Pageable pageable, @Param("now") String now);
+
+    List<Eventbooking> findEventbookingByEventCategoryId(Eventcategory eventcategory);
 
 }
