@@ -8,8 +8,11 @@ services:
     environment:
       - "MYSQL_ROOT_PASSWORD=us1t2pproject"
     volumes:
-      - ./data/oasip-new-data.sql:/docker-entrypoint-initdb.d/setup.sql
+      - ./data/oasip-initial.sql:/docker-entrypoint-initdb.d/setup.sql
       - ./data/my.cnf:/etc/mysql/conf.d/custom.cnf
+      - type: bind
+        source: ../data
+        target: /var/lib/mysql
   oasipbackend:
     container_name: oasipbackend
     restart: always

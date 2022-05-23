@@ -80,7 +80,7 @@ public class EventcategoryService {
         }
         Eventcategory event = repository.findById(id).get();
         modelMapper.map(updateEventCategory,event);
-        return new ResponseEntity(repository.saveAndFlush(event),HttpStatus.OK);
+        return new ResponseEntity(modelMapper.map(repository.saveAndFlush(event),EventCategoryDto.class),HttpStatus.OK);
     }
     public ResponseEntity delete(int id,WebRequest request){
         Map<String,String> fieldError = new HashMap<>();
