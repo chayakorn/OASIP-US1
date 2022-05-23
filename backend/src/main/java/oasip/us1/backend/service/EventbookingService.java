@@ -56,7 +56,7 @@ public class EventbookingService {
     public ResponseEntity getEventById(int id, WebRequest request) {
         Map<String, String> fieldError = new HashMap<>();
         if (repository.findById(id).isEmpty()) {
-            fieldError.put("categoryId", "categoryNotfound");
+            fieldError.put("eventBookingId", "eventBooking not found");
             ErrorDTO errorDTO = new ErrorDTO(Instant.now().atZone(ZoneId.of("Asia/Bangkok")).toString(), HttpStatus.NOT_FOUND.value(), ((ServletWebRequest) request).getRequest().getRequestURI(), "Validation failed", fieldError);
             return new ResponseEntity(errorDTO, HttpStatus.NOT_FOUND);
         }
@@ -66,7 +66,7 @@ public class EventbookingService {
     public ResponseEntity getCategoryByEventId(int eventid, WebRequest request) {
         Map<String, String> fieldError = new HashMap<>();
         if (repository.findById(eventid).isEmpty()) {
-            fieldError.put("categoryId", "categoryNotfound");
+            fieldError.put("eventBookingId", "eventBooking not found");
             ErrorDTO errorDTO = new ErrorDTO(Instant.now().atZone(ZoneId.of("Asia/Bangkok")).toString(), HttpStatus.NOT_FOUND.value(), ((ServletWebRequest) request).getRequest().getRequestURI(), "Validation failed", fieldError);
             return new ResponseEntity(errorDTO, HttpStatus.NOT_FOUND);
         }
@@ -106,11 +106,10 @@ public class EventbookingService {
         bindingResult.getAllErrors().forEach((error) -> {
             fieldError.put(((FieldError) error).getField(), error.getDefaultMessage());
         });
-            if (event.getEventCategoryId() == null) {
-                fieldError.put("eventCategoryId", "eventCategoryId can not be null");
-            } else if (!repository.findByEventStartTimeBetween(DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm").withZone(ZoneId.from(ZoneOffset.UTC)).format(event.getEventStartTime().plus(1, ChronoUnit.SECONDS)), DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm").withZone(ZoneId.from(ZoneOffset.UTC)).format(event.getEventStartTime().plus(event.getEventDuration(), ChronoUnit.MINUTES).minus(1, ChronoUnit.SECONDS)), event.getEventCategoryId()).isEmpty() && event.getEventCategoryId() != null) {
+        if(!fieldError.containsKey("eventDuration") && !fieldError.containsKey("eventStartTime")&&!fieldError.containsKey("eventCategoryId")){
+            if (!repository.findByEventStartTimeBetween(DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm").withZone(ZoneId.from(ZoneOffset.UTC)).format(event.getEventStartTime().plus(1, ChronoUnit.SECONDS)), DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm").withZone(ZoneId.from(ZoneOffset.UTC)).format(event.getEventStartTime().plus(event.getEventDuration(), ChronoUnit.MINUTES).minus(1, ChronoUnit.SECONDS)), event.getEventCategoryId()).isEmpty() && event.getEventCategoryId() != null) {
                 fieldError.put("TimeOverlap", "your selected time is not available");
-            }
+            }}
             if (fieldError.size() == 0) {
                 Eventbooking insertevent = mapEventForInsert(event);
                 return ResponseEntity.status(201).body(modelMapper.map(repository.saveAndFlush(insertevent), EventbookingDto.class));
@@ -121,9 +120,14 @@ public class EventbookingService {
 
     public ResponseEntity update(EventbookingPutDto updateEventbooking, int bookingid, WebRequest request) {
 
+        Map<String, String> fieldError = new HashMap<>();
+        if (repository.findById(bookingid).isEmpty()) {
+            fieldError.put("eventBookingId", "eventBooking not found");
+            ErrorDTO errorDTO = new ErrorDTO(Instant.now().atZone(ZoneId.of("Asia/Bangkok")).toString(), HttpStatus.NOT_FOUND.value(), ((ServletWebRequest) request).getRequest().getRequestURI(), "Validation failed", fieldError);
+            return new ResponseEntity(errorDTO, HttpStatus.NOT_FOUND);
+        }
         Eventbooking event = repository.findById(bookingid).get();
 
-        Map<String, String> fieldError = new HashMap<>();
         if (updateEventbooking.getEventStartTime()== null) {
             fieldError.put("eventStartTime", "eventStartTime can not be null");
         }
@@ -150,7 +154,7 @@ public class EventbookingService {
     public ResponseEntity delete(int id, WebRequest request) {
         Map<String, String> fieldError = new HashMap<>();
         if (repository.findById(id).isEmpty()) {
-            fieldError.put("categoryId", "categoryNotfound");
+            fieldError.put("eventBookingId", "eventBooking not found");
             ErrorDTO errorDTO = new ErrorDTO(Instant.now().atZone(ZoneId.of("Asia/Bangkok")).toString(), HttpStatus.NOT_FOUND.value(), ((ServletWebRequest) request).getRequest().getRequestURI(), "Validation failed", fieldError);
             return new ResponseEntity(errorDTO, HttpStatus.NOT_FOUND);
         }
