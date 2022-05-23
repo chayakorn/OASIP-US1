@@ -11,7 +11,6 @@ import javax.validation.Valid;
 import java.util.Collection;
 
 @RestController
-@CrossOrigin
 @RequestMapping("/api/events")
 
 public class EventbookingController {

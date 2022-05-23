@@ -13,7 +13,6 @@ import java.util.List;
 
 @RestController
 @RequestMapping("/api/event-categories")
-@CrossOrigin
 public class EventcategoryController {
     @Autowired
     private EventcategoryService service;
